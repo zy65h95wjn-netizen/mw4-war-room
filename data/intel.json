@@ -1,0 +1,606 @@
+{
+  "schema": 2,
+  "release": "0.2.0",
+  "reviewed": "2026-10-27",
+  "coverage": "Modern Warfare 4 multiplayer only",
+  "sourcePolicy": "Curated public-source snapshot; not a live third-party API feed. No Activision account connection.",
+  "sources": [
+    {
+      "id": "officialPatch",
+      "name": "Activision patch notes",
+      "url": "https://www.callofduty.com/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes",
+      "class": "Official"
+    },
+    {
+      "id": "officialMaps",
+      "name": "Activision maps and modes",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-maps-modes",
+      "class": "Official"
+    },
+    {
+      "id": "officialBP",
+      "name": "Activision editions & BlackCell",
+      "url": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions",
+      "class": "Official"
+    },
+    {
+      "id": "cod",
+      "name": "CODMunity MW4 multiplayer meta",
+      "url": "https://codmunity.gg/mw4",
+      "class": "Community"
+    },
+    {
+      "id": "wz",
+      "name": "WZStats MW4 meta",
+      "url": "https://ssr.wzstats.gg/mw4/meta",
+      "class": "Community"
+    },
+    {
+      "id": "builds",
+      "name": "Warzone Loadout: MW4 multiplayer",
+      "url": "https://warzoneloadout.games/mw4",
+      "class": "Community"
+    },
+    {
+      "id": "esports",
+      "name": "Esports.gg: Iron-sight HAN 86",
+      "url": "https://esports.gg/guides/call-of-duty/best-han-86-loadout-in-modern-warfare-4-multiplayer/",
+      "class": "Community"
+    },
+    {
+      "id": "vGC",
+      "name": "VGC: M4 multiplayer build",
+      "url": "https://www.videogameschronicle.com/guide/cod-mw4-multiplayer-best-meta-m4-build/",
+      "class": "Community"
+    },
+    {
+      "id": "boot",
+      "name": "Insider Gaming: Boot Camp event",
+      "url": "https://insider-gaming.com/modern-warfare-4-boot-camp/",
+      "class": "Community"
+    },
+    {
+      "id": "roadmap",
+      "name": "MW4.GG: roadmap dates",
+      "url": "https://mw4.gg/news/mw4-roadmap/",
+      "class": "Community"
+    }
+  ],
+  "meta": [
+    {
+      "id": "cod",
+      "source": "cod",
+      "name": "CODMunity",
+      "updated": "2026-10-27",
+      "rankingType": "Overall editorial top five",
+      "note": "Rank order reflects a single source’s overall multiplayer selections, not a universal or category-specific ranking.",
+      "entries": [
+        {
+          "weapon": "HAN 86",
+          "category": "AR",
+          "rank": 1,
+          "tier": "S"
+        },
+        {
+          "weapon": "VEL 46",
+          "category": "SMG",
+          "rank": 2,
+          "tier": "S"
+        },
+        {
+          "weapon": "KG-7 Vulcan",
+          "category": "Sniper",
+          "rank": 3,
+          "tier": "S"
+        },
+        {
+          "weapon": "Hyeon Burst",
+          "category": "AR",
+          "rank": 4,
+          "tier": "S"
+        },
+        {
+          "weapon": "ISO Nightshade",
+          "category": "SMG",
+          "rank": 5,
+          "tier": "S"
+        }
+      ]
+    },
+    {
+      "id": "wz",
+      "source": "wz",
+      "name": "WZStats",
+      "updated": "2026-10-27",
+      "rankingType": "Rank within weapon category",
+      "note": "AR #1 and SMG #1 are separate rankings: don’t treat this list as overall positions.",
+      "entries": [
+        {
+          "weapon": "Axion",
+          "category": "AR",
+          "rank": 1,
+          "tier": "Meta"
+        },
+        {
+          "weapon": "HAN 86",
+          "category": "AR",
+          "rank": 2,
+          "tier": "Meta"
+        },
+        {
+          "weapon": "M4",
+          "category": "AR",
+          "rank": 3,
+          "tier": "Meta"
+        },
+        {
+          "weapon": "Kastov 762",
+          "category": "AR",
+          "rank": 4,
+          "tier": "Meta"
+        },
+        {
+          "weapon": "ISO Nightshade",
+          "category": "SMG",
+          "rank": 1,
+          "tier": "Meta"
+        },
+        {
+          "weapon": "VEL 46",
+          "category": "SMG",
+          "rank": 2,
+          "tier": "Meta"
+        },
+        {
+          "weapon": "X-58 Nyx",
+          "category": "SMG",
+          "rank": 3,
+          "tier": "A"
+        },
+        {
+          "weapon": "PPSh-41",
+          "category": "SMG",
+          "rank": 4,
+          "tier": "A"
+        },
+        {
+          "weapon": "KG-7 Vulcan",
+          "category": "Sniper",
+          "rank": 1,
+          "tier": "A"
+        }
+      ]
+    }
+  ],
+  "builds": [
+    {
+      "id": "han-iron",
+      "weapon": "HAN 86",
+      "category": "AR",
+      "style": "Iron sights · balanced",
+      "source": "esports",
+      "updated": "2026-10-21",
+      "optic": false,
+      "editorPick": true,
+      "description": "A published five-slot recoil/handling build that intentionally uses the HAN’s iron sights. No account or unlock assumptions.",
+      "parts": [
+        [
+          "Muzzle",
+          "FSS IS300"
+        ],
+        [
+          "Underbarrel",
+          "FSS Fireline Grip"
+        ],
+        [
+          "Stock",
+          "Meiko L9P-Fold"
+        ],
+        [
+          "Rear grip",
+          "Hanbit H86 Grip"
+        ],
+        [
+          "Laser",
+          "Schlager Visiv-5"
+        ]
+      ],
+      "extras": {
+        "Secondary": "SANG 9mm",
+        "Perks": "Ghost · Ninja · Battle Hardened",
+        "Tactical": "Flash Grenade",
+        "Lethal": "Frag Grenade",
+        "Field": "Portable Radar"
+      }
+    },
+    {
+      "id": "han-meta",
+      "weapon": "HAN 86",
+      "category": "AR",
+      "style": "Versatile · source meta",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": true,
+      "description": "Five-slot source build. Includes a red-dot sight; switch off the iron-sight preference to view this alternative.",
+      "parts": [
+        [
+          "Muzzle",
+          "XRK Mil-Tac Suppressor"
+        ],
+        [
+          "Barrel",
+          "SA H86 465mm"
+        ],
+        [
+          "Optic",
+          "ZLR Type C"
+        ],
+        [
+          "Rear grip",
+          "XRK Justice II Grip"
+        ],
+        [
+          "Laser",
+          "XRK Clutch-LS"
+        ]
+      ]
+    },
+    {
+      "id": "axion-iron",
+      "weapon": "Axion",
+      "category": "AR",
+      "style": "Versatile · iron sights",
+      "source": "wz",
+      "updated": "2026-10-26",
+      "optic": false,
+      "description": "Published WZStats multiplayer five-slot build. Its ranking differs from CODMunity’s, so compare the source.",
+      "parts": [
+        [
+          "Muzzle",
+          "FSS IS300"
+        ],
+        [
+          "Barrel",
+          "SA DMN-L 30″"
+        ],
+        [
+          "Underbarrel",
+          "FSS Fireline Grip"
+        ],
+        [
+          "Rear grip",
+          "GS50 Grip"
+        ],
+        [
+          "Laser",
+          "Schlager Visiv-5"
+        ]
+      ]
+    },
+    {
+      "id": "vel-vers",
+      "weapon": "VEL 46",
+      "category": "SMG",
+      "style": "Versatile · iron sights",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": false,
+      "description": "Five-slot multiplayer build focused on control and ready-up speed.",
+      "parts": [
+        [
+          "Muzzle",
+          "XRK Herder 40"
+        ],
+        [
+          "Barrel",
+          "VB-46 Series 11"
+        ],
+        [
+          "Stock",
+          "EXP U-Turn Stock"
+        ],
+        [
+          "Underbarrel",
+          "FSS Fireline Grip"
+        ],
+        [
+          "Laser",
+          "XRK Clutch-LS"
+        ]
+      ]
+    },
+    {
+      "id": "vel-mob",
+      "weapon": "VEL 46",
+      "category": "SMG",
+      "style": "Mobility · iron sights",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": false,
+      "description": "Published alternative for faster objective play.",
+      "parts": [
+        [
+          "Muzzle",
+          "FSS Crackdown"
+        ],
+        [
+          "Barrel",
+          "RV-B v2 Barrel"
+        ],
+        [
+          "Stock",
+          "EXP U-Turn Stock"
+        ],
+        [
+          "Rear grip",
+          "Sakin Rubber Grip"
+        ],
+        [
+          "Laser",
+          "Schlager Visiv-5"
+        ]
+      ]
+    },
+    {
+      "id": "iso-mob",
+      "weapon": "ISO Nightshade",
+      "category": "SMG",
+      "style": "Mobility · iron sights",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": false,
+      "description": "Published mobile SMG build with extended drum magazine.",
+      "parts": [
+        [
+          "Muzzle",
+          "XRK Herder 40"
+        ],
+        [
+          "Stock",
+          "No Stock"
+        ],
+        [
+          "Underbarrel",
+          "FSS Fireline Grip"
+        ],
+        [
+          "Magazine",
+          "50 Round Drum Mag"
+        ],
+        [
+          "Laser",
+          "Schlager Visiv-5"
+        ]
+      ]
+    },
+    {
+      "id": "hyeon-vers",
+      "weapon": "Hyeon Burst",
+      "category": "AR",
+      "style": "Versatile · iron sights",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": false,
+      "description": "Published five-slot burst-rifle setup.",
+      "parts": [
+        [
+          "Muzzle",
+          "XRK Mil-Tac Suppressor"
+        ],
+        [
+          "Barrel",
+          "Mugi Seungri-0P 609mm"
+        ],
+        [
+          "Stock",
+          "Hyeon Stockpad Tac"
+        ],
+        [
+          "Rear grip",
+          "X-Vector 799 Grip"
+        ],
+        [
+          "Laser",
+          "SA Laz-500"
+        ]
+      ]
+    },
+    {
+      "id": "m4-iron",
+      "weapon": "M4",
+      "category": "AR",
+      "style": "Precision · iron sights",
+      "source": "vGC",
+      "updated": "2026-10-26",
+      "optic": false,
+      "description": "VGC’s five-slot setup keeps the stock in place rather than using an optic.",
+      "parts": [
+        [
+          "Muzzle",
+          "FSS IS300"
+        ],
+        [
+          "Underbarrel",
+          "FSS Fireline Grip"
+        ],
+        [
+          "Rear grip",
+          "ZLR Phase Grip"
+        ],
+        [
+          "Stock",
+          "ZLR ASP50 Stock"
+        ],
+        [
+          "Laser",
+          "SA Laz-500"
+        ]
+      ]
+    },
+    {
+      "id": "x58-vers",
+      "weapon": "X-58 Nyx",
+      "category": "SMG",
+      "style": "Versatile · iron sights",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": false,
+      "description": "Published aggressive SMG setup with no scope.",
+      "parts": [
+        [
+          "Barrel",
+          "Doksa 4F 305mm"
+        ],
+        [
+          "Stock",
+          "No Stock"
+        ],
+        [
+          "Underbarrel",
+          "FSS Fireline Grip"
+        ],
+        [
+          "Rear grip",
+          "Mugi 050-T Grip"
+        ],
+        [
+          "Laser",
+          "XRK Clutch-LS"
+        ]
+      ]
+    },
+    {
+      "id": "kg-sniper",
+      "weapon": "KG-7 Vulcan",
+      "category": "Sniper",
+      "style": "Sniper · magnified optic",
+      "source": "builds",
+      "updated": "2026-10-27",
+      "optic": true,
+      "description": "Four ordinary slots plus Apex, as listed by the source. Included for sniper players; iron-sight preference hides it by default.",
+      "parts": [
+        [
+          "Muzzle",
+          "Ivanov QR600"
+        ],
+        [
+          "Barrel",
+          "TT Baem 12"
+        ],
+        [
+          "Optic",
+          "Schlager 7x"
+        ]
+      ],
+      "apex": "KG-7 Drillcharge"
+    }
+  ],
+  "patches": [
+    {
+      "date": "2026-10-25",
+      "title": "Launch fixes: XP and class editing",
+      "scope": "Multiplayer + global",
+      "source": "officialPatch",
+      "bullet": [
+        "Search & Destroy and Collateral kill XP increased from 100 to 300.",
+        "Fixed a freeze when first editing a loadout during a match.",
+        "Locked Gunsmith attachments now show weapon statistics."
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "title": "Multiplayer stability and spawns",
+      "scope": "Multiplayer + global",
+      "source": "officialPatch",
+      "bullet": [
+        "Improved respawn locations and timing in Hijack.",
+        "Fixed some stability and UI issues, including weapon-build carryover problems."
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "title": "Launch-day patch and tuning watch",
+      "scope": "Multiplayer",
+      "source": "officialPatch",
+      "bullet": [
+        "Fixed multiplayer issues affecting Portable Radar and certain killstreak interactions.",
+        "Infinity Ward said further weapon tuning was under consideration; this is not a confirmed weapon nerf."
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "boot",
+      "title": "Boot Camp",
+      "tag": "Event",
+      "starts": "2026-10-23",
+      "ends": "2026-11-06",
+      "endCertainty": "Community-reported",
+      "source": "boot",
+      "summary": "Nine cross-mode challenges; completing the set awards the F.N.G. M4 blueprint. Some objectives are outside Multiplayer.",
+      "rewards": [
+        "F.N.G. M4 blueprint (all nine)",
+        "Apex Predators calling card",
+        "XP tokens, weapon charm and spray"
+      ],
+      "note": "Event end date is reported by Insider Gaming; verify the in-game timer."
+    },
+    {
+      "id": "shipment",
+      "title": "Shipment",
+      "tag": "New map",
+      "starts": "2026-10-27",
+      "ends": null,
+      "endCertainty": null,
+      "source": "roadmap",
+      "summary": "Additional Multiplayer map reported on the official roadmap. Availability can vary during rollout.",
+      "rewards": []
+    },
+    {
+      "id": "possession",
+      "title": "Possession",
+      "tag": "Halloween mode",
+      "starts": "2026-10-29",
+      "ends": null,
+      "endCertainty": null,
+      "source": "officialMaps",
+      "summary": "Eliminate an enemy to possess their position and take over their loadout.",
+      "rewards": []
+    },
+    {
+      "id": "infected",
+      "title": "Infected",
+      "tag": "Halloween mode",
+      "starts": "2026-10-30",
+      "ends": null,
+      "endCertainty": null,
+      "source": "officialMaps",
+      "summary": "Survivor-versus-infected multiplayer mode returns ahead of Season 1.",
+      "rewards": []
+    }
+  ],
+  "battlePass": {
+    "label": "Season 1",
+    "status": "Not live at snapshot",
+    "start": "2026-11-06",
+    "startConfidence": "Roadmap date reported by third-party outlets; exact launch hour not confirmed in official posts",
+    "roadmapSource": "roadmap",
+    "verifiedSource": "officialBP",
+    "officialSummary": "Activision confirms the Season 1 Battle Pass and a one-season BlackCell entitlement; individual reward tiers were not published when this briefing was reviewed.",
+    "rewardCategories": [
+      "New base weapons",
+      "Weapon blueprints",
+      "Operator skins",
+      "COD Points",
+      "XP tokens",
+      "Cosmetic items"
+    ],
+    "blackcell": {
+      "codPoints": 1100,
+      "tierSkips": 20,
+      "totalRewards": "100+ rewards in the full pass",
+      "exclusive": "Exclusive Operator and Weapon Blueprint"
+    },
+    "tiersKnown": false
+  }
+}
