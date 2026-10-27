@@ -13,6 +13,8 @@ jobs:
     timeout-minutes: 6
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - name: Check briefing schema and integrity
         run: python3 scripts/validate_intel.py
       - name: Run source-data and review-schedule regression tests
@@ -23,3 +25,21 @@ jobs:
           node --check app.js
       - name: Test weapon-data joins and time-dependent event windows
         run: node --test tests/logic.test.cjs
+      - name: Require evidence receipts for intel changes
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git show "$BASE_SHA:data/intel.json" > "$RUNNER_TEMP/intel-before.json"
+          if git cat-file -e "$BASE_SHA:editorial/reviews.json" 2>/dev/null; then
+            git show "$BASE_SHA:editorial/reviews.json" > "$RUNNER_TEMP/reviews-before.json"
+          else
+            printf '{"schema":1,"reviews":[]}\n' > "$RUNNER_TEMP/reviews-before.json"
+          fi
+          python3 scripts/editorial_gate.py \
+            --before "$RUNNER_TEMP/intel-before.json" \
+            --after data/intel.json \
+            --old-ledger "$RUNNER_TEMP/reviews-before.json" \
+            --new-ledger editorial/reviews.json
