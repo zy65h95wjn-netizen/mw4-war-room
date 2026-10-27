@@ -1,14 +1,20 @@
 {
   "schema": 2,
-  "release": "0.2.1",
+  "release": "0.3.0",
   "reviewed": "2026-10-27",
   "coverage": "Modern Warfare 4 multiplayer only",
-  "sourcePolicy": "Editorially reviewed multiplayer-only snapshots. Daily GitHub review reminders detect stale sections and upcoming deadlines; no external website is automatically scraped or republished. No Activision account connection.",
+  "sourcePolicy": "Multiplayer-only curated information with dated source references. Scheduled reviews detect stale data, not publisher changes. No third-party scraping, automatic publishing, or personal Activision account access.",
   "sources": [
     {
       "id": "officialPatch",
       "name": "Activision patch notes",
       "url": "https://www.callofduty.com/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes",
+      "class": "Official"
+    },
+    {
+      "id": "officialIndex",
+      "name": "Activision patch notes index",
+      "url": "https://www.callofduty.com/patchnotes",
       "class": "Official"
     },
     {
@@ -543,7 +549,8 @@
         "Apex Predators calling card",
         "XP tokens, weapon charm and spray"
       ],
-      "note": "Event end date is reported by Insider Gaming; verify the in-game timer."
+      "note": "Event end date is reported by Insider Gaming; verify the in-game timer.",
+      "scheduleConfidence": "reported"
     },
     {
       "id": "shipment",
@@ -554,7 +561,8 @@
       "endCertainty": null,
       "source": "roadmap",
       "summary": "Additional Multiplayer map reported on the official roadmap. Availability can vary during rollout.",
-      "rewards": []
+      "rewards": [],
+      "scheduleConfidence": "reported"
     },
     {
       "id": "possession",
@@ -565,7 +573,8 @@
       "endCertainty": null,
       "source": "officialMaps",
       "summary": "Eliminate an enemy to possess their position and take over their loadout.",
-      "rewards": []
+      "rewards": [],
+      "scheduleConfidence": "official"
     },
     {
       "id": "infected",
@@ -576,7 +585,8 @@
       "endCertainty": null,
       "source": "officialMaps",
       "summary": "Survivor-versus-infected multiplayer mode returns ahead of Season 1.",
-      "rewards": []
+      "rewards": [],
+      "scheduleConfidence": "official"
     }
   ],
   "battlePass": {

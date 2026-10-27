@@ -4,6 +4,9 @@ on:
     - cron: '17 10 * * *'
       timezone: 'America/New_York'
   workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
 permissions:
   contents: read
   issues: write
@@ -26,6 +29,7 @@ jobs:
           python3 scripts/review_watch.py --markdown-file "$RUNNER_TEMP/review.md" --output-file "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/review.md" >> "$GITHUB_STEP_SUMMARY"
       - name: Maintain one deduplicated GitHub issue when review is due
+        if: github.event_name == 'schedule'
         env:
           GH_TOKEN: ${{ github.token }}
           NEEDS_REVIEW: ${{ steps.review.outputs.needs_review }}

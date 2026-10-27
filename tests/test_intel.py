@@ -96,6 +96,18 @@ class IntelValidationTests(unittest.TestCase):
         self.data['builds'][0]['parts'].append(['Barrel', 'Fictional barrel'])
         self.assert_invalid('attachment count')
 
+    def test_reject_inconsistent_weapon_category_in_builds(self):
+        self.data['builds'][0]['category'] = 'SMG'
+        self.assert_invalid('build category contradicts ranking')
+
+    def test_reject_unverified_official_event_source(self):
+        self.data['events'][0]['scheduleConfidence'] = 'official'
+        self.assert_invalid('official schedule evidence')
+
+    def test_reject_event_missing_schedule_evidence(self):
+        self.data['events'][0].pop('scheduleConfidence')
+        self.assert_invalid('explicit schedule evidence')
+
     def test_reject_unsorted_patches(self):
         self.data['patches'][0], self.data['patches'][1] = self.data['patches'][1], self.data['patches'][0]
         self.assert_invalid('newest')
@@ -146,6 +158,7 @@ class ReviewWatchTests(unittest.TestCase):
         content = markdown(self.data, due_items(self.data, date(2026, 10, 30)))
         self.assertIn('does not poll, scrape', content)
         self.assertIn('review', content)
+        self.assertIn('https://www.callofduty.com/patchnotes', content)
 
 
 if __name__ == '__main__':

@@ -13,6 +13,13 @@ from pathlib import Path
 
 from validate_intel import DEFAULT_PATH, SECTION_KEYS, valid_day, validate
 
+REVIEW_SOURCES = {
+    "meta": ("cod", "wz"),
+    "builds": ("builds", "esports", "vGC"),
+    "patches": ("officialIndex", "officialPatch"),
+    "events": ("officialMaps", "boot", "roadmap"),
+    "battlePass": ("officialBP", "roadmap"),
+}
 SECTION_NAMES = {"meta": "Multiplayer meta rankings", "builds": "Published loadouts", "patches": "Official patch summaries", "events": "Events and timed modes", "battlePass": "Battle Pass and BlackCell"}
 
 
@@ -56,6 +63,15 @@ def markdown(data: dict, pending: list[dict]) -> str:
             lines.append(f"- [ ] {item['label']}")
     else:
         lines += ["## No overdue reviews or date triggers", "", "The automated check passed. No external change detection was performed."]
+    source_map = {src["id"]: src for src in data["sources"]}
+    lines += ["", "## Direct source links for editorial review", "", "These links are presented for a human reviewer; the watchdog does not fetch them.", ""]
+    for section, source_ids in REVIEW_SOURCES.items():
+        lines.append(f"### {SECTION_NAMES[section]}")
+        for src_id in source_ids:
+            if src_id in source_map:
+                source = source_map[src_id]
+                lines.append(f"- [{source['name']}]({source['url']}) ({source['class'].lower()})")
+        lines.append("")
     lines += [
         "", "## Safe publication process", "",
         "1. Read the linked **official** notes for patches and season dates; read publisher sites **manually** for the meta and builds.",
