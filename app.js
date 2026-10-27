@@ -31,7 +31,7 @@ function leaderCard(board,entry){
  if(!entry)return `<div class="leader-card leader-card--empty" role="status"><span class="leader-card__source">${escapeHTML(board.name)}</span><span class="leader-card__description">No ranked weapon in this category in the current reviewed snapshot.</span></div>`;
  const scope=board.rankingType==='Overall editorial top five'?'OVERALL':entry.category;
  const description=scope==='OVERALL'?`#${entry.rank} overall editorial pick`:`#${entry.rank} ${entry.category==='AR'?'Assault Rifle':entry.category} in category`;
- return `<button type="button" class="leader-card leader-card--${escapeHTML(board.id)}" data-source="${escapeHTML(board.id)}" data-page="weapons" data-weapon="${escapeHTML(entry.weapon)}" data-reveal="loadout" data-category="${escapeHTML(entry.category)}" aria-label="View ${escapeHTML(entry.weapon)} rankings and loadouts from ${escapeHTML(board.name)}">
+ return `<button type="button" class="leader-card leader-card--${escapeHTML(board.id)}" data-source="${escapeHTML(board.id)}" data-page="weapons" data-weapon="${escapeHTML(entry.weapon)}" data-reveal="loadout" data-weapon-group="${escapeHTML(entry.category)}" aria-label="View ${escapeHTML(entry.weapon)} rankings and loadouts from ${escapeHTML(board.name)}">
  <span class="leader-card__top"><span class="leader-card__source">${escapeHTML(board.name)}</span><span class="leader-card__index">#${entry.rank} / ${escapeHTML(scope)}</span></span>
  <span class="leader-card__weapon">${escapeHTML(entry.weapon)}</span>
  <span class="leader-card__description">${escapeHTML(description)}</span>
