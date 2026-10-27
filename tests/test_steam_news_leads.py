@@ -176,4 +176,24 @@ class SteamNewsTests(unittest.TestCase):
   _,count=w.merge_issue_body(body,[narrow],w.report([narrow]))
   self.assertEqual(count,1)
 
+ def test_probe_apply_roundtrip_preserves_full_publication_timestamp(self):
+  import json,sys,tempfile
+  from tempfile import TemporaryDirectory
+  stamp=int(datetime(2026,10,27,20,43,tzinfo=timezone.utc).timestamp())
+  with TemporaryDirectory() as temp:
+   saved_path=Path(temp)/"news.json"
+   sample=feed([item("1234567","MW4 Patch Notes",ts=stamp)])
+   with patch.object(w,"fetch",return_value=sample):
+    with patch.object(sys,"argv",["steam_news_leads.py","--probe","--output",str(saved_path)]):
+     w.main()
+   saved=json.loads(saved_path.read_text())
+   self.assertEqual(saved[0]["timestamp"],stamp)
+   self.assertEqual(saved[0]["publishedAt"],"2026-10-27 20:43 UTC")
+   observed=[]
+   with patch.object(w,"sync",side_effect=lambda items,body:observed.extend(items)):
+    with patch.object(sys,"argv",["steam_news_leads.py","--apply","--input",str(saved_path)]):
+     w.main()
+   self.assertEqual(observed[0]["timestamp"],stamp)
+   self.assertEqual(observed[0]["date"],"2026-10-27")
+
 if __name__=="__main__":unittest.main()
