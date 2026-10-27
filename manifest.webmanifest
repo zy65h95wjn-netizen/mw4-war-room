@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "MW4 War Room",
+  "short_name": "War Room",
+  "description": "Private Modern Warfare 4 progression and loadout tracker",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#080d14",
+  "background_color": "#070b11",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
