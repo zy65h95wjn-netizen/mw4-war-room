@@ -1,4 +1,4 @@
-/* MW4 War Room v0.3: vetted intelligence, unified Weapons, events with qualified windows. */
+/* MW4 War Room v0.3.2: compact, source-dated briefing with deep-linked weapon leaders. */
 'use strict';
 const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -27,19 +27,58 @@ function nav(){const wrap=$('bottomNav');wrap.innerHTML=tabs.map(([p,ic,l])=>`<b
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>el.classList.remove('show'),2400)}
 function go(page){state.page=(page==='builds'||page==='meta')?'weapons':page;window.scrollTo(0,0);render()}
 function featured(){return state.feed.builds.find(b=>b.id==='han-iron')}
-function briefing(){const f=featured();const p=state.feed.patches[0],b=state.feed.battlePass;const metaA=state.feed.meta.find(s=>s.id==='cod'),metaB=state.feed.meta.find(s=>s.id==='wz');const next=state.feed.events.filter(e=>dateVal(e.starts)>=new Date(new Date().setHours(0,0,0,0))).sort((a,b)=>a.starts.localeCompare(b.starts))[0];const codPick=metaA.entries[0]?.weapon||"Ranking unavailable";const wzPick=metaB.entries.find(w=>w.category==="AR"&&w.rank===1)?.weapon||"AR ranking unavailable";return `
- ${dataNotice()}<div class="panel hero"><div class="kicker">FIELD BRIEFING · ${escapeHTML(pretty(state.feed.reviewed,{year:'numeric'}))}</div><h1>Know the meta.<br><span style="color:var(--light)">Own the lobby.</span></h1><p>Multiplayer rankings, published builds and official updates—with every source attached.</p><div class="hero-foot">${freshness()}<span class="eyebrow">NO ACCOUNT SYNC</span></div></div>
- ${section('The meta split',tag('MP ONLY','green'))}
- <div class="two-col"><button class="clickcard" type="button" data-source="cod" data-page="weapons" data-weapon="${escapeHTML(codPick)}"><div class="eyebrow">${escapeHTML(metaA.name)}</div><div class="big">${escapeHTML(codPick)}</div><div class="fine">Top overall pick</div><div class="spread padtiny"><span class="hint">${escapeHTML(pretty(metaA.updated))}</span><span class="arrow">↗</span></div></button><button class="clickcard" type="button" data-source="wz" data-page="weapons" data-weapon="${escapeHTML(wzPick)}"><div class="eyebrow">${escapeHTML(metaB.name)}</div><div class="big">${escapeHTML(wzPick)}</div><div class="fine">#1 Assault Rifle</div><div class="spread padtiny"><span class="hint">${escapeHTML(pretty(metaB.updated))}</span><span class="arrow">↗</span></div></button></div>
- <p class="source-note" style="margin:9px 3px 0">Different publishers, different ranking methods. We show both rather than fabricate a consensus.</p>
- ${section('Loadout spotlight',tag('IRON SIGHTS','amber'))}
- <div class="panel gold-border"><div class="spread"><div><div class="eyebrow">${escapeHTML(f.category)} · VERIFIED SOURCE BUILD</div><h2 style="font-size:21px;margin-top:4px">${escapeHTML(f.weapon)}</h2><p class="fine" style="margin-top:4px">${escapeHTML(f.style)}</p></div><div class="weaponchip alt">5 SLOTS</div></div><div class="small-rule"></div><p class="subtext">${escapeHTML(f.description)}</p><div class="spread" style="margin-top:15px"><button type="button" class="cta" data-page="weapons" data-weapon="${escapeHTML(f.weapon)}" data-reveal="loadout">View attachments</button><span class="fine">${escapeHTML(source(f.source).name)}</span></div></div>
- ${section('Latest intelligence')}
- <div class="cards-row"><button class="clickcard" type="button" data-page="updates"><div class="eyebrow">PATCH NOTES</div><div class="big">${escapeHTML(pretty(p.date))}</div><div class="fine">${escapeHTML(p.title)}</div><div class="spread padtiny"><span class="hint">Official update</span><span class="arrow">↗</span></div></button>
- <button class="clickcard" type="button" data-page="events"><div class="eyebrow">NEXT ON THE ROADMAP</div><div class="big">${next?escapeHTML(pretty(next.starts)):"Check events"}</div><div class="fine">${next?escapeHTML(next.title):"No future dates listed"}</div><div class="spread padtiny"><span class="hint">Check release status</span><span class="arrow">↗</span></div></button>
- <button class="clickcard" type="button" data-page="pass"><div class="eyebrow">BATTLE PASS</div><div class="big">Season 1</div><div class="fine">${escapeHTML(pretty(b.start))} · reported start</div><div class="spread padtiny"><span class="hint">Rewards not fully revealed</span><span class="arrow">↗</span></div></button></div>
- ${section('Source transparency')}
- <div class="panel flat"><div class="spread">${freshness()}${anchor('officialIndex','Latest official patches')}</div><p class="source-note" style="margin-top:10px">War Room loads a curated public-data snapshot. It does not scrape live rankings or update external sources in real time. Source links open the latest pages.</p></div>`}
+function briefing(){
+ const p=state.feed.patches[0],b=state.feed.battlePass;
+ const metaA=state.feed.meta.find(s=>s.id==='cod'),metaB=state.feed.meta.find(s=>s.id==='wz');
+ const codPick=metaA.entries[0]?.weapon||'Ranking unavailable';
+ const wzPick=metaB.entries.find(w=>w.category==='AR'&&w.rank===1)?.weapon||'AR ranking unavailable';
+ const today=new Date();today.setHours(0,0,0,0);
+ const next=state.feed.events.filter(e=>dateVal(e.starts)>=today).sort((a,b)=>a.starts.localeCompare(b.starts))[0];
+ return `
+ ${dataNotice()}
+ <section class="brief-mast" aria-labelledby="brief-title">
+   <div class="brief-mast__top"><div class="brief-mast__label"><span class="brief-signal" aria-hidden="true"></span><span>FIELD INTEL</span></div><span class="brief-mast__mode">MULTIPLAYER / 01</span></div>
+   <div class="brief-mast__body">
+     <div class="brief-mast__identity"><h1 id="brief-title">FIELD BRIEF<span class="brief-mast__slash"> /</span></h1><p>Rankings · patch notes · event windows</p></div>
+     <div class="brief-mast__stamp"><span>LAST REVIEW</span><strong>${escapeHTML(pretty(state.feed.reviewed,{year:'numeric'}))}</strong></div>
+   </div>
+ </section>
+ ${section('Meta leaders',tag('2 INDEPENDENT SOURCES','muted'))}
+ <div class="brief-leaders" aria-label="Multiplayer weapon rankings">
+   <button type="button" class="leader-card leader-card--cod" data-source="cod" data-page="weapons" data-weapon="${escapeHTML(codPick)}" data-reveal="loadout" aria-label="View ${escapeHTML(codPick)} rankings and loadouts">
+     <span class="leader-card__top"><span class="leader-card__source">${escapeHTML(metaA.name)}</span><span class="leader-card__index">01 / EDITORIAL</span></span>
+     <span class="leader-card__weapon">${escapeHTML(codPick)}</span>
+     <span class="leader-card__description">Top overall multiplayer pick</span>
+     <span class="leader-card__bottom"><span>${escapeHTML(pretty(metaA.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
+   </button>
+   <button type="button" class="leader-card leader-card--wz" data-source="wz" data-page="weapons" data-weapon="${escapeHTML(wzPick)}" data-reveal="loadout" aria-label="View ${escapeHTML(wzPick)} rankings and loadouts">
+     <span class="leader-card__top"><span class="leader-card__source">${escapeHTML(metaB.name)}</span><span class="leader-card__index">01 / ASSAULT</span></span>
+     <span class="leader-card__weapon">${escapeHTML(wzPick)}</span>
+     <span class="leader-card__description">#1 Assault Rifle</span>
+     <span class="leader-card__bottom"><span>${escapeHTML(pretty(metaB.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
+   </button>
+ </div>
+ <p class="brief-explain">Publisher rankings use different methods. Tap a weapon for its sourced attachments.</p>
+ ${section('Latest intelligence',tag('DATED SNAPSHOT','amber'))}
+ <div class="intel-grid">
+   <button type="button" class="intel-signal intel-signal--patch" data-page="updates" aria-label="View latest reviewed patch notes">
+     <span class="intel-signal__eyebrow"><span class="intel-signal__num">01</span> OFFICIAL PATCH</span>
+     <strong class="intel-signal__title">${escapeHTML(p.title)}</strong>
+     <span class="intel-signal__bottom"><span>${escapeHTML(pretty(p.date))}</span><span class="intel-signal__action">VIEW NOTES <span aria-hidden="true">↗</span></span></span>
+   </button>
+   <button type="button" class="intel-signal intel-signal--events" data-page="events" aria-label="View upcoming event announcements">
+     <span class="intel-signal__eyebrow"><span class="intel-signal__num">02</span> OPERATIONS</span>
+     <strong class="intel-signal__title">${next?escapeHTML(next.title):'Event calendar'}</strong>
+     <span class="intel-signal__bottom"><span>${next?escapeHTML(pretty(next.starts)+' · listed date'):'Check announcements'}</span><span class="intel-signal__action" aria-hidden="true">↗</span></span>
+   </button>
+   <button type="button" class="intel-signal intel-signal--pass" data-page="pass" aria-label="View Battle Pass information">
+     <span class="intel-signal__eyebrow"><span class="intel-signal__num">03</span> BATTLE PASS</span>
+     <strong class="intel-signal__title">${escapeHTML(b.label)}</strong>
+     <span class="intel-signal__bottom"><span>${escapeHTML(pretty(b.start))} · reported</span><span class="intel-signal__action" aria-hidden="true">↗</span></span>
+   </button>
+ </div>
+ <div class="brief-provenance"><span>Reviewed sources · not a live feed</span>${anchor('officialIndex','Official patch index')}</div>`;
+}
 function weaponHub(){
  const catalog=WarRoomLogic.weaponCatalog(state.feed);
  const board=state.feed.meta.find(m=>m.id===state.source)||state.feed.meta[0];

@@ -84,7 +84,7 @@ function loadoutHarness() {
   return { elements, context, click, reveals: () => reveals, handlers };
 }
 
-test('briefing View attachments opens the HAN 86 loadout and reveals the profile', () => {
+test('meta leader opens the HAN 86 loadout and reveals the profile', () => {
   const h = loadoutHarness();
   assert.ok(h.elements.appMain.innerHTML.includes('data-page="weapons" data-weapon="HAN 86" data-reveal="loadout"'));
   h.click({ page: 'weapons', weapon: 'HAN 86', reveal: 'loadout' });
@@ -120,4 +120,58 @@ test('iron-sight switch and alternate loadout selection remain functional', () =
   h.click({ build: 'han-meta' });
   assert.equal(vm.runInContext('state.buildId', h.context), 'han-meta');
   assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
+});
+
+test('the briefing replaces marketing and duplicate spotlight with practical intelligence', () => {
+  const h = loadoutHarness();
+  const body = h.elements.appMain.innerHTML;
+  assert.match(body, /class="brief-mast"/);
+  assert.match(body, /FIELD BRIEF/);
+  assert.match(body, /LAST REVIEW/);
+  assert.match(body, /Meta leaders/);
+  assert.match(body, /Latest intelligence/);
+  assert.match(body, /OFFICIAL PATCH/);
+  assert.match(body, /OPERATIONS/);
+  assert.match(body, /BATTLE PASS/);
+  assert.match(body, /not a live feed/);
+  assert.doesNotMatch(body, /Know the meta|Own the lobby|Loadout spotlight|NO ACCOUNT SYNC|VIEW ATTACHMENTS/i);
+  const style = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  assert.match(style, /\.brief-mast\{/);
+  assert.match(style, /\.leader-card\{/);
+  assert.match(style, /\.intel-grid\{/);
+  assert.match(style, /@media\(max-width:399px\)/);
+});
+
+test('the WZStats meta leader opens Axion and its sourced no-optic build', () => {
+  const h = loadoutHarness();
+  const before = h.elements.appMain.innerHTML;
+  assert.match(before, /data-source="wz" data-page="weapons" data-weapon="Axion" data-reveal="loadout"/);
+  h.click({ source: 'wz', page: 'weapons', weapon: 'Axion', reveal: 'loadout' });
+  assert.equal(vm.runInContext('state.page', h.context), 'weapons');
+  assert.equal(vm.runInContext('state.source', h.context), 'wz');
+  assert.equal(vm.runInContext('state.weapon', h.context), 'Axion');
+  assert.match(h.elements.appMain.innerHTML, /Recommended attachments/);
+  assert.match(h.elements.appMain.innerHTML, /id="weaponLoadout"/);
+  assert.equal(h.reveals(), 1);
+});
+
+test('patch, event and Battle Pass intelligence cards all open their destinations', () => {
+  const h = loadoutHarness();
+  for (const [page, term] of [['updates','Patch notes'], ['events','Events'], ['pass','Battle Pass']]) {
+    h.click({ page });
+    assert.equal(vm.runInContext('state.page', h.context), page);
+    assert.ok(h.elements.appMain.innerHTML.includes(term), page + ' content did not open');
+    h.click({ page: 'brief' });
+  }
+});
+
+test('briefing dates and weapon rankings still come from the existing sourced snapshot', () => {
+  const h = loadoutHarness();
+  const body = h.elements.appMain.innerHTML;
+  assert.ok(body.includes('CODMunity'));
+  assert.ok(body.includes('WZStats'));
+  assert.ok(body.includes('HAN 86'));
+  assert.ok(body.includes('Axion'));
+  assert.ok(body.includes('Oct 27'));
+  assert.ok(body.includes('Official patch index'));
 });
