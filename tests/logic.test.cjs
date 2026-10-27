@@ -249,9 +249,9 @@ test('plain-language navigation and rankings keep source-specific positions', ()
 test('weapons, patches, events and pass pages all use clear gaming copy', () => {
   const h=loadoutHarness();
   for(const [page,expected] of [
-    ['weapons','Weapons & Loadouts'],
+    ['weapons','Weapons &amp; Loadouts'],
     ['updates','GAME UPDATES'],
-    ['events','EVENTS & REWARDS'],
+    ['events','EVENTS &amp; REWARDS'],
     ['pass','SEASON DETAILS']
   ]) {
     h.click({page});
