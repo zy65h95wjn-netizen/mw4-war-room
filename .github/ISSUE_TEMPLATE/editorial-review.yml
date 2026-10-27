@@ -1,0 +1,51 @@
+name: Verify a War Room update
+description: Request evidence review before editing the published MW4 multiplayer briefing
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Opening this issue does not publish content. A Steam headline is a discovery lead, not proof of a confirmed patch or event.
+  - type: dropdown
+    id: section
+    attributes:
+      label: Which War Room section?
+      options:
+        - Patch notes
+        - Events or multiplayer playlist
+        - Battle Pass and Season
+        - Weapon rankings
+        - Loadout builds
+    validations:
+      required: true
+  - type: input
+    id: publisher
+    attributes:
+      label: Original source URL
+      description: Link directly to the official Activision post or attributed editorial article.
+      placeholder: https://www.callofduty.com/patchnotes/...
+    validations:
+      required: true
+  - type: dropdown
+    id: certainty
+    attributes:
+      label: Classification
+      options:
+        - Original official Activision announcement
+        - Community or editorial report (not official)
+        - Unverified discovery lead (still needs source review)
+    validations:
+      required: true
+  - type: textarea
+    id: facts
+    attributes:
+      label: What should War Room say, once verified?
+      description: Include a date, multiplayer scope, factual changes, and any uncertainties.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgement
+    attributes:
+      label: Publication safeguard
+      options:
+        - label: I understand that publishing needs human verification and a passing pull request.
+          required: true
