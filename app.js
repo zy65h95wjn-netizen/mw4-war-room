@@ -1,4 +1,4 @@
-/* MW4 War Room v0.3: vetted intelligence, unified Weapons, events with qualified windows. */
+/* MW4 War Room v0.3.2: compact, source-dated briefing with deep-linked weapon leaders. */
 'use strict';
 const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
