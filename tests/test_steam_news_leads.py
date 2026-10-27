@@ -55,4 +55,18 @@ class SteamNewsTests(unittest.TestCase):
   text=w.report([{"date":"2026-10-28","title":"MW4 patch notes","url":"https://store.steampowered.com/news/x","sections":["patches"]}])
   self.assertIn("unverified",text.lower())
   self.assertIn("No announcement is published",text)
+ def test_updates_single_existing_issue_without_creating_second(self):
+  from unittest.mock import call
+  with patch.dict(w.os.environ,{"GITHUB_REPOSITORY":"owner/repo","GH_TOKEN":"placeholder"}):
+   with patch.object(w,"gh",side_effect=lambda *a: '[{"number":42,"title":"'+w.ISSUE+'","state":"OPEN"}]' if a[:2]==("issue","list") else "ok") as fake:
+    w.sync([{"date":"2026-10-28"}],"Review these leads")
+    names=[x.args[:2] for x in fake.call_args_list]
+    self.assertIn(("issue","edit"),names)
+    self.assertNotIn(("issue","create"),names)
+    self.assertNotIn(("issue","close"),names)
+ def test_duplicate_existing_issues_fail_closed(self):
+  with patch.dict(w.os.environ,{"GITHUB_REPOSITORY":"owner/repo","GH_TOKEN":"placeholder"}):
+   duplicate=[{"number":1,"title":w.ISSUE,"state":"OPEN"},{"number":2,"title":w.ISSUE,"state":"OPEN"}]
+   with patch.object(w,"gh",return_value=__import__("json").dumps(duplicate)):
+    with self.assertRaises(RuntimeError):w.sync([{"date":"2026-10-28"}],"no ambiguity")
 if __name__=="__main__":unittest.main()
