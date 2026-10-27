@@ -99,7 +99,7 @@ def parse_seen(body):
  This records what was alerted, not what any publisher actually confirmed.
  """
  if LEDGER_START not in body:
-  if "war-room-steam-seen-v1" in body:
+  if "<!-- war-room-steam-seen-" in body:
    raise ValueError("malformed announcement ledger marker")
   return []
  if body.count(LEDGER_START)!=1:
