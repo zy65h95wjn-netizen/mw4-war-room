@@ -1,0 +1,34 @@
+name: Check MW4 announcement leads via Steam
+on:
+  schedule:
+    - cron: '27 10 * * *'
+      timezone: 'America/New_York'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/steam-news-leads.yml'
+      - 'scripts/steam_news_leads.py'
+      - 'tests/test_steam_news_leads.py'
+      - 'data/intel.json'
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: war-room-steam-news-leads
+  cancel-in-progress: false
+jobs:
+  news-review:
+    name: Read public Steam news API - review leads only
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v6
+      - name: Test safe filtering without network access
+        run: python3 -m unittest discover -s tests -p 'test_steam_news_leads.py' -v
+      - name: Probe the documented public news endpoint once
+        run: python3 scripts/steam_news_leads.py --probe --output "$RUNNER_TEMP/steam-news.json"
+      - name: Maintain one review issue, never publish content
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/steam_news_leads.py --apply --input "$RUNNER_TEMP/steam-news.json"
