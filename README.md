@@ -1,14 +1,14 @@
 # MW4 War Room — Multiplayer Intelligence
 
-**v0.2.1 — October 27, 2026**
+**v0.3.0 — October 27, 2026**
 
 A lightweight, installable iPhone home-screen companion for Call of Duty: Modern Warfare 4 multiplayer. It contains only publicly retrievable game information, curated into dated snapshots with direct source links:
 
 - **Brief:** key ranking differences, a source-linked iron-sight build, latest patch and season highlights
-- **Meta:** CODMunity and WZStats multiplayer rankings displayed separately (with their different ranking scopes)
-- **Builds:** a small set of published, attributed attachment recommendations; "Iron sights first" enabled by default
+- **Weapons:** one profile per weapon, combining source-separated CODMunity / WZStats rankings with available attributed loadouts and an iron-sight filter
 - **Updates:** source-linked summaries of official multiplayer patch notes
-- **Season:** events, time-limited modes, rewards and explicitly qualified Battle Pass / BlackCell announcements
+- **Events:** dated event windows sorted by calendar state; unknown end dates remain unverified, and a published time window does not claim in-game availability
+- **Pass:** separately accessible Season 1 and BlackCell information, with explicitly qualified dates and unpublished reward tiers
 
 **Not a live external data feed.** The contents of `data/intel.json` were independently reviewed on October 27, 2026. External publishers are not scraped or mirrored on a schedule. Tapping a source link opens the current publisher page, and curated War Room content changes only when this repository is updated. Publisher rankings are not presented as interchangeable universal statistics.
 
@@ -18,7 +18,7 @@ GitHub Pages deploys from `main` at the repository root. Open the live site in S
 
 ## Data and privacy
 
-War Room v0.2 has no Activision/Xbox sign-in, no automatic personal progression import, no player rank, no manual weapon-level log, and no personal game-stats tracker. It only stores the local **iron-sight filter** and **preferred ranking source** under `mw4-warroom-prefs-v02`. The old v0.1 key (`mw4-warroom-v01`) is not read, overwritten, or deleted by this build; the complete old app is preserved on the `archive/v0.1-working` branch. If revisiting v0.1 in the future, retain the browser's old storage profile.
+War Room v0.3 has no Activision/Xbox sign-in, no automatic personal progression import, no player rank, no manual weapon-level log, and no personal game-stats tracker. It only stores the local **iron-sight filter** and **preferred ranking source** under `mw4-warroom-prefs-v02`. The old v0.1 key (`mw4-warroom-v01`) is not read, overwritten, or deleted by this build; the complete old app is preserved on the `archive/v0.1-working` branch. If revisiting v0.1 in the future, retain the browser's old storage profile.
 
 ## Sources and verification
 
@@ -28,11 +28,11 @@ Before publishing a new briefing, check primary official patch notes and events,
 
 ## Local validation
 
-Run a static server from the repository root and load the site with a modern browser. The shipped app has no third-party scripts or external runtime dependencies; it loads `app.js` and `data/intel.json` from the same host. Test on mobile viewport for navigation, ranking-source/category filters, sight preference, build copy, source links, season tabs, accessibility, and offline fallback after one online visit.
+Run a static server from the repository root and load the site with a modern browser. The shipped app has no third-party scripts or external runtime dependencies; it loads `logic.js`, `app.js` and `data/intel.json` from the same host. Test on mobile viewport for navigation, ranking-source/category filters, sight preference, build copy, source links, season tabs, accessibility, and offline fallback after one online visit.
 
 Fan project; not affiliated with Activision or Infinity Ward.
 
-## Editorial reliability pipeline (v0.2.1)
+## Editorial reliability pipeline (v0.3.0)
 
 War Room has a **daily GitHub Actions editorial watchdog** (10:17 AM America/New_York) and a separate schema/test workflow on repository changes. Standard GitHub-hosted runners in this public repository are free under GitHub's published Actions policy. Scheduled runs are best-effort (not real-time) and GitHub can disable schedules on an inactive public repository after 60 days; verify run history if updates stop.
 
@@ -50,4 +50,13 @@ War Room has a **daily GitHub Actions editorial watchdog** (10:17 AM America/New
 4. Commit a validated update to `main`, which deploys through existing GitHub Pages. The validation workflow reports failures but is **not a configured protected-branch gate**; use a preview branch or PR for higher-risk edits.
 5. Roll back by restoring the last known-good commit or `archive/v0.2-validated-20261027`. The site displays older reviewed dates instead of pretending a rollback is current.
 
-The old `archive/v0.1-working` and `archive/v0.2-validated-20261027` branches remain available. v0.1 browser data remains untouched. The v0.2.1 browser last-validated public briefing is saved under a new key distinct from account/progression data.
+The old `archive/v0.1-working` and `archive/v0.2-validated-20261027` branches remain available. v0.1 browser data remains untouched. The public last-validated briefing remains in a cache key separate from account/progression data. The initial working v0.2.1 is preserved in `archive/v0.2.1-validated-20261027`.
+
+## Safer release process (v0.3)
+
+1. Create a feature branch from `main` and open a PR. Wait for **Validate curated data and app syntax** (Python schema/test suite and JavaScript weapon/event logic tests) to pass before merging. `Review War Room intelligence` also performs a dry run on PRs and ordinary pushes; issue writes only occur in the scheduled job.
+2. Merge only after both checks pass. This repository currently uses a **branch-based Pages publishing source**, which publishes any `main` change. Therefore, a PR-only release process is practiced but **not enforced** by the deployment source until the repository owner enables branch protection.
+3. For an enforceable main-branch gate, configure GitHub **Settings → Branches → Add branch protection rule** for `main`, enable **Require a pull request before merging** (do not require external approvals in a one-person project), and **Require status checks to pass**, selecting **Validate curated data and app syntax**. Only then treat the rule as enforced; the connected GitHub app cannot edit repository administration settings.
+4. The last working snapshots remain on archive branches. Roll back by restoring the prior validated commit if necessary.
+
+The **daily review watchdog is not a live feed**. It reports overdue section dates and links directly to official/community source pages for a human to verify, never claims to have downloaded fresh rankings, and never changes review timestamps automatically. Its first actual scheduled execution remains a separate validation milestone. The run invoked by PR or push is a safe dry run; the scheduled job alone can maintain a public review issue.

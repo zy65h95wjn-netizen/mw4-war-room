@@ -81,7 +81,7 @@ def validate(data: object, today: date | None = None) -> None:
         require(url.scheme == "https" and url.hostname is not None and url.username is None and url.password is None and not url.fragment, f"{loc}: safe HTTPS URL required")
         if src["class"] == "Official":
             require(url.hostname in OFFICIAL_DOMAINS, f"{loc}: official source must use Activision-controlled domain")
-    require({"officialPatch", "officialMaps", "officialBP", "cod", "wz"}.issubset(ids), "sources: mandatory sources missing")
+    require({"officialPatch", "officialIndex", "officialMaps", "officialBP", "cod", "wz"}.issubset(ids), "sources: mandatory sources missing")
 
     def ref(source_id: object, where: str) -> None:
         require(isinstance(source_id, str) and source_id in ids, f"{where}: unknown source id {source_id!r}")
@@ -142,6 +142,18 @@ def validate(data: object, today: date | None = None) -> None:
         require(("optic" in part_slots) == b["optic"], f"{loc}: optic flag contradicts attachment slots")
     require("han-iron" in build_ids, "builds: home spotlight missing han-iron")
 
+    # One canonical game category per weapon across sources and build recommendations.
+    known_categories = {}
+    for board in meta:
+        for weapon in board["entries"]:
+            name, category = weapon["weapon"], weapon["category"]
+            require(known_categories.get(name, category) == category, f"weapon {name}: category conflicts across rankings")
+            known_categories[name] = category
+    for build in builds:
+        name, category = build["weapon"], build["category"]
+        require(known_categories.get(name, category) == category, f"weapon {name}: build category contradicts ranking")
+        known_categories[name] = category
+
     patches = data.get("patches")
     nonempty_list(patches, "patches")
     patch_dates: list[date] = []
@@ -172,6 +184,10 @@ def validate(data: object, today: date | None = None) -> None:
         if ev.get("ends") is not None:
             require(valid_day(ev["ends"], f"{loc}.ends") >= start, f"{loc}: end precedes start")
         ref(ev.get("source"), f"{loc}.source")
+        require(ev.get("scheduleConfidence") in {"official", "reported"}, f"{loc}: explicit schedule evidence required")
+        kind = next(s["class"] for s in sources if s["id"] == ev["source"])
+        if ev["scheduleConfidence"] == "official":
+            require(kind == "Official", f"{loc}: official schedule evidence must link an official source")
         require(isinstance(ev.get("rewards"), list), f"{loc}: rewards list required")
         for i, reward in enumerate(ev["rewards"]):
             text(reward, f"{loc}.rewards[{i}]")
