@@ -1,0 +1,21 @@
+name: Validate War Room intel
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integrity:
+    name: Validate curated data and app syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check briefing schema and integrity
+        run: python3 scripts/validate_intel.py
+      - name: Run source-data and review-schedule regression tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Check JavaScript syntax
+        run: node --check app.js

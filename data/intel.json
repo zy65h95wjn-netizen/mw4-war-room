@@ -1,9 +1,9 @@
 {
   "schema": 2,
-  "release": "0.2.0",
+  "release": "0.2.1",
   "reviewed": "2026-10-27",
   "coverage": "Modern Warfare 4 multiplayer only",
-  "sourcePolicy": "Curated public-source snapshot; not a live third-party API feed. No Activision account connection.",
+  "sourcePolicy": "Editorially reviewed multiplayer-only snapshots. Daily GitHub review reminders detect stale sections and upcoming deadlines; no external website is automatically scraped or republished. No Activision account connection.",
   "sources": [
     {
       "id": "officialPatch",
@@ -602,5 +602,19 @@
       "exclusive": "Exclusive Operator and Weapon Blueprint"
     },
     "tiersKnown": false
+  },
+  "reviewedSections": {
+    "meta": "2026-10-27",
+    "builds": "2026-10-27",
+    "patches": "2026-10-27",
+    "events": "2026-10-27",
+    "battlePass": "2026-10-27"
+  },
+  "reviewLimitsDays": {
+    "meta": 3,
+    "builds": 10,
+    "patches": 3,
+    "events": 2,
+    "battlePass": 4
   }
 }

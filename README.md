@@ -1,6 +1,6 @@
 # MW4 War Room — Multiplayer Intelligence
 
-**v0.2.0 — October 27, 2026**
+**v0.2.1 — October 27, 2026**
 
 A lightweight, installable iPhone home-screen companion for Call of Duty: Modern Warfare 4 multiplayer. It contains only publicly retrievable game information, curated into dated snapshots with direct source links:
 
@@ -31,3 +31,23 @@ Before publishing a new briefing, check primary official patch notes and events,
 Run a static server from the repository root and load the site with a modern browser. The shipped app has no third-party scripts or external runtime dependencies; it loads `app.js` and `data/intel.json` from the same host. Test on mobile viewport for navigation, ranking-source/category filters, sight preference, build copy, source links, season tabs, accessibility, and offline fallback after one online visit.
 
 Fan project; not affiliated with Activision or Infinity Ward.
+
+## Editorial reliability pipeline (v0.2.1)
+
+War Room has a **daily GitHub Actions editorial watchdog** (10:17 AM America/New_York) and a separate schema/test workflow on repository changes. Standard GitHub-hosted runners in this public repository are free under GitHub's published Actions policy. Scheduled runs are best-effort (not real-time) and GitHub can disable schedules on an inactive public repository after 60 days; verify run history if updates stop.
+
+- `scripts/validate_intel.py` checks the entire JSON schema, source identity, HTTPS links, ranking scopes, weapon builds and their optic flags, source references, patch ordering, multiplayer scope, event dates and Battle Pass values. Invalid data fails CI.
+- `scripts/review_watch.py` checks **only** the age of each editorial section and upcoming event/Battle Pass deadlines. It creates a Markdown report. `scripts/sync_review_issue.py` keeps **one** GitHub Issue for overdue reviews, rather than sending daily duplicate issues. It closes the issue once a *real* editorial review brings all sections back within limits.
+- Review limits are fixed in `reviewLimitsDays`: meta 3 days, builds 10, patches 3, events 2, Battle Pass 4. Section dates in `reviewedSections` do not advance automatically; they can be updated **only after someone has checked actual publisher material**. The app independently labels outdated sections and preserves a last-validated browser copy if an update fails.
+- **No external data is scraped, mirrored or silently reinterpreted.** CODMunity and WZStats are not unattended feeds. This pipeline does not detect new official patch notes or auto-import them. Automated ingestion needs a separately verified authorized feed and data-contract review.
+- Review issues are **public GitHub Issues**, and contain only public game-data dates and source references, not player information.
+
+### Publish a reviewed update
+
+1. Check current publisher pages manually, official Activision notes first. Distinguish Multiplayer vs Warzone/DMZ and editorial rankings vs actual balance patches.
+2. Edit `data/intel.json` and only the `reviewedSections` keys for sections you truly inspected. Set `reviewed` to the publication date. Do not update dates to make freshness badges go green without reviewing the source.
+3. Run `python3 scripts/validate_intel.py`, `python3 -m unittest discover -s tests -v`, and `node --check app.js`.
+4. Commit a validated update to `main`, which deploys through existing GitHub Pages. The validation workflow reports failures but is **not a configured protected-branch gate**; use a preview branch or PR for higher-risk edits.
+5. Roll back by restoring the last known-good commit or `archive/v0.2-validated-20261027`. The site displays older reviewed dates instead of pretending a rollback is current.
+
+The old `archive/v0.1-working` and `archive/v0.2-validated-20261027` branches remain available. v0.1 browser data remains untouched. The v0.2.1 browser last-validated public briefing is saved under a new key distinct from account/progression data.

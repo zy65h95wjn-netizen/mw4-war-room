@@ -1,0 +1,32 @@
+name: Review War Room intelligence
+on:
+  schedule:
+    - cron: '17 10 * * *'
+      timezone: 'America/New_York'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: war-room-editorial-watchdog
+  cancel-in-progress: false
+jobs:
+  editorial-watchdog:
+    name: Check editorial freshness and deadlines
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate local curated snapshot
+        run: python3 scripts/validate_intel.py
+      - name: Calculate review deadlines (no publisher requests)
+        id: review
+        shell: bash
+        run: |
+          python3 scripts/review_watch.py --markdown-file "$RUNNER_TEMP/review.md" --output-file "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/review.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Maintain one deduplicated GitHub issue when review is due
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEEDS_REVIEW: ${{ steps.review.outputs.needs_review }}
+        run: python3 scripts/sync_review_issue.py --needs-review "$NEEDS_REVIEW" --markdown-file "$RUNNER_TEMP/review.md"
