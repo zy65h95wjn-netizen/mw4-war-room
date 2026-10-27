@@ -4,7 +4,7 @@
 
 A lightweight, installable iPhone home-screen companion for Call of Duty: Modern Warfare 4 multiplayer. It contains only publicly retrievable game information, curated into dated snapshots with direct source links:
 
-- **Brief:** compact, source-dated field briefing with two clickable meta leaders linking directly to their sourced loadouts, followed by patch, event and Battle Pass intelligence
+- **Brief:** four dated, source-specific meta leaders: HAN 86 and Axion (assault rifles) above VEL 46 and ISO Nightshade (SMGs). Cards preserve each publisher’s overall-versus-category ranking scope and open sourced builds; patches, events, and Battle Pass information remain below.
 - **Weapons:** one profile per weapon, combining source-separated CODMunity / WZStats rankings with available attributed loadouts and an iron-sight filter
 - **Updates:** source-linked summaries of official multiplayer patch notes
 - **Events:** dated event windows sorted by calendar state; unknown end dates remain unverified, and a published time window does not claim in-game availability

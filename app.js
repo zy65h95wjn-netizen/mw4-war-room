@@ -1,4 +1,4 @@
-/* MW4 War Room v0.3.2: compact, source-dated briefing with deep-linked weapon leaders. */
+/* MW4 War Room v0.3.3: sourced AR and SMG meta leader rows in the field briefing. */
 'use strict';
 const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -27,11 +27,21 @@ function nav(){const wrap=$('bottomNav');wrap.innerHTML=tabs.map(([p,ic,l])=>`<b
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>el.classList.remove('show'),2400)}
 function go(page){state.page=(page==='builds'||page==='meta')?'weapons':page;window.scrollTo(0,0);render()}
 function featured(){return state.feed.builds.find(b=>b.id==='han-iron')}
+function leaderCard(board,entry){
+ if(!entry)return `<div class="leader-card leader-card--empty" role="status"><span class="leader-card__source">${escapeHTML(board.name)}</span><span class="leader-card__description">No ranked weapon in this category in the current reviewed snapshot.</span></div>`;
+ const scope=board.rankingType==='Overall editorial top five'?'OVERALL':entry.category;
+ const description=scope==='OVERALL'?`#${entry.rank} overall editorial pick`:`#${entry.rank} ${entry.category==='AR'?'Assault Rifle':entry.category} in category`;
+ return `<button type="button" class="leader-card leader-card--${escapeHTML(board.id)}" data-source="${escapeHTML(board.id)}" data-page="weapons" data-weapon="${escapeHTML(entry.weapon)}" data-reveal="loadout" data-weapon-group="${escapeHTML(entry.category)}" aria-label="View ${escapeHTML(entry.weapon)} rankings and loadouts from ${escapeHTML(board.name)}">
+ <span class="leader-card__top"><span class="leader-card__source">${escapeHTML(board.name)}</span><span class="leader-card__index">#${entry.rank} / ${escapeHTML(scope)}</span></span>
+ <span class="leader-card__weapon">${escapeHTML(entry.weapon)}</span>
+ <span class="leader-card__description">${escapeHTML(description)}</span>
+ <span class="leader-card__bottom"><span>${escapeHTML(pretty(board.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
+ </button>`;
+}
 function briefing(){
  const p=state.feed.patches[0],b=state.feed.battlePass;
  const metaA=state.feed.meta.find(s=>s.id==='cod'),metaB=state.feed.meta.find(s=>s.id==='wz');
- const codPick=metaA.entries[0]?.weapon||'Ranking unavailable';
- const wzPick=metaB.entries.find(w=>w.category==='AR'&&w.rank===1)?.weapon||'AR ranking unavailable';
+ const leaders=category=>[metaA,metaB].map(board=>({board,entry:board.entries.filter(e=>e.category===category).sort((a,b)=>a.rank-b.rank)[0]||null}));
  const today=new Date();today.setHours(0,0,0,0);
  const next=state.feed.events.filter(e=>dateVal(e.starts)>=today).sort((a,b)=>a.starts.localeCompare(b.starts))[0];
  return `
@@ -44,19 +54,13 @@ function briefing(){
    </div>
  </section>
  ${section('Meta leaders',tag('2 INDEPENDENT SOURCES','muted'))}
- <div class="brief-leaders" aria-label="Multiplayer weapon rankings">
-   <button type="button" class="leader-card leader-card--cod" data-source="cod" data-page="weapons" data-weapon="${escapeHTML(codPick)}" data-reveal="loadout" aria-label="View ${escapeHTML(codPick)} rankings and loadouts">
-     <span class="leader-card__top"><span class="leader-card__source">${escapeHTML(metaA.name)}</span><span class="leader-card__index">01 / EDITORIAL</span></span>
-     <span class="leader-card__weapon">${escapeHTML(codPick)}</span>
-     <span class="leader-card__description">Top overall multiplayer pick</span>
-     <span class="leader-card__bottom"><span>${escapeHTML(pretty(metaA.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
-   </button>
-   <button type="button" class="leader-card leader-card--wz" data-source="wz" data-page="weapons" data-weapon="${escapeHTML(wzPick)}" data-reveal="loadout" aria-label="View ${escapeHTML(wzPick)} rankings and loadouts">
-     <span class="leader-card__top"><span class="leader-card__source">${escapeHTML(metaB.name)}</span><span class="leader-card__index">01 / ASSAULT</span></span>
-     <span class="leader-card__weapon">${escapeHTML(wzPick)}</span>
-     <span class="leader-card__description">#1 Assault Rifle</span>
-     <span class="leader-card__bottom"><span>${escapeHTML(pretty(metaB.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
-   </button>
+ <div class="brief-leader-group" aria-label="Assault rifle meta leaders">
+   <div class="brief-leader-category"><h3>ASSAULT RIFLES</h3><span>AR / MULTIPLAYER</span></div>
+   <div class="brief-leaders" aria-label="Top assault rifles by publisher">${leaders('AR').map(({board,entry})=>leaderCard(board,entry)).join('')}</div>
+ </div>
+ <div class="brief-leader-group brief-leader-group--smg" aria-label="Submachine gun meta leaders">
+   <div class="brief-leader-category"><h3>SUBMACHINE GUNS</h3><span>SMG / MULTIPLAYER</span></div>
+   <div class="brief-leaders" aria-label="Top submachine guns by publisher">${leaders('SMG').map(({board,entry})=>leaderCard(board,entry)).join('')}</div>
  </div>
  <p class="brief-explain">Publisher rankings use different methods. Tap a weapon for its sourced attachments.</p>
  ${section('Latest intelligence',tag('DATED SNAPSHOT','amber'))}
