@@ -1,0 +1,55 @@
+name: Verify War Room GitHub issue alert permissions
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/alert-issue-smoke.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/alert-issue-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: war-room-issue-permissions-smoke
+  cancel-in-progress: false
+jobs:
+  test-issue-permissions:
+    name: Exercise isolated GitHub issue create/edit/close
+    if: github.repository == 'zy65h95wjn-netizen/mw4-war-room'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify target repository
+        run: test "$GITHUB_REPOSITORY" = "zy65h95wjn-netizen/mw4-war-room"
+      - name: Create, update, and close a clearly labeled temporary test issue
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          temp_file="$(mktemp)"
+          issue_number=""
+          cleanup() {
+            if [[ -n "$issue_number" ]]; then
+              gh issue close "$issue_number" --repo "$GITHUB_REPOSITORY" --reason completed >/dev/null || true
+            fi
+            rm -f "$temp_file"
+          }
+          trap cleanup EXIT
+          title="[War Room TEST] Temporary alert permission check - run ${GITHUB_RUN_ID}"
+          printf '%s\n' "TEST ONLY: Checks GitHub Actions issues:write permission. No publisher facts, player data, or app changes." "Phase: created" > "$temp_file"
+          issue_url="$(gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$temp_file")"
+          issue_number="${issue_url##*/}"
+          [[ "$issue_number" =~ ^[0-9]+$ ]]
+          gh issue view "$issue_number" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' | grep -Fq 'Phase: created'
+          printf '%s\n' "TEST ONLY: Checks GitHub Actions issues:write permission. No publisher facts, player data, or app changes." "Phase: edited" > "$temp_file"
+          gh issue edit "$issue_number" --repo "$GITHUB_REPOSITORY" --body-file "$temp_file" >/dev/null
+          gh issue view "$issue_number" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' | grep -Fq 'Phase: edited'
+          gh issue close "$issue_number" --repo "$GITHUB_REPOSITORY" --reason completed --comment 'Temporary test completed; no MW4 data was published.' >/dev/null
+          test "$(gh issue view "$issue_number" --repo "$GITHUB_REPOSITORY" --json state --jq '.state')" = "CLOSED"
+          echo "Verified GitHub Actions issue creation, editing and closure: ${issue_url}" >> "$GITHUB_STEP_SUMMARY"
+          echo "ISSUE_SMOKE_OK ${issue_url}"
+          issue_number=""
