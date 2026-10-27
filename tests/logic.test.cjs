@@ -180,7 +180,7 @@ test('briefing dates and weapon rankings still come from the existing sourced sn
 test('brief meta leaders render two source-specific ARs then two source-specific SMGs', () => {
   const h = loadoutHarness();
   const body = h.elements.appMain.innerHTML;
-  const cards = [...body.matchAll(/<button[^>]*class="leader-card[^"]*"[^>]*data-source="(cod|wz)"[^>]*data-page="weapons"[^>]*data-weapon="([^"]+)"[^>]*data-reveal="loadout"[^>]*data-category="(AR|SMG)"/g)]
+  const cards = [...body.matchAll(/<button[^>]*class="leader-card[^"]*"[^>]*data-source="(cod|wz)"[^>]*data-page="weapons"[^>]*data-weapon="([^"]+)"[^>]*data-reveal="loadout"[^>]*data-weapon-group="(AR|SMG)"/g)]
     .map(x => [x[1],x[2],x[3]]);
   assert.deepEqual(cards, [
     ['cod','HAN 86','AR'],
@@ -198,7 +198,7 @@ test('brief meta leaders render two source-specific ARs then two source-specific
 test('both SMG meta cards open the correct sourced weapon loadouts', () => {
   const h = loadoutHarness();
   for (const [source,weapon] of [['cod','VEL 46'],['wz','ISO Nightshade']]) {
-    h.click({page:'weapons',source,weapon,reveal:'loadout',category:'SMG'});
+    h.click({page:'weapons',source,weapon,reveal:'loadout',weaponGroup:'SMG'});
     assert.equal(vm.runInContext('state.page',h.context),'weapons');
     assert.equal(vm.runInContext('state.weapon',h.context),weapon);
     assert.equal(vm.runInContext('state.source',h.context),source);
@@ -219,7 +219,7 @@ test('leader picks are derived from publisher rankings and not from a hardcoded 
   iso.rank = before;
   h.context.testIntel = alternative;
   vm.runInContext('state.feed=testIntel;state.page="brief";render()',h.context);
-  const matches = [...h.elements.appMain.innerHTML.matchAll(/data-source="cod" data-page="weapons" data-weapon="([^"]+)" data-reveal="loadout" data-category="SMG"/g)];
+  const matches = [...h.elements.appMain.innerHTML.matchAll(/data-source="cod" data-page="weapons" data-weapon="([^"]+)" data-reveal="loadout" data-weapon-group="SMG"/g)];
   assert.equal(matches.length,1);
   assert.equal(matches[0][1],'ISO Nightshade');
 });
