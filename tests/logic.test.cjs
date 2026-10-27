@@ -122,18 +122,18 @@ test('iron-sight switch and alternate loadout selection remain functional', () =
   assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
 });
 
-test('the briefing replaces marketing and duplicate spotlight with practical intelligence', () => {
+test('the overview replaces marketing and duplicate spotlight with practical updates', () => {
   const h = loadoutHarness();
   const body = h.elements.appMain.innerHTML;
   assert.match(body, /class="brief-mast"/);
-  assert.match(body, /FIELD BRIEF/);
+  assert.match(body, /Overview/);
   assert.match(body, /LAST REVIEW/);
-  assert.match(body, /Meta leaders/);
-  assert.match(body, /Latest intelligence/);
-  assert.match(body, /OFFICIAL PATCH/);
-  assert.match(body, /OPERATIONS/);
+  assert.match(body, /Top Weapons/);
+  assert.match(body, /Latest Updates/);
+  assert.match(body, /PATCH NOTES/);
+  assert.match(body, /EVENTS/);
   assert.match(body, /BATTLE PASS/);
-  assert.match(body, /not a live feed/);
+  assert.match(body, /not live rankings/);
   assert.doesNotMatch(body, /Know the meta|Own the lobby|Loadout spotlight|NO ACCOUNT SYNC|VIEW ATTACHMENTS/i);
   const style = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
   assert.match(style, /\.brief-mast\{/);
@@ -157,7 +157,7 @@ test('the WZStats meta leader opens Axion and its sourced no-optic build', () =>
 
 test('patch, event and Battle Pass intelligence cards all open their destinations', () => {
   const h = loadoutHarness();
-  for (const [page, term] of [['updates','Patch notes'], ['events','Events'], ['pass','Battle Pass']]) {
+  for (const [page, term] of [['updates','Patch Notes'], ['events','Events'], ['pass','Battle Pass']]) {
     h.click({ page });
     assert.equal(vm.runInContext('state.page', h.context), page);
     assert.ok(h.elements.appMain.innerHTML.includes(term), page + ' content did not open');
@@ -173,7 +173,7 @@ test('briefing dates and weapon rankings still come from the existing sourced sn
   assert.ok(body.includes('HAN 86'));
   assert.ok(body.includes('Axion'));
   assert.ok(body.includes('Oct 27'));
-  assert.ok(body.includes('Official patch index'));
+  assert.ok(body.includes('Official patch notes'));
 });
 
 
@@ -190,9 +190,9 @@ test('brief meta leaders render two source-specific ARs then two source-specific
   ]);
   assert.ok(body.indexOf('ASSAULT RIFLES') < body.indexOf('SUBMACHINE GUNS'));
   assert.equal((body.match(/class="brief-leaders"/g) || []).length, 2);
-  assert.match(body, /#2 \/ OVERALL/);
-  assert.match(body, /#1 \/ SMG/);
-  assert.match(body, /Publisher rankings use different methods/);
+  assert.match(body, /#2 Overall/);
+  assert.match(body, /#1 SMG/);
+  assert.match(body, /Sources rank weapons differently/);
 });
 
 test('both SMG meta cards open the correct sourced weapon loadouts', () => {
@@ -231,4 +231,34 @@ test('two-row meta leaders retain readable responsive layout rules', () => {
   assert.match(style,/\.brief-leaders\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(style,/\.leader-card__weapon\{overflow-wrap:break-word/);
   assert.match(style,/@media\(max-width:399px\)/);
+});
+
+test('plain-language navigation and rankings keep source-specific positions', () => {
+  const h=loadoutHarness();
+  const overview=h.elements.appMain.innerHTML;
+  assert.match(h.elements.bottomNav.innerHTML,/>Overview<\/button>/);
+  assert.match(overview,/#1 Overall/);
+  assert.match(overview,/#2 Overall/);
+  assert.match(overview,/#1 Assault Rifle/);
+  assert.match(overview,/#1 SMG/);
+  assert.match(overview,/2 RANKING SOURCES/);
+  assert.match(overview,/MW4 MULTIPLAYER/);
+  assert.match(overview,/Weapons, builds, updates, and events/);
+});
+
+test('weapons, patches, events and pass pages all use clear gaming copy', () => {
+  const h=loadoutHarness();
+  for(const [page,expected] of [
+    ['weapons','Weapons &amp; Loadouts'],
+    ['updates','GAME UPDATES'],
+    ['events','EVENTS &amp; REWARDS'],
+    ['pass','SEASON DETAILS']
+  ]) {
+    h.click({page});
+    const html=h.elements.appMain.innerHTML;
+    assert.ok(html.includes(expected),page+' lacks expected heading '+expected);
+    assert.doesNotMatch(html,/THE INTELLIGENCE ARMORY|THE CHANGE LOG|OPERATIONS DESK|SEASON INTELLIGENCE/);
+  }
+  h.click({page:'brief'});
+  assert.doesNotMatch(h.elements.appMain.innerHTML,/FIELD BRIEF|FIELD INTEL|Latest intelligence|Meta leaders|OPERATIONS/);
 });

@@ -1,10 +1,10 @@
-# MW4 War Room — Multiplayer Intelligence
+# MW4 War Room — Multiplayer Guide
 
-**v0.3.0 — October 27, 2026**
+**UI v0.3.4 · editorial data v0.3.0 — October 27, 2026**
 
 A lightweight, installable iPhone home-screen companion for Call of Duty: Modern Warfare 4 multiplayer. It contains only publicly retrievable game information, curated into dated snapshots with direct source links:
 
-- **Brief:** four dated, source-specific meta leaders: HAN 86 and Axion (assault rifles) above VEL 46 and ISO Nightshade (SMGs). Cards preserve each publisher’s overall-versus-category ranking scope and open sourced builds; patches, events, and Battle Pass information remain below.
+- **Overview:** two assault rifle leaders and two SMG leaders, with source-specific rankings and direct loadout links. The home screen also highlights patch notes, events and the Battle Pass using clearer, everyday gaming language.
 - **Weapons:** one profile per weapon, combining source-separated CODMunity / WZStats rankings with available attributed loadouts and an iron-sight filter
 - **Updates:** source-linked summaries of official multiplayer patch notes
 - **Events:** dated event windows sorted by calendar state; unknown end dates remain unverified, and a published time window does not claim in-game availability
