@@ -175,3 +175,60 @@ test('briefing dates and weapon rankings still come from the existing sourced sn
   assert.ok(body.includes('Oct 27'));
   assert.ok(body.includes('Official patch index'));
 });
+
+
+test('brief meta leaders render two source-specific ARs then two source-specific SMGs', () => {
+  const h = loadoutHarness();
+  const body = h.elements.appMain.innerHTML;
+  const cards = [...body.matchAll(/<button[^>]*class="leader-card[^"]*"[^>]*data-source="(cod|wz)"[^>]*data-page="weapons"[^>]*data-weapon="([^"]+)"[^>]*data-reveal="loadout"[^>]*data-category="(AR|SMG)"/g)]
+    .map(x => [x[1],x[2],x[3]]);
+  assert.deepEqual(cards, [
+    ['cod','HAN 86','AR'],
+    ['wz','Axion','AR'],
+    ['cod','VEL 46','SMG'],
+    ['wz','ISO Nightshade','SMG']
+  ]);
+  assert.ok(body.indexOf('ASSAULT RIFLES') < body.indexOf('SUBMACHINE GUNS'));
+  assert.equal((body.match(/class="brief-leaders"/g) || []).length, 2);
+  assert.match(body, /#2 \/ OVERALL/);
+  assert.match(body, /#1 \/ SMG/);
+  assert.match(body, /Publisher rankings use different methods/);
+});
+
+test('both SMG meta cards open the correct sourced weapon loadouts', () => {
+  const h = loadoutHarness();
+  for (const [source,weapon] of [['cod','VEL 46'],['wz','ISO Nightshade']]) {
+    h.click({page:'weapons',source,weapon,reveal:'loadout',category:'SMG'});
+    assert.equal(vm.runInContext('state.page',h.context),'weapons');
+    assert.equal(vm.runInContext('state.weapon',h.context),weapon);
+    assert.equal(vm.runInContext('state.source',h.context),source);
+    assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
+    assert.match(h.elements.appMain.innerHTML,/Attachment slots/);
+  }
+  assert.equal(h.reveals(),2);
+});
+
+test('leader picks are derived from publisher rankings and not from a hardcoded weapon list', () => {
+  const h = loadoutHarness();
+  const alternative = structuredClone(data);
+  const board = alternative.meta.find(x => x.id === 'cod');
+  const vel = board.entries.find(x=>x.weapon==='VEL 46');
+  const iso = board.entries.find(x=>x.weapon==='ISO Nightshade');
+  const before = vel.rank;
+  vel.rank = iso.rank;
+  iso.rank = before;
+  h.context.testIntel = alternative;
+  vm.runInContext('state.feed=testIntel;state.page="brief";render()',h.context);
+  const matches = [...h.elements.appMain.innerHTML.matchAll(/data-source="cod" data-page="weapons" data-weapon="([^"]+)" data-reveal="loadout" data-category="SMG"/g)];
+  assert.equal(matches.length,1);
+  assert.equal(matches[0][1],'ISO Nightshade');
+});
+
+test('two-row meta leaders retain readable responsive layout rules', () => {
+  const style = fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  assert.match(style,/\.brief-leader-category\{/);
+  assert.match(style,/\.brief-leader-group\+\.brief-leader-group\{/);
+  assert.match(style,/\.brief-leaders\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(style,/\.leader-card__weapon\{overflow-wrap:break-word/);
+  assert.match(style,/@media\(max-width:399px\)/);
+});
