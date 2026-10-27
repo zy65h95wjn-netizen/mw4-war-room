@@ -1,4 +1,4 @@
-/* MW4 War Room v0.3.2: compact, source-dated briefing with deep-linked weapon leaders. */
+/* MW4 War Room v0.3.3: sourced AR and SMG meta leader rows in the field briefing. */
 'use strict';
 const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
