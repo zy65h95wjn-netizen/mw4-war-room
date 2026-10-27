@@ -60,3 +60,14 @@ The old `archive/v0.1-working` and `archive/v0.2-validated-20261027` branches re
 4. The last working snapshots remain on archive branches. Roll back by restoring the prior validated commit if necessary.
 
 The **daily review watchdog is not a live feed**. It reports overdue section dates and links directly to official/community source pages for a human to verify, never claims to have downloaded fresh rankings, and never changes review timestamps automatically. Its first actual scheduled execution remains a separate validation milestone. The run invoked by PR or push is a safe dry run; the scheduled job alone can maintain a public review issue.
+
+## Publisher announcement leads through Steam (candidate monitor)
+
+Steamworks documents a **public, no-account-key** ISteamNews/GetNewsForApp/v2 endpoint. War Room checks the **Call of Duty Steam application, 1938090**, daily at 10:27 AM America/New_York using this published interface. An October 27 GitHub PR probe successfully read 40 entries, 25 mentioning MW4. This is **not** a promise that all MW4 patch notes, events, or Battle Pass information will appear there, and the feed also includes unrelated Call of Duty games.
+
+The scheduled workflow reads **title, publication date, and URL only**, filters for potentially relevant MW4 updates, and opens/updates **one GitHub review issue** when an entry is newer than that section's editorial review date. It never reproduces article bodies, scrapes Activision/CODMunity/WZStats pages, writes player data, or automatically changes the live JSON. Entries are **unverified leads** until the original source and multiplayer relevance are checked by a person. The issue is deliberately not auto-closed; it is closed after real review. A news announcement edited without changing its date may escape detection, and same-day articles can be missed because War Room presently stores review **dates, not times**.
+
+The workflow has a manual trigger and PR dry-run probe. A live scheduled run and the issue-writing path remain **unverified** until observed. API timeouts/errors fail the check safely without modifying the website or erasing its last validated data.
+
+Official Valve API reference: https://partner.steamgames.com/doc/webapi/ISteamNews?language=english
+
