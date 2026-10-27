@@ -10,7 +10,7 @@ from urllib.parse import urlencode, urlsplit
 APPID=1938090
 API="https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/"
 ISSUE="[War Room] Steam news leads for review"
-HOSTS={"store.steampowered.com","steamcommunity.com","callofduty.com","www.callofduty.com"}
+HOSTS={"store.steampowered.com","steamcommunity.com","steamstore-a.akamaihd.net","callofduty.com","www.callofduty.com"}
 GAME=re.compile(r"\b(?:modern\s+warfare\s*(?:4|iv)|mw\s*4)\b",re.I)
 TOPICS={
  "patches":re.compile(r"\b(?:patch(?:\s*notes?)?|hotfix|balance|balancing|weapon\s*tuning|bug\s*fix(?:es)?|updates?)\b",re.I),
