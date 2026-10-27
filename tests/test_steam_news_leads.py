@@ -32,6 +32,9 @@ class SteamNewsTests(unittest.TestCase):
   self.assertEqual(len(x),2)
   self.assertIn("patches",next(e for e in x if "Patch" in e["title"])["sections"])
   self.assertIn("battlePass",next(e for e in x if "Season" in e["title"])["sections"])
+ def test_allow_steam_news_cdn(self):
+  x=norm([item("1234567","MW4 Patch Notes",url="https://steamstore-a.akamaihd.net/news/app/1938090/view/123")])
+  self.assertEqual(len(x),1)
  def test_disallow_external_url(self):
   self.assertEqual(norm([item("1234567","MW4 Patch Notes",url="https://bad.invalid/path")]),[])
  def test_disallow_insecure_url(self):
