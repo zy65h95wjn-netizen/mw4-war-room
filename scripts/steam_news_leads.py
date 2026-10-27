@@ -105,7 +105,13 @@ def main():
  p.add_argument("--intel",type=Path,default=ROOT/"data/intel.json")
  a=p.parse_args()
  if a.probe:
-  records=normalize(fetch())
+  payload=fetch()
+  raw=payload.get("appnews",{}).get("newsitems",[])
+  print("Steam API raw items:",len(raw))
+  for item in raw[:3]:
+   print("Sample:",{"gid":str(item.get("gid"))[:40],"title":sanitize(item.get("title")),"urlhost":urlsplit(str(item.get("url",""))).hostname,"feed":str(item.get("feedname"))[:60]})
+  records=normalize(payload)
+  if not records:raise ValueError("No usable news items for this app; refusing to call this source working")
   print("Steam Web API OK: "+str(len(records))+" metadata records; "+str(sum(bool(GAME.search(x["title"])) for x in records))+" mention MW4.")
   for e in records[:4]:print(e["date"],e["title"])
   if a.output:a.output.write_text(json.dumps(records),encoding="utf-8")
