@@ -43,3 +43,81 @@ test('same-day event end is within listed window, not ended', () => {
   assert.equal(eventTiming(event, new Date(2026, 9, 27)).kind, 'window');
   assert.equal(eventTiming(event, new Date(2026, 9, 28)).kind, 'ended');
 });
+
+const vm = require('node:vm');
+
+// Exercise the real app click handler without network or a heavyweight browser dependency.
+function loadoutHarness() {
+  const handlers = new Map();
+  let reveals = 0;
+  const elements = {
+    appMain: { innerHTML: '' },
+    bottomNav: { innerHTML: '' },
+    overlay: { hidden: true, addEventListener() {} },
+    toast: { textContent: '', classList: { add() {}, remove() {} } }
+  };
+  const document = {
+    getElementById(id) {
+      if (id === 'weaponLoadout') {
+        return elements.appMain.innerHTML.includes('id="weaponLoadout"')
+          ? { scrollIntoView() { reveals++; } } : null;
+      }
+      return elements[id] || null;
+    },
+    addEventListener(type, fn) { handlers.set(type, fn); }
+  };
+  const app = fs.readFileSync(path.join(__dirname, '../app.js'), 'utf8');
+  const bootIndex = app.lastIndexOf('\nboot();\n');
+  assert.ok(bootIndex > 0, 'boot invocation marker must exist');
+  const context = vm.createContext({
+    console, document, window: { scrollTo() {} },
+    navigator: { onLine: true }, localStorage: { getItem() { return null; }, setItem() {} },
+    WarRoomLogic: require('../logic.js'), setTimeout, clearTimeout
+  });
+  vm.runInContext(app.slice(0, bootIndex), context, { filename: 'app.js' });
+  context.testIntel = data;
+  vm.runInContext('state.feed=testIntel; bindEvents(); render();', context);
+  function click(dataset) {
+    const button = { id: '', dataset };
+    handlers.get('click')({ target: { closest(selector) { assert.equal(selector, 'button'); return button; } } });
+  }
+  return { elements, context, click, reveals: () => reveals, handlers };
+}
+
+test('briefing View attachments opens the HAN 86 loadout and reveals the profile', () => {
+  const h = loadoutHarness();
+  assert.ok(h.elements.appMain.innerHTML.includes('data-page="weapons" data-weapon="HAN 86" data-reveal="loadout"'));
+  h.click({ page: 'weapons', weapon: 'HAN 86', reveal: 'loadout' });
+  assert.equal(vm.runInContext('state.page', h.context), 'weapons');
+  assert.equal(vm.runInContext('state.weapon', h.context), 'HAN 86');
+  assert.match(h.elements.appMain.innerHTML, /id="weaponLoadout"/);
+  assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
+  assert.equal(h.reveals(), 1);
+});
+
+test('choosing another weapon actually reveals that weapon’s attachments', () => {
+  const h = loadoutHarness();
+  h.click({ page: 'weapons' });
+  h.click({ weapon: 'Axion' });
+  assert.equal(vm.runInContext('state.weapon', h.context), 'Axion');
+  assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
+  assert.equal(h.reveals(), 1);
+});
+
+test('legacy Builds route no longer silently loops back to briefing', () => {
+  const h = loadoutHarness();
+  h.click({ page: 'builds' });
+  assert.equal(vm.runInContext('state.page', h.context), 'weapons');
+  assert.match(h.elements.appMain.innerHTML, /Recommended attachments/);
+  assert.equal(h.reveals(), 1);
+});
+
+test('iron-sight switch and alternate loadout selection remain functional', () => {
+  const h = loadoutHarness();
+  h.click({ page: 'weapons', weapon: 'HAN 86' });
+  h.handlers.get('change')({ target: { id: 'ironSwitch', checked: false } });
+  assert.ok(h.elements.appMain.innerHTML.includes('data-build="han-meta"'));
+  h.click({ build: 'han-meta' });
+  assert.equal(vm.runInContext('state.buildId', h.context), 'han-meta');
+  assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
+});
