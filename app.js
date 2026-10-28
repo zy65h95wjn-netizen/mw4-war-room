@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeURL=s=>typeof s==='string'&&s.startsWith('https://')?s:'#';
 const tabs=[['brief','⌂','Overview'],['weapons','⌖','Weapons'],['updates','≡','Updates'],['events','◉','Events'],['pass','▤','Pass'],['store','▣','Store']];
-const state={page:'brief',source:'cod',category:'All',featuredCategory:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false,store:{data:null,origin:'loading'}};
+const state={page:'brief',source:'cod',category:'All',featuredCategory:'All',arsenalMode:'ranked',arsenalCategory:'All',arsenalSearch:'',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false,store:{data:null,origin:'loading'}};
 const prefKey='mw4-warroom-prefs-v02';
 try{const p=JSON.parse(localStorage.getItem(prefKey)||'{}');if(typeof p.ironOnly==='boolean')state.ironOnly=p.ironOnly;if(p.source==='cod'||p.source==='wz')state.source=p.source}catch(_e){}
 const settingsSave=()=>{try{localStorage.setItem(prefKey,JSON.stringify({ironOnly:state.ironOnly,source:state.source}))}catch(_e){}};
@@ -165,6 +165,9 @@ const originalWeaponArt=Object.freeze({
  'PPSh-41':'ppsh-41'
 });
 function mobileWeaponArt(weapon){
+ const sprite=(typeof WarRoomArsenal!=='undefined')?WarRoomArsenal.spriteLocation(weapon):null;
+ if(sprite)return '<span class="arsenal-sprite" style="--sprite-x:'+sprite.x+'%;--sprite-y:'+sprite.y+'%" aria-label="Original conceptual illustration; not an official game render"></span>';
+
  const slug=originalWeaponArt[weapon];
  if(slug)return '<img class="mobile-weapon__illustration" src="./art/featured/'+slug+'.webp" width="260" height="106" loading="lazy" decoding="async" alt="Original illustrative artwork, not an official '+escapeHTML(weapon)+' game render">';
  return '<svg viewBox="0 0 150 55" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="#d6e0e9" stroke-width="1.4" d="M8 22h14v-3h21v-7h18v-4h32v5h29v5h12v5h7v8h-16v4h-14l-5 11H84l-7-11H62l-5 12H45l-4-17H25l-3 8H12l2-12H8z"/><path stroke="#102230" stroke-width="2.4" fill="none" d="M25 23h97m-74-4h31M58 17v15m34-14v14M43 28h29M96 28h30"/><path fill="#e0a659" d="M74 29h5l4 13h-5z"/></svg>';
@@ -253,7 +256,44 @@ function briefing(){
  return '<div class="mobile-overview">'+mobileBriefing()+'</div><div class="desktop-overview">'+briefingDesktop()+'</div>';
 }
 
+
+/* Complete official launch roster: separate from curated editorial rankings/builds. */
+function arsenalSwitch(){
+ return '<div class="arsenal-switch" role="group" aria-label="Weapons view">'+
+  '<button type="button" data-arsenal-mode="ranked" aria-pressed="'+(state.arsenalMode==='ranked')+'" class="'+(state.arsenalMode==='ranked'?'active':'')+'">Rankings & Loadouts</button>'+
+  '<button type="button" data-arsenal-mode="all" aria-pressed="'+(state.arsenalMode==='all')+'" class="'+(state.arsenalMode==='all'?'active':'')+'">All 33 Weapons</button></div>';
+}
+function fullArsenalPage(){
+ if(typeof WarRoomArsenal==='undefined')return '<div class="panel flat"><h2>Full weapon roster unavailable</h2><p class="fine">Return to Rankings & Loadouts for current reviewed builds.</p>'+arsenalSwitch()+'</div>';
+ const list=WarRoomArsenal.weapons;
+ const categories=['All',...WarRoomArsenal.categories];
+ if(!categories.includes(state.arsenalCategory))state.arsenalCategory='All';
+ const q=state.arsenalSearch.trim().toLowerCase();
+ const shown=list.filter(w=>(state.arsenalCategory==='All'||w.category===state.arsenalCategory)&&(!q||w.weapon.toLowerCase().includes(q)));
+ const curated=new Set(WarRoomLogic.weaponCatalog(state.feed).map(w=>w.weapon));
+ const sourceLink=escapeHTML(safeURL(WarRoomArsenal.source));
+ return headline('Full Arsenal','All 33 weapons listed in the official MW4 launch guide. Original conceptual artwork, not game screenshots.','LAUNCH WEAPON ROSTER')+
+ arsenalSwitch()+
+ '<p class="arsenal-intro">This complete roster is not a meta ranking. Published loadouts are available only for selected weapons in our separate Rankings & Loadouts view.</p>'+
+ '<div class="arsenal-filter" role="group" aria-label="Arsenal weapon category">'+categories.map(c=>'<button type="button" data-arsenal-category="'+escapeHTML(c)+'" aria-pressed="'+(c===state.arsenalCategory)+'" class="'+(c===state.arsenalCategory?'active':'')+'">'+escapeHTML(c)+'</button>').join('')+'</div>'+
+ '<input class="arsenal-search" id="arsenalSearch" aria-label="Search full arsenal" placeholder="Search all 33 weapons…" value="'+escapeHTML(state.arsenalSearch)+'">'+
+ '<div class="arsenal-heading"><h2>Weapon catalogue</h2>'+tag(shown.length+' OF 33','muted')+'</div>'+
+ (shown.length?'<div class="arsenal-list">'+shown.map(w=>{
+  const known=curated.has(w.weapon);
+  const tagName=known?'button':'a';
+  const target=known?'type="button" data-page="weapons" data-arsenal-mode="ranked" data-weapon="'+escapeHTML(w.weapon)+'" data-reveal="loadout"':'href="'+sourceLink+'" target="_blank" rel="noopener noreferrer"';
+  return '<'+tagName+' class="arsenal-item" '+target+' aria-label="'+escapeHTML(w.weapon)+(known?', view sourced rankings and loadouts':', open official weapon guide')+'">'+
+  '<span class="arsenal-item__art" aria-hidden="true">'+mobileWeaponArt(w.weapon)+'</span>'+
+  '<span class="arsenal-item__text"><strong class="arsenal-item__name">'+escapeHTML(w.weapon)+'</strong>'+
+  '<span class="arsenal-item__category">'+escapeHTML(w.category)+'</span>'+
+  '<span class="arsenal-item__action">'+(known?'VIEW SOURCED INTEL':'OFFICIAL REFERENCE')+'</span></span>'+
+  '<span class="arsenal-item__chevron" aria-hidden="true">›</span></'+tagName+'>';
+ }).join('')+'</div>':'<div class="arsenal-empty">No weapons match that category or search.</div>')+
+ '<p class="arsenal-provenance">All 33 weapon names and categories: <a href="'+sourceLink+'" target="_blank" rel="noopener noreferrer">Official Call of Duty launch guide ↗</a> (Oct 19, 2026). Artwork is original, unofficial, and illustrative—not proof of in-game appearance. Rankings and attachment recommendations remain separately sourced and dated.</p>';
+}
+
 function weaponHub(){
+ if(state.arsenalMode==='all')return fullArsenalPage();
  const catalog=WarRoomLogic.weaponCatalog(state.feed);
  const board=state.feed.meta.find(m=>m.id===state.source)||state.feed.meta[0];
  const categories=['All',...new Set(catalog.map(w=>w.category))];
@@ -268,6 +308,7 @@ function weaponHub(){
  const compatibleBuilds=allBuilds.filter(b=>!state.ironOnly||!b.optic);
  const activeBuild=compatibleBuilds.find(b=>b.id===state.buildId)||compatibleBuilds[0];
  return `${headline('Weapons & Loadouts','Compare published multiplayer rankings and find recommended builds for each weapon.','MULTIPLAYER WEAPONS')}
+ ${arsenalSwitch()}
  <div class="horizontal" role="group" aria-label="Ranking publisher">${state.feed.meta.map(m=>`<button class="tab ${board.id===m.id?'active':''}" data-source="${escapeHTML(m.id)}" type="button">${escapeHTML(m.name)}</button>`).join('')}</div>
  <div class="panel flat" style="margin-top:7px"><div class="spread" style="flex-wrap:wrap">${freshness('meta')}${anchor(board.source,'View original rankings')}</div><p class="fine" style="margin-top:9px">${escapeHTML(board.rankingType)} · ${escapeHTML(pretty(board.updated))}</p><p class="source-note" style="margin-top:5px">${escapeHTML(board.note)}. Publisher positions are not combined into one universal ranking.</p></div>
  <div class="horizontal" role="group" aria-label="Weapon category">${categories.map(c=>`<button class="tab ${state.category===c?'active':''}" data-category="${escapeHTML(c)}" type="button">${escapeHTML(c)}</button>`).join('')}</div>
@@ -310,6 +351,8 @@ function bindEvents(){document.addEventListener('click',event=>{
  if(button.id==='sourcesBtn'){ $('sheetContent').innerHTML=sourcesSheet();$('overlay').hidden=false;$('closeSheet').focus();return }
  if(button.id==='closeSheet'){$('overlay').hidden=true;$('sourcesBtn').focus();return}
  if(button.dataset.featuredCategory){state.featuredCategory=button.dataset.featuredCategory;render();return}
+ if(button.dataset.arsenalMode){state.arsenalMode=button.dataset.arsenalMode;if(!button.dataset.weapon){render();return}}
+ if(button.dataset.arsenalCategory){state.arsenalCategory=button.dataset.arsenalCategory;render();return}
  if(button.dataset.source){state.source=button.dataset.source;settingsSave()}
  if(button.dataset.category){state.category=button.dataset.category;render();return}
  // Events and Battle Pass have their own navigation destinations.
@@ -324,7 +367,8 @@ function bindEvents(){document.addEventListener('click',event=>{
  $('overlay').addEventListener('click',event=>{if(event.target===$('overlay'))$('overlay').hidden=true});
  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('overlay').hidden)$('overlay').hidden=true});
  document.addEventListener('change',event=>{if(event.target.id==='ironSwitch'){state.ironOnly=event.target.checked;state.buildId='';state.search='';settingsSave();render()}});
- document.addEventListener('input',event=>{if(event.target.id==='buildSearch'){const cursor=event.target.selectionStart;state.search=event.target.value;render();const field=$('buildSearch');field?.focus();try{field?.setSelectionRange(cursor,cursor)}catch(_e){}}});
+ document.addEventListener('input',event=>{if(event.target.id==='buildSearch'){const cursor=event.target.selectionStart;state.search=event.target.value;render();const field=$('buildSearch');field?.focus();try{field?.setSelectionRange(cursor,cursor)}catch(_e){}}
+ if(event.target.id==='arsenalSearch'){const cursor=event.target.selectionStart;state.arsenalSearch=event.target.value;render();const field=$('arsenalSearch');field?.focus();try{field?.setSelectionRange(cursor,cursor)}catch(_e){}}});
 }
 const intelCacheKey='mw4-warroom-last-validated-intel-v021';
 function usableIntel(info){
