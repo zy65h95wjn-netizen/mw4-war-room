@@ -286,7 +286,7 @@ test('Store navigation shows a clearly labeled example without implying live inv
   assert.equal(vm.runInContext('state.page',h.context),'store');
   const view=h.elements.appMain.innerHTML;
   assert.match(view,/Official bundle details/);
-  assert.match(view,/What&#39;s included/);
+  assert.match(view,/What's included/);
   assert.match(view,/Data from itemshop.gg/);
   assert.match(view,/No personal account sign-in|not your personal in-game Store/i);
 });
