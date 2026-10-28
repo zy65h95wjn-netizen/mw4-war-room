@@ -216,7 +216,7 @@ function mobileBriefing(){
  const rows=[
   {page:'updates',kind:'patch',title:p.title,detail:'Official patch notes · reviewed '+pretty(state.feed.reviewedSections.patches),date:pretty(p.date)},
   {page:'events',kind:'event',title:next?next.title:'Event calendar',detail:next?'Listed '+pretty(next.starts)+' · '+(next.scheduleConfidence==='official'?'announced':'reported'):'Check announced events',date:next?pretty(next.starts):'—'},
-  {page:'pass',kind:'pass',title:b.label,detail:'Battle Pass · '+escapeHTML(b.startConfidence||'reported date'),date:pretty(b.start)}
+  {page:'pass',kind:'pass',title:b.label,detail:'Battle Pass · '+(String(b.startConfidence||'').toLowerCase().includes('reported')?'reported start date':'source-labeled start date'),date:pretty(b.start)}
  ];
  return dataNotice()+'<div class="mobile-briefing"><h1 class="mobile-sr-only">Overview</h1>'+
  '<section class="mobile-group" aria-labelledby="mobile-weapons-heading">'+
