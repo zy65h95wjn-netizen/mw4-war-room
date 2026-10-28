@@ -1,10 +1,10 @@
-/* MW4 War Room UI v0.3.4: plain-language headings and helpful descriptions throughout. */
+/* MW4 War Room UI v0.4: public MW4 Store preview, Store section, and credential-free client. */
 'use strict';
 const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeURL=s=>typeof s==='string'&&s.startsWith('https://')?s:'#';
-const tabs=[['brief','⌂','Overview'],['weapons','⌖','Weapons'],['updates','≡','Updates'],['events','◉','Events'],['pass','▤','Pass']];
-const state={page:'brief',source:'cod',category:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false};
+const tabs=[['brief','⌂','Overview'],['weapons','⌖','Weapons'],['updates','≡','Updates'],['events','◉','Events'],['pass','▤','Pass'],['store','▣','Store']];
+const state={page:'brief',source:'cod',category:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false,store:{data:null,origin:'loading'}};
 const prefKey='mw4-warroom-prefs-v02';
 try{const p=JSON.parse(localStorage.getItem(prefKey)||'{}');if(typeof p.ironOnly==='boolean')state.ironOnly=p.ironOnly;if(p.source==='cod'||p.source==='wz')state.source=p.source}catch(_e){}
 const settingsSave=()=>{try{localStorage.setItem(prefKey,JSON.stringify({ironOnly:state.ironOnly,source:state.source}))}catch(_e){}};
