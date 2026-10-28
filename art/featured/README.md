@@ -24,7 +24,7 @@ Assets are lightweight local WebP files, loaded using a strictly enumerated mapp
 
 **Release review:** The user visually approved the corrected six-weapon iPhone preview on October 28, 2026. Merge is gated on passing GitHub checks. The validated v0.4.3 release remains the rollback point. Final real-device rendering must be checked after deployment; the visual preview alone does not prove the live iPhone layout.
 
-## Proposed full launch arsenal — review branch (v0.4.5 candidate)
+## Full launch arsenal — approved for v0.4.5
 
 Activision's official October 19, 2026 MW4 launch guide lists **33 launch weapons** (24 primary, 8 secondary, 1 melee). All 33 names and category classifications are recorded in `arsenal.js`, **separate** from curated source rankings in `data/intel.json`. Existing ten individual illustration files remain byte-for-byte unchanged.
 
@@ -32,4 +32,4 @@ The **23 additional conceptual illustrations** are supplied through `full-arsena
 
 The gallery's "Official reference" links refer only to the **weapon names and categories** in Activision's primary source, not to licensed art or publisher-authored rankings. The official source has contradictory unlock levels in some sections, so the full catalogue deliberately does not display any unlock-level claims.
 
-**Review gate:** Do not merge until the 33-weapon gallery is visually checked at iPhone widths and all required automated tests pass. The validated v0.4.4 main commit is recoverable.
+**Approval and validation:** The user visually approved the 33-weapon gallery and its original artwork on October 28, 2026. All required PR checks must remain successful before merge. After GitHub Pages deployment, verify the live iPhone display and weapon navigation. The validated v0.4.4 commit `f12a7d88e714eaa535d6ccef20ca04da279b030d` remains the recoverable rollback point.
