@@ -72,7 +72,7 @@ function loadoutHarness() {
   const context = vm.createContext({
     console, document, window: { scrollTo() {} },
     navigator: { onLine: true }, localStorage: { getItem() { return null; }, setItem() {} },
-    WarRoomLogic: require('../logic.js'), setTimeout, clearTimeout
+    WarRoomLogic: require('../logic.js'), WarRoomStore: require('../store.js'), URL, setTimeout, clearTimeout
   });
   vm.runInContext(app.slice(0, bootIndex), context, { filename: 'app.js' });
   context.testIntel = data;
@@ -261,4 +261,47 @@ test('weapons, patches, events and pass pages all use clear gaming copy', () => 
   }
   h.click({page:'brief'});
   assert.doesNotMatch(h.elements.appMain.innerHTML,/FIELD BRIEF|FIELD INTEL|Latest intelligence|Meta leaders|OPERATIONS/);
+});
+
+test('Overview shows Store preview and visible provider attribution without calling an API key', () => {
+  const h=loadoutHarness();
+  const overview=h.elements.appMain.innerHTML;
+  assert.match(overview,/New in Store/);
+  assert.match(overview,/Data from itemshop.gg/);
+  assert.match(overview,/data-page="store"/);
+  assert.match(overview,/Loading Store details/);
+  assert.match(h.elements.bottomNav.innerHTML,/>Store<\/button>/);
+  assert.doesNotMatch(overview,/ITEMSHOP_API_KEY|isg_/);
+});
+
+test('Store navigation shows a clearly labeled example without implying live inventory', () => {
+  const h=loadoutHarness();
+  h.context.sampleStore=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/store.json'),'utf8'));
+  vm.runInContext('state.store={data:sampleStore,origin:"dated-example"};render()',h.context);
+  const overview=h.elements.appMain.innerHTML;
+  assert.match(overview,/EXAMPLE · NOT LIVE/);
+  assert.match(overview,/C\.O\.D\.E\./);
+  assert.match(overview,/Platform store/);
+  h.click({page:'store'});
+  assert.equal(vm.runInContext('state.page',h.context),'store');
+  const view=h.elements.appMain.innerHTML;
+  assert.match(view,/Official bundle details/);
+  assert.match(view,/What&#39;s included/);
+  assert.match(view,/Data from itemshop.gg/);
+  assert.match(view,/No personal account sign-in|not your personal in-game Store/i);
+});
+
+test('Store changes do not replace the five established War Room destinations', () => {
+  const h=loadoutHarness();
+  const tabs=h.elements.bottomNav.innerHTML;
+  for (const key of ['Overview','Weapons','Updates','Events','Pass','Store']) {
+    assert.ok(tabs.includes(key),key);
+  }
+  for (const page of ['weapons','updates','events','pass','brief','store']) {
+    h.click({page});
+    assert.equal(vm.runInContext('state.page',h.context),page);
+  }
+  const page=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  assert.match(page,/grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+  assert.match(page,/src="store.js" defer/);
 });
