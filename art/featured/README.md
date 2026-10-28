@@ -18,7 +18,7 @@ Those four assets were tested on an iPhone and approved.
 - X-58 Nyx — `x-58-nyx.webp`
 - PPSh-41 — `ppsh-41.webp`
 
-The six additional pieces are cropped and adapted from original AI-generated concept art, with visual variations appropriate to each weapon class. They deliberately do not claim to reproduce the exact in-game firearm models. The classic PPSh concept uses additional custom illustration edits.
+The six additional pieces are separately exported crops from original AI-generated cinematic concept artwork, with cool-blue industrial atmosphere and warm amber highlights to match the established visual direction. All six were individually cropped to remove the collage labels and borders, compressed to 220 × 89 WebP (2.5–3.2 KB each), and SHA-verified before commit. They are stylized illustrations, not exact in-game models or evidence of weapon specifications. The KG-7 imagery is conceptual and must not be treated as proof of its mechanical design.
 
 Assets are lightweight local WebP files, loaded using a strictly enumerated mapping in `app.js`. Non-catalog weapons still fall back to a generic SVG, with no third-party images or API calls. They never affect rankings, store, loadouts, or player progression.
 
