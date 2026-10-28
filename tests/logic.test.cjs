@@ -388,3 +388,17 @@ test('mobile Weapons lists show art for real categorized weapons without changin
  assert.match(smg,/PPSh-41/);
  assert.doesNotMatch(smg,/data-weapon="Kastov 762"/);
 });
+
+
+test('cinematic artwork files have unique identities and retain mobile-size bounds',()=>{
+ const crypto=require('node:crypto');
+ const all=['han-86','axion','vel-46','iso-nightshade','kg-7-vulcan','hyeon-burst','m4','kastov-762','x-58-nyx','ppsh-41'];
+ const hashes=all.map(slug=>{
+  const data=fs.readFileSync(path.join(__dirname,'../art/featured',slug+'.webp'));
+  assert.equal(data.toString('ascii',0,4),'RIFF',slug);
+  assert.equal(data.toString('ascii',8,12),'WEBP',slug);
+  assert.ok(data.length>1000 && data.length<15000,slug+' unexpected file size');
+  return crypto.createHash('sha256').update(data).digest('hex');
+ });
+ assert.equal(new Set(hashes).size,10,'all ten weapons should have distinct illustrations');
+});
