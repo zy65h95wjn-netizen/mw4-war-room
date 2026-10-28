@@ -10,7 +10,7 @@ This directory contains **original conceptual illustrations**, not official Mode
 
 Those four assets were tested on an iPhone and approved.
 
-## Proposed expansion — review branch only
+## Approved artwork expansion — v0.4.4
 - KG-7 Vulcan — `kg-7-vulcan.webp`
 - Hyeon Burst — `hyeon-burst.webp`
 - M4 — `m4.webp`
@@ -22,4 +22,4 @@ The six additional pieces are separately exported crops from original AI-generat
 
 Assets are lightweight local WebP files, loaded using a strictly enumerated mapping in `app.js`. Non-catalog weapons still fall back to a generic SVG, with no third-party images or API calls. They never affect rankings, store, loadouts, or player progression.
 
-**Review gate:** keep this branch unmerged until the user approves the actual iPhone rendering. The validated v0.4.3 main branch is the rollback point.
+**Release review:** The user visually approved the corrected six-weapon iPhone preview on October 28, 2026. Merge is gated on passing GitHub checks. The validated v0.4.3 release remains the rollback point. Final real-device rendering must be checked after deployment; the visual preview alone does not prove the live iPhone layout.
