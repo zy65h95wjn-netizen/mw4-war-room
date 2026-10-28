@@ -88,7 +88,23 @@ test('premium visual shell remains responsive and preserves navigation semantics
  assert.match(markup,/@media\(prefers-reduced-motion:reduce\)/);
  assert.match(markup,/id="sourcesBtn"/);
  const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
- assert.match(sw,/mw4-warroom-v041-20261027/);
+ assert.match(sw,/mw4-warroom-v042-20261027/);
  assert.match(sw,/\.\/data\/intel\.json/);
  assert.match(sw,/\.\/data\/store\.json/);
+});
+
+
+test('iPhone esports styles retain source status, real Store links and six-tab navigation',()=>{
+ const markup=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+ const css=fs.readFileSync(path.join(__dirname,'../esports-mobile.css'),'utf8');
+ const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
+ assert.match(markup,/href="esports-mobile\.css"/);
+ assert.match(css,/\.mobile-overview/);
+ assert.match(css,/\.desktop-overview/);
+ assert.match(css,/\.mobile-store \.store-card--compact/);
+ assert.match(css,/\.mobile-filter button\[aria-pressed="true"\]/);
+ assert.match(css,/@media \(max-width:359px\)/);
+ assert.match(css,/\.mobile-sr-only/);
+ assert.match(sw,/\.\/esports-mobile\.css/);
+ assert.match(markup,/id="bottomNav"/);
 });
