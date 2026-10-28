@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "provider": "itemshop.gg",
+  "game": "call-of-duty",
+  "status": "sample",
+  "shopDate": "2026-10-27",
+  "updatedAt": "2026-10-27T05:05:02Z",
+  "checkedAt": null,
+  "stale": true,
+  "attribution": {
+    "text": "Data from itemshop.gg",
+    "url": "https://itemshop.gg/call-of-duty"
+  },
+  "note": "Documentation example only, dated October 27, 2026. Not a live store feed. Connect the provider API key to enable automatic snapshots.",
+  "items": [
+    {
+      "id": "cod:bundle:6773",
+      "name": "Call of Duty® Endowment (C.O.D.E.) Valor Pack",
+      "type": "12 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-6773-preview-56cc46.webp",
+      "badge": null,
+      "price": {
+        "amount": null,
+        "label": "Platform store",
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/6773",
+      "upcoming": false,
+      "availability": {
+        "from": null,
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Valor",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Relentless",
+          "type": "Operator Skin"
+        }
+      ]
+    }
+  ]
+}
