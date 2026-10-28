@@ -256,3 +256,50 @@
  .mobile-weapon{grid-template-columns:35px 68px minmax(0,1fr) 13px;min-height:65px;}
  .mobile-weapon__illustration{max-height:45px;}
 }
+
+/* Extended original art: concise, source-labeled rows on mobile Weapons tab. */
+.taprow .weapon-art { display:none; }
+@media (max-width:759px) {
+ .taprow:has(> .weapon-art) {
+  grid-template-columns:36px minmax(70px,90px) minmax(0,1fr) 17px;
+  gap:7px;
+  min-height:76px;
+  padding:9px 6px 9px 1px;
+ }
+ .taprow:has(> .weapon-art).selected { padding-inline:6px; }
+ .taprow > .weapon-art {
+  display:flex;
+  min-width:0;
+  overflow:hidden;
+  align-items:center;
+  justify-content:center;
+  height:52px;
+  pointer-events:none;
+ }
+ .taprow .weapon-art img {
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:49px;
+  object-fit:contain;
+  filter:contrast(1.05) saturate(1.06);
+ }
+ .taprow .weapon-art svg {
+  display:block;
+  width:100%;
+  height:42px;
+  color:#acc0ce;
+ }
+ .taprow .weapon { display:block; font-size:14px; line-height:1.13; overflow-wrap:anywhere; }
+ .taprow .subtext { font-size:10px; line-height:1.35; }
+ .taprow .arrow { padding:0; font-size:20px; }
+ .mobile-weapon__source { font-size:10px; }
+}
+@media (max-width:359px) {
+ .taprow:has(> .weapon-art) {
+   grid-template-columns:29px 61px minmax(0,1fr) 12px;
+   gap:5px;
+ }
+ .taprow .weapon { font-size:12px; }
+ .taprow .subtext { font-size:9px; }
+}

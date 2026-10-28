@@ -156,7 +156,13 @@ const originalWeaponArt=Object.freeze({
  'HAN 86':'han-86',
  'Axion':'axion',
  'VEL 46':'vel-46',
- 'ISO Nightshade':'iso-nightshade'
+ 'ISO Nightshade':'iso-nightshade',
+ 'KG-7 Vulcan':'kg-7-vulcan',
+ 'Hyeon Burst':'hyeon-burst',
+ 'M4':'m4',
+ 'Kastov 762':'kastov-762',
+ 'X-58 Nyx':'x-58-nyx',
+ 'PPSh-41':'ppsh-41'
 });
 function mobileWeaponArt(weapon){
  const slug=originalWeaponArt[weapon];
@@ -266,9 +272,9 @@ function weaponHub(){
  <div class="panel flat" style="margin-top:7px"><div class="spread" style="flex-wrap:wrap">${freshness('meta')}${anchor(board.source,'View original rankings')}</div><p class="fine" style="margin-top:9px">${escapeHTML(board.rankingType)} · ${escapeHTML(pretty(board.updated))}</p><p class="source-note" style="margin-top:5px">${escapeHTML(board.note)}. Publisher positions are not combined into one universal ranking.</p></div>
  <div class="horizontal" role="group" aria-label="Weapon category">${categories.map(c=>`<button class="tab ${state.category===c?'active':''}" data-category="${escapeHTML(c)}" type="button">${escapeHTML(c)}</button>`).join('')}</div>
  <div style="margin:10px 0"><input class="input" id="buildSearch" value="${escapeHTML(state.search)}" placeholder="Search weapons…" aria-label="Search weapons"></div>
- <div class="panel flat"><div class="spread"><h2>Rankings & Loadouts</h2>${tag(visible.length+' WEAPONS')}</div><p class="fine" style="margin-top:5px">Select a gun to see its ranking and attachment options below. "Build" means a published recommendation, not your unlocked gear.</p><div class="small-rule" style="margin-bottom:0"></div>
- ${ranked.map(w=>{const info=visible.find(i=>i.weapon===w.weapon);return `<button class="taprow ${selectedRecord?.weapon===w.weapon?'selected':''}" type="button" data-weapon="${escapeHTML(w.weapon)}" aria-pressed="${selectedRecord?.weapon===w.weapon?'true':'false'}"><span class="number">#${w.rank}</span><span><span class="weapon">${escapeHTML(w.weapon)}</span><span class="subtext" style="display:block">${escapeHTML(w.category)} · ${escapeHTML(w.tier)} · ${info.builds.length} sourced build${info.builds.length===1?'':'s'}</span></span><span class="arrow" aria-hidden="true">›</span></button>`}).join('')}
- ${unranked.length?`<div class="fine" style="padding-top:14px">OTHER WEAPONS WITH PUBLISHED BUILDS (UNRANKED IN THIS SNAPSHOT)</div>${unranked.map(w=>`<button class="taprow ${selectedRecord?.weapon===w.weapon?'selected':''}" type="button" data-weapon="${escapeHTML(w.weapon)}"><span class="number cat">—</span><span><span class="weapon">${escapeHTML(w.weapon)}</span><span class="subtext" style="display:block">${escapeHTML(w.category)} · ${w.builds.length} sourced build${w.builds.length===1?'':'s'}</span></span><span class="arrow" aria-hidden="true">›</span></button>`).join('')}`:''}
+ <div class="panel flat"><div class="spread"><h2>Rankings & Loadouts</h2>${tag(visible.length+' WEAPONS')}</div><p class="fine" style="margin-top:5px">Select a gun to see its ranking and attachment options below. "Build" means a published recommendation, not your unlocked gear. Weapon artwork is original and illustrative, not official game imagery.</p><div class="small-rule" style="margin-bottom:0"></div>
+ ${ranked.map(w=>{const info=visible.find(i=>i.weapon===w.weapon);return `<button class="taprow ${selectedRecord?.weapon===w.weapon?'selected':''}" type="button" data-weapon="${escapeHTML(w.weapon)}" aria-pressed="${selectedRecord?.weapon===w.weapon?'true':'false'}"><span class="number">#${w.rank}</span><span class="weapon-art" aria-hidden="true">${mobileWeaponArt(w.weapon)}</span><span><span class="weapon">${escapeHTML(w.weapon)}</span><span class="subtext" style="display:block">${escapeHTML(w.category)} · ${escapeHTML(w.tier)} · ${info.builds.length} sourced build${info.builds.length===1?'':'s'}</span></span><span class="arrow" aria-hidden="true">›</span></button>`}).join('')}
+ ${unranked.length?`<div class="fine" style="padding-top:14px">OTHER WEAPONS WITH PUBLISHED BUILDS (UNRANKED IN THIS SNAPSHOT)</div>${unranked.map(w=>`<button class="taprow ${selectedRecord?.weapon===w.weapon?'selected':''}" type="button" data-weapon="${escapeHTML(w.weapon)}"><span class="number cat">—</span><span class="weapon-art" aria-hidden="true">${mobileWeaponArt(w.weapon)}</span><span><span class="weapon">${escapeHTML(w.weapon)}</span><span class="subtext" style="display:block">${escapeHTML(w.category)} · ${w.builds.length} sourced build${w.builds.length===1?'':'s'}</span></span><span class="arrow" aria-hidden="true">›</span></button>`).join('')}`:''}
  ${!visible.length?'<div class="empty">No matching weapons in this curated source selection. Try another category or search term.</div>':''}
  </div>
  ${selectedRecord?`<div id="weaponLoadout" class="panel gold-border" style="scroll-margin-top:16px"><div class="spread" style="align-items:flex-start"><div><div class="eyebrow">${escapeHTML(selectedRecord.category)} · WEAPON DETAILS</div><h2 style="font-size:24px;margin-top:5px">${escapeHTML(selectedRecord.weapon)}</h2></div>${tag(selectedRecord.builds.length+' BUILD'+(selectedRecord.builds.length===1?'':'S'),'amber')}</div>
