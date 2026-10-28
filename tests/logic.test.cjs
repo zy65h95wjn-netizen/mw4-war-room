@@ -348,9 +348,9 @@ test('mobile category filters and weapon tap preserve legitimate ranking provena
  assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
 });
 
-test('original artwork trial maps only the four approved weapons and preserves fallback', () => {
+test('all ten curated weapons map to original artwork and unknown weapons retain fallback', () => {
  const h=loadoutHarness();
- const cases=[['HAN 86','han-86'],['Axion','axion'],['VEL 46','vel-46'],['ISO Nightshade','iso-nightshade']];
+ const cases=[['HAN 86','han-86'],['Axion','axion'],['VEL 46','vel-46'],['ISO Nightshade','iso-nightshade'],['KG-7 Vulcan','kg-7-vulcan'],['Hyeon Burst','hyeon-burst'],['M4','m4'],['Kastov 762','kastov-762'],['X-58 Nyx','x-58-nyx'],['PPSh-41','ppsh-41']];
  for(const [weapon,slug] of cases){
   const art=vm.runInContext('mobileWeaponArt('+JSON.stringify(weapon)+')',h.context);
   assert.match(art,new RegExp('art/featured/'+slug+'\\.webp'));
@@ -358,12 +358,33 @@ test('original artwork trial maps only the four approved weapons and preserves f
   const file=fs.readFileSync(path.join(__dirname,'../art/featured/'+slug+'.webp'));
   assert.equal(file.toString('ascii',0,4),'RIFF');
   assert.equal(file.toString('ascii',8,12),'WEBP');
-  assert.ok(file.length<30000,'keep four images light for mobile');
+  assert.ok(file.length<30000,'keep all images light for mobile');
  }
- const fallback=vm.runInContext('mobileWeaponArt("KG-7 Vulcan")',h.context);
+ const fallback=vm.runInContext('mobileWeaponArt("A future unidentified weapon")',h.context);
  assert.match(fallback,/<svg viewBox/);
  assert.doesNotMatch(fallback,/art\/featured\//);
  const html=h.elements.appMain.innerHTML;
  assert.match(html,/mobile-weapon__illustration/);
  assert.doesNotMatch(html,/1\.42 K\/D/);
+});
+
+test('mobile Weapons lists show art for real categorized weapons without changing ranking labels', () => {
+ const h=loadoutHarness();
+ h.click({page:'weapons'});
+ const html=h.elements.appMain.innerHTML;
+ assert.match(html,/class="weapon-art" aria-hidden="true"/);
+ assert.match(html,/art\/featured\/han-86\.webp/);
+ assert.match(html,/art\/featured\/hyeon-burst\.webp/);
+ assert.match(html,/art\/featured\/kg-7-vulcan\.webp/);
+ assert.match(html,/original and illustrative, not official game imagery/);
+ assert.match(html,/Rank within weapon category/);
+ h.click({source:'wz'});
+ assert.match(h.elements.appMain.innerHTML,/art\/featured\/kastov-762\.webp/);
+ assert.match(h.elements.appMain.innerHTML,/art\/featured\/x-58-nyx\.webp/);
+ assert.match(h.elements.appMain.innerHTML,/art\/featured\/ppsh-41\.webp/);
+ h.click({category:'SMG'});
+ const smg=h.elements.appMain.innerHTML;
+ assert.match(smg,/ISO Nightshade/);
+ assert.match(smg,/PPSh-41/);
+ assert.doesNotMatch(smg,/data-weapon="Kastov 762"/);
 });
