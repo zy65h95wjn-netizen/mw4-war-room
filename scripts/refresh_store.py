@@ -13,7 +13,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.error import HTTPError, URLError
 
 API_URL = "https://itemshop.gg/api/v1/shop/call-of-duty"
@@ -171,6 +171,17 @@ def transform(payload: dict, *, checked_at: str) -> dict:
     }
 
 
+class RejectStoreRedirects(HTTPRedirectHandler):
+    """Reject redirects before urllib parses Location or creates another request."""
+
+    def http_error_302(self, req, fp, code, msg, headers):
+        # This is a fixed authenticated endpoint. Even same-origin redirects are
+        # failures; a final response check is too late to protect Authorization.
+        raise HTTPError(req.full_url, code, "Store API redirects are not allowed", headers, fp)
+
+    http_error_301 = http_error_303 = http_error_307 = http_error_308 = http_error_302
+
+
 def fetch_live(api_key: str) -> dict:
     if not api_key or "\n" in api_key or "\r" in api_key:
         raise ValueError("ITEMSHOP_API_KEY is not set or invalid")
@@ -183,13 +194,16 @@ def fetch_live(api_key: str) -> dict:
         },
     )
     try:
-        with urlopen(req, timeout=20) as response:
-            if urlsplit(response.geturl()).hostname != "itemshop.gg":
-                raise ValueError("Unexpected API redirect")
+        # A local opener replaces the default redirect handler without changing
+        # global urllib behavior for other integrations.
+        with build_opener(RejectStoreRedirects()).open(req, timeout=20) as response:
+            if response.geturl() != API_URL:
+                raise ValueError("Unexpected API response URL")
             if "json" not in response.headers.get("Content-Type", "").lower():
                 raise ValueError("Store response is not JSON")
             body = response.read(MAX_JSON_BYTES + 1)
     except HTTPError as exc:
+        exc.close()
         raise RuntimeError(f"Store API request failed: HTTP {exc.code} (no existing data was changed)") from None
     except URLError as exc:
         raise RuntimeError("Store API request failed; last good feed retained") from None
