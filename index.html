@@ -169,6 +169,268 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(24px,6vw,38px);line-height:1.08;letter-sp
 }
 
 </style>
+<style>
+
+/* v0.4.1 · EMBER / GUNMETAL: visual-only polish; no data or interaction changes. */
+:root{
+ --bg:#060c14;--pan:#101e2c;--pan2:#152a3a;--line:#31495b;
+ --mut:#abbac9;--txt:#f4f7f8;--amber:#f7b454;--light:#ffdaa3;
+ --dim:#8da3b5;--success:#92ddba
+}
+html{background:var(--bg)}
+body{
+ background:
+  radial-gradient(ellipse 42% 28% at 82% 2%,rgba(191,110,38,.18),transparent 82%),
+  radial-gradient(ellipse 44% 38% at 0% 54%,rgba(35,85,115,.16),transparent 76%),
+  linear-gradient(180deg,#0b141f 0%,#060d16 40%,#060b12 100%);
+}
+body::before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.13;
+ background-image:linear-gradient(rgba(141,172,192,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(141,172,192,.15) 1px,transparent 1px);
+ background-size:58px 58px;
+ -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 78%);
+ mask-image:linear-gradient(180deg,#000 0%,transparent 78%);
+}
+.app{position:relative;z-index:1;max-width:1120px;padding-bottom:calc(var(--safe-bottom) + 100px)}
+.app::before{content:"";display:block;height:2px;margin:-16px 0 18px;background:linear-gradient(90deg,var(--amber) 0%,#ffcb7b 15%,rgba(87,128,147,.4) 55%,transparent 100%);opacity:.85}
+.site-header{margin-bottom:18px;padding-bottom:19px;border-bottom:1px solid rgba(103,133,153,.22)}
+.logomark{
+ width:54px;height:54px;border-radius:15px;font-size:21px;
+ border:1px solid #ba813e68;
+ background:linear-gradient(145deg,#314254 0%,#172533 51%,#0a1420 100%);
+ box-shadow:inset 0 1px rgba(255,255,255,.13),0 0 25px rgba(230,145,52,.07),0 10px 25px #0005;
+}
+.brand{font-size:clamp(20px,2.6vw,25px);letter-spacing:.055em;font-weight:950}
+.brand-sub{font-size:9px;color:#a3b9ca;letter-spacing:.22em;margin-top:6px}
+.icon-btn{border-color:#425b70;background:linear-gradient(145deg,#1d3548,#111f2e);box-shadow:inset 0 1px rgba(255,255,255,.06);transition:background .2s,border-color .2s}
+.icon-btn:hover{border-color:#b78548;background:#293647}
+#appMain{min-width:0}
+.heading{margin:11px 0 24px}
+.heading h1{font-size:clamp(36px,5vw,54px);letter-spacing:-.055em;text-shadow:0 9px 34px #0006}
+.heading p{font-size:clamp(12px,1.4vw,14px);max-width:670px;line-height:1.65;color:#afc1ce}
+.kicker{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.22em;color:#f4bc71;margin-bottom:12px}
+.kicker::before{content:"";width:21px;height:2px;background:var(--amber);box-shadow:0 0 16px #f7b45470}
+.panel{
+ background:linear-gradient(143deg,rgba(24,43,59,.98),rgba(13,26,40,.98));
+ border-color:#365064;border-radius:16px;
+ box-shadow:inset 0 1px rgba(255,255,255,.035),0 14px 34px #0003;
+}
+.panel.flat{background:linear-gradient(145deg,rgba(16,31,45,.97),rgba(10,21,33,.96))}
+.panel.gold-border{border-color:#9a6b37bb;box-shadow:inset 0 1px #ffca7c13,0 14px 42px #0004}
+.section-line{margin-top:26px;margin-bottom:13px}
+.section-line h2{font-size:17px;font-weight:900;letter-spacing:-.02em}
+.section-line::after{content:"";height:1px;flex:1;min-width:12px;background:linear-gradient(90deg,rgba(103,132,155,.37),transparent);order:1}
+.section-line .badge{order:2}
+.badge{border-radius:7px;padding:5px 9px;letter-spacing:.08em}
+.badge.muted{background:#1a2a39;border-color:#365166;color:#b7c9d8}
+.badge.green{color:#b3f1d0;background:#163b31;border-color:#3d8066}
+.source-link{color:#ffd18d;text-underline-offset:3px;transition:color .15s}
+.source-link:hover{color:#ffe9c1}
+.cta{border-radius:10px;box-shadow:inset 0 1px #fff3,0 5px 16px #0004;transition:filter .18s,transform .18s}
+.cta:hover{filter:brightness(1.08);text-decoration:none}
+.cta.secondary{background:linear-gradient(145deg,#24394b,#182a3a);border-color:#54728a}
+.tab{border-color:#415b70;background:linear-gradient(160deg,#1a2e3d,#12202d)}
+.tab.active{background:linear-gradient(135deg,#ffc371,#e4a048);border-color:#ffca81;box-shadow:0 4px 15px #f5aa4324}
+.input{border-color:#476077;background:#0b1723}
+.input:focus{border-color:#f4b45d}
+.switchwrap,.attachment,.build-option,.event-row,.mini-metric,.rewardbox,.source-card{box-shadow:inset 0 1px rgba(255,255,255,.03)}
+.taprow{transition:background .16s}
+.taprow:hover{background:#1b3041;border-radius:9px}
+.taprow.selected{background:linear-gradient(90deg,#30404e,#1b2b3a 95%)}
+.build-option{transition:border-color .15s,background .15s}
+.build-option:hover{border-color:#7d91a1}
+.build-option.active{background:linear-gradient(115deg,#50391d99,#283342);border-color:#db9a4b}
+.attachment{background:linear-gradient(110deg,#112436,#0e1b2a);border-color:#355068}
+.attachment .part{font-size:13px}
+.season-hero{
+ position:relative;overflow:hidden;
+ background:radial-gradient(circle at 95% -10%,rgba(231,145,51,.26),transparent 46%),linear-gradient(120deg,#253c4d,#131f2e 72%,#2a211d);
+ border-color:#a16f3d99;
+}
+.season-hero::after{content:"01";position:absolute;right:-6px;bottom:-47px;color:rgba(255,209,136,.045);font-size:180px;font-weight:950;pointer-events:none;line-height:1}
+.bigdate{font-size:clamp(30px,5vw,46px)}
+.event-row{border-color:#354c60;background:linear-gradient(135deg,#182a3a,#101d2b);border-radius:14px;padding:18px}
+.event-row h3{font-size:16px;line-height:1.3}
+.detail{background:linear-gradient(90deg,rgba(188,121,41,.14),rgba(188,121,41,.035));border-left-color:#e5a65a;color:#dec9ab}
+.disclaimer{color:#90a7ba;border-top:1px solid #31445740;margin-top:28px;padding-top:20px;max-width:900px;margin-inline:auto}
+
+/* The briefing is mission control, not a marketing splash. */
+.brief-mast{
+ min-height:185px;padding:23px 25px 24px;border-color:#65809681;border-radius:17px;
+ background:
+  radial-gradient(ellipse at 95% -22%,rgba(250,172,69,.27),transparent 44%),
+  linear-gradient(115deg,#1a3547,#101f30 60%,#122431);
+ box-shadow:inset 0 1px #fff1,0 20px 45px #0005;
+}
+.brief-mast::before{top:23px;bottom:23px;width:4px;box-shadow:0 0 24px rgba(255,175,73,.55)}
+.brief-mast::after{width:270px;height:270px;right:-62px;top:-112px;border-color:#e9b36e3d;box-shadow:0 0 0 34px #c58b2913,0 0 0 70px #a8792411,0 0 0 108px #a8792408}
+.brief-mast__top{font-size:10px;letter-spacing:.19em}
+.brief-mast__body{margin-top:23px}
+.brief-mast h1{font-size:clamp(30px,4.5vw,47px);letter-spacing:-.05em}
+.brief-mast__identity p{font-size:12px;margin-top:10px;color:#bed0da}
+.brief-mast__stamp{border-left-color:#6e82926c;padding-left:20px}
+.brief-mast__stamp strong{font-size:13px}
+.brief-leader-category h3{font-size:11px;letter-spacing:.17em}
+.brief-leader-group+.brief-leader-group{margin-top:18px}
+.brief-leaders{gap:13px}
+.leader-card{
+ min-height:168px;border-radius:15px;
+ border-color:#38586d;
+ background:radial-gradient(circle at 95% -10%,rgba(244,166,63,.16),transparent 53%),linear-gradient(135deg,#1a3345,#101d2a 90%);
+ box-shadow:inset 0 1px #fff1,0 10px 27px #0004;
+ transition:transform .18s,border-color .18s,box-shadow .18s;
+}
+.leader-card::before{height:3px;background:linear-gradient(90deg,#ffc36d,rgba(238,173,86,.12) 86%,transparent)}
+.leader-card::after{content:"";position:absolute;right:-29px;top:43px;width:103px;height:103px;border:1px solid #f4bf6340;transform:rotate(45deg);pointer-events:none}
+.leader-card--wz{background:radial-gradient(circle at 95% -10%,rgba(101,176,203,.18),transparent 53%),linear-gradient(135deg,#173042,#101d2a 90%)}
+.leader-card--wz::before{background:linear-gradient(90deg,#8bcede,rgba(135,194,210,.12) 86%,transparent)}
+.leader-card--wz::after{border-color:#91c9da34}
+.leader-card:hover{border-color:#8fa9b7;transform:translateY(-3px);box-shadow:0 14px 34px #0006}
+.leader-card__source{font-size:10px;color:#ffd18f}
+.leader-card__weapon{font-size:clamp(25px,3vw,34px);margin-top:18px;letter-spacing:-.058em}
+.leader-card__description{font-size:12px;color:#c0d0dc}
+.leader-card__bottom{border-top:1px solid #52677947;margin-top:19px;padding-top:12px}
+.leader-card__action{color:#ffd291}
+.intel-grid{gap:12px}
+.intel-signal{
+ overflow:hidden;border-radius:14px;border-color:#3b5467;
+ background:radial-gradient(circle at 95% -5%,#6397af1d,transparent 57%),linear-gradient(140deg,#182d3e,#111e2c);
+ box-shadow:inset 0 1px #fff1,0 9px 22px #0003;
+}
+.intel-signal::after{content:"";position:absolute;top:0;right:0;width:57px;height:2px;background:linear-gradient(90deg,transparent,#7a9cb258);pointer-events:none}
+.intel-signal--patch{border-color:#976b3b70;background:radial-gradient(circle at 100% -15%,#de983d2e,transparent 55%),linear-gradient(135deg,#283440,#152432)}
+.intel-signal__title{font-size:clamp(16px,2vw,20px);letter-spacing:-.035em}
+.intel-signal:hover{border-color:#829cae;transform:translateY(-2px)}
+.brief-provenance{margin-top:17px}
+
+/* Public Store: one verified item gets a deliberate showcase, not a half-empty grid. */
+.store-preview{
+ border-color:#4a667a;border-radius:17px;padding:18px;
+ background:radial-gradient(circle at 100% 0%,#b07b3221,transparent 49%),linear-gradient(125deg,#1a3141,#101d2a);
+ box-shadow:inset 0 1px #fff1,0 15px 34px #0004;
+}
+.store-preview__header{border-bottom-color:#5070865c;padding-bottom:13px}
+.store-preview__footer{border-top-color:#5070865c;padding-top:14px}
+.store-list{gap:18px;margin:19px 0}
+.store-card{
+ position:relative;overflow:hidden;border-color:#49657b;border-radius:17px;
+ background:radial-gradient(circle at 95% -14%,#b57e3033,transparent 54%),linear-gradient(135deg,#1b3142,#101d2b);
+ padding:17px;gap:18px;
+ box-shadow:inset 0 1px #fff1,0 18px 40px #0004;
+}
+.store-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f6bc68,rgba(240,175,74,.15) 55%,transparent);pointer-events:none}
+.store-card__art{border-radius:12px;border:1px solid #64809566;background:radial-gradient(circle at 30% 10%,#536e80,#15222f 75%)}
+.store-card__art img{transition:transform .3s}
+.store-card:hover .store-card__art img{transform:scale(1.025)}
+.store-card__info{gap:9px}
+.store-card__label{font-size:10px;letter-spacing:.18em;color:#ffc47d}
+.store-card__info h3{font-size:clamp(18px,2vw,24px);line-height:1.16;letter-spacing:-.04em}
+.store-card__type{font-size:12px;color:#afc4d1}
+.store-card__price{font-size:17px;color:#ffdcaa}
+.store-card__link{font-size:12px;font-weight:900;color:#ffcf8b;padding-top:8px}
+.store-contents{border-color:#496077;line-height:1.5;font-size:12px}
+.store-contents summary{color:#d9e9f3}
+.store-contents summary:hover{color:#ffd396}
+.store-contents li{font-size:12px}
+.store-card--compact{box-shadow:none;border:none;background:transparent;padding:0}
+.store-card--compact::before{display:none}
+.store-card--compact .store-card__info h3{font-size:clamp(17px,2vw,21px)}
+.store-list:has(> .store-card:only-child){grid-template-columns:minmax(0,1fr)}
+/* Keep explicit Store source status visually separate from the actual product. */
+#appMain > .heading + .panel.flat{border-color:#456177}
+
+/* Floating mobile command bar; desktop uses a conventional sticky navigation rail. */
+.nav{
+ left:8px;right:8px;bottom:calc(8px + var(--safe-bottom));
+ width:auto;padding:5px;
+ border:1px solid #496077;border-radius:17px;
+ background:rgba(15,29,43,.95);
+ box-shadow:0 12px 44px #000a,inset 0 1px #fff1;
+}
+.nav-inner{max-width:100%;gap:3px}
+.nav button{border:1px solid transparent;border-radius:11px;min-height:51px;color:#adbfce;transition:background .16s,color .16s}
+.nav button.active{border-color:#a4784178;background:linear-gradient(150deg,#6f4c2e93,#392d2477);color:#ffe1b5}
+.nav button:focus-visible{outline-offset:-3px}
+@media(min-width:620px){
+ .store-list:has(> .store-card:only-child) > .store-card{grid-template-columns:160px minmax(0,1fr);gap:22px}
+ .store-list:has(> .store-card:only-child) .store-card__info{padding-block:6px}
+}
+@media(min-width:760px){
+ .store-list:has(> .store-card:only-child) > .store-card{
+  grid-template-columns:minmax(230px,34%) minmax(0,1fr);
+  min-height:330px;gap:28px;padding:22px;
+ }
+ .store-list:has(> .store-card:only-child) .store-card__art{
+  height:100%;max-height:338px;aspect-ratio:auto;min-height:280px
+ }
+ .store-list:has(> .store-card:only-child) .store-card__info h3{font-size:clamp(26px,3.2vw,37px);max-width:530px}
+ .store-list:has(> .store-card:only-child) .store-card__price{font-size:21px}
+ .store-list:has(> .store-card:only-child) .store-card__link{font-size:13px}
+}
+@media(min-width:900px){
+ .app{padding-inline:clamp(28px,4vw,56px);padding-bottom:55px}
+ .app::before{margin-top:-16px}
+ .site-header{padding-top:3px;padding-bottom:20px;margin-bottom:16px}
+ .nav{
+  position:sticky;top:10px;bottom:auto;left:auto;right:auto;
+  z-index:15;border-radius:15px;padding:6px;margin:0 0 28px;
+  background:rgba(13,27,40,.94);
+  box-shadow:0 13px 34px #0007,inset 0 1px #ffffff10;
+ }
+ .nav-inner{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+ .nav button{
+  min-height:48px;flex-direction:row;gap:9px;
+  border-radius:10px;font-size:12px;font-weight:900;letter-spacing:.015em
+ }
+ .nav button .symbol{font-size:21px}
+ .nav button:hover{background:#263b4a;color:#fff}
+ .nav button.active{background:linear-gradient(120deg,#ffc476,#e6a44c);color:#17202a;border-color:#ffd39a;box-shadow:0 4px 16px #d58f3f30}
+ .nav button.active:hover{color:#17202a}
+ .brief-mast{min-height:208px;padding:27px 32px 28px}
+ .leader-card{min-height:190px;padding:19px 22px}
+ .intel-signal{padding:19px 20px;min-height:163px}
+ .panel{padding:20px 22px}
+ .panel.flat{padding:20px 22px}
+ .source-grid{gap:12px}
+}
+@media(max-width:619px){
+ .brief-mast{padding:18px 17px 19px;min-height:155px}
+ .brief-mast__body{margin-top:13px}
+ .brief-mast h1{font-size:clamp(23px,7vw,33px)}
+ .brief-mast__identity p{font-size:11px}
+ .leader-card{min-height:151px;padding:13px}
+ .leader-card__weapon{font-size:clamp(21px,6vw,28px)}
+ .leader-card__description{font-size:10px}
+ .leader-card__bottom{padding-top:9px}
+ .intel-signal{padding:13px}
+ .store-card{gap:12px;padding:12px}
+ .store-card__info h3{font-size:16px}
+ .store-card__price{font-size:15px}
+ .store-card--compact{padding:0}
+ .section-line::after{display:none}
+}
+@media(max-width:399px){
+ .app{padding-inline:12px}
+ .brand{font-size:18px}
+ .brand-sub{font-size:8px;letter-spacing:.15em}
+ .logomark{width:47px;height:47px}
+ .brief-mast__stamp{min-width:99px}
+ .store-card{grid-template-columns:90px minmax(0,1fr);gap:11px}
+ .store-card--compact{grid-template-columns:95px minmax(0,1fr)}
+ .nav{left:4px;right:4px}
+ .nav-inner{gap:1px}
+ .nav button{font-size:9px;min-height:49px}
+}
+@media(hover:none){
+ .leader-card:hover,.intel-signal:hover{transform:none}
+ .store-card:hover .store-card__art img{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .leader-card,.intel-signal,.cta,.icon-btn,.nav button,.store-card__art img,.taprow,.source-link,.build-option{transition:none!important}
+ .leader-card:hover,.intel-signal:hover,.store-card:hover .store-card__art img{transform:none!important}
+}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -176,10 +438,10 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(24px,6vw,38px);line-height:1.08;letter-sp
   <div class="identity"><div class="logomark" aria-hidden="true">W<span style="color:#d8e5ef">4</span></div><div><div class="brand">WAR <span>ROOM</span></div><div class="brand-sub">MW4 // MULTIPLAYER GUIDE</div></div></div>
   <button class="icon-btn" id="sourcesBtn" type="button" aria-label="Information sources" title="Information sources">ⓘ</button>
 </header>
+<nav class="nav" aria-label="Main navigation"><div class="nav-inner" id="bottomNav"></div></nav>
 <main id="appMain" aria-live="polite"><div class="panel flat"><div class="eyebrow">Loading game info</div><h2 style="margin-top:8px">Loading game information…</h2></div></main>
 <footer class="disclaimer">Independent fan-made companion. Not affiliated with Activision or Infinity Ward. All rankings and guidance are sourced, dated snapshots.</footer>
 </div>
-<nav class="nav" aria-label="Main navigation"><div class="nav-inner" id="bottomNav"></div></nav>
 <div class="overlay" id="overlay" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="sheet-header"><h2 id="sheetTitle">Sources & accuracy</h2><button class="icon-btn" id="closeSheet" type="button" aria-label="Close">×</button></div><div id="sheetContent"></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script src="logic.js" defer></script>

@@ -72,3 +72,23 @@ test('client avoids a false live store when source is an example',()=>{
  const live={...sample,status:'synced',checkedAt:'2026-10-27T18:00:00Z',stale:false};
  assert.equal(validStore(live),true);
 });
+
+
+test('premium visual shell remains responsive and preserves navigation semantics',()=>{
+ const markup=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+ const header=markup.indexOf('</header>');
+ const nav=markup.indexOf('<nav class="nav" aria-label="Main navigation">');
+ const main=markup.indexOf('<main id="appMain"');
+ assert.ok(header!==-1&&header<nav&&nav<main,'navigation follows header and precedes main content');
+ assert.equal((markup.match(/id="bottomNav"/g)||[]).length,1);
+ assert.match(markup,/v0\.4\.1 · EMBER \/ GUNMETAL/);
+ assert.match(markup,/\.store-list:has\(> \.store-card:only-child\)/);
+ assert.match(markup,/@media\(min-width:900px\)/);
+ assert.match(markup,/@media\(max-width:399px\)/);
+ assert.match(markup,/@media\(prefers-reduced-motion:reduce\)/);
+ assert.match(markup,/id="sourcesBtn"/);
+ const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
+ assert.match(sw,/mw4-warroom-v041-20261027/);
+ assert.match(sw,/\.\/data\/intel\.json/);
+ assert.match(sw,/\.\/data\/store\.json/);
+});
