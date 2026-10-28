@@ -1,0 +1,51 @@
+name: Refresh MW4 public Store data
+on:
+  schedule:
+    # Four checks daily, away from the top of the hour. GitHub schedules are best effort.
+    - cron: '37 3,9,15,21 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: war-room-public-store-feed
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: github.repository == 'zy65h95wjn-netizen/mw4-war-room'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout validated app and integration code
+        uses: actions/checkout@v6
+        with:
+          path: source
+          persist-credentials: false
+      - name: Checkout separate unprotected public-data branch
+        uses: actions/checkout@v6
+        with:
+          path: feed
+          ref: store-feed
+      - name: Refresh public MW4-only Store projection if API key exists
+        env:
+          ITEMSHOP_API_KEY: ${{ secrets.ITEMSHOP_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$ITEMSHOP_API_KEY" ]]; then
+            echo "Store automation is NOT configured. Set repository Actions secret ITEMSHOP_API_KEY to enable it." >> "$GITHUB_STEP_SUMMARY"
+            echo "No provider request was made. Current public Store snapshot remains unchanged."
+            exit 0
+          fi
+          python3 source/scripts/refresh_store.py --output feed/data/store.json
+          cd feed
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/store.json
+          if git diff --cached --quiet; then
+            echo "Store projection unchanged." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git commit -m "Store: update validated MW4 web-shop snapshot"
+          git push origin HEAD:store-feed
+          echo "Public Store projection refreshed from itemshop.gg and limited to MW4." >> "$GITHUB_STEP_SUMMARY"
+          echo "Public repo branch store-feed updated. Main/Pages application code unchanged." >> "$GITHUB_STEP_SUMMARY"

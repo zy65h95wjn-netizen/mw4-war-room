@@ -2,7 +2,7 @@
   "id": "./",
   "name": "MW4 War Room",
   "short_name": "War Room",
-  "description": "MW4 multiplayer rankings, loadouts, patch notes, events and Battle Pass information",
+  "description": "MW4 multiplayer rankings, loadouts, patch notes, events, Battle Pass and public Store bundles",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

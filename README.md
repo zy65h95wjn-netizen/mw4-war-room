@@ -1,6 +1,6 @@
 # MW4 War Room — Multiplayer Guide
 
-**UI v0.3.4 · editorial data v0.3.0 — October 27, 2026**
+**UI v0.4.0 · editorial data v0.3.0 — October 27, 2026**
 
 A lightweight, installable iPhone home-screen companion for Call of Duty: Modern Warfare 4 multiplayer. It contains only publicly retrievable game information, curated into dated snapshots with direct source links:
 
@@ -9,6 +9,7 @@ A lightweight, installable iPhone home-screen companion for Call of Duty: Modern
 - **Updates:** source-linked summaries of official multiplayer patch notes
 - **Events:** dated event windows sorted by calendar state; unknown end dates remain unverified, and a published time window does not claim in-game availability
 - **Pass:** separately accessible Season 1 and BlackCell information, with explicitly qualified dates and unpublished reward tiers
+- **Store:** public MW4 web-store data only, with bundle art, included items, source-reported prices, and clear itemshop.gg attribution. Overview has a preview and Store has its own tab. The initial example is explicitly labeled NOT LIVE.
 
 **Not a live external data feed.** The contents of `data/intel.json` were independently reviewed on October 27, 2026. External publishers are not scraped or mirrored on a schedule. Tapping a source link opens the current publisher page, and curated War Room content changes only when this repository is updated. Publisher rankings are not presented as interchangeable universal statistics.
 
@@ -75,3 +76,51 @@ Official Valve API reference: https://partner.steamgames.com/doc/webapi/ISteamNe
 ### GitHub issue-write smoke test
 
 The one-shot GitHub Actions workflow `.github/workflows/alert-issue-smoke.yml` is triggered when that workflow file is first merged into `main` (and can also be run manually). It creates a distinctly titled **TEST** GitHub issue, edits it, verifies the edit, and closes it automatically. This validates GitHub Actions `issues: write` permissions and creates a closed public audit record. The smoke test is independent of Steam news and does **not** claim that a real scheduled alert has fired. Regular monitoring still runs at its configured times.
+
+## MW4 public Store setup (requires a one-time API key)
+
+The Store uses itemshop.gg's documented free Call of Duty JSON API:
+https://itemshop.gg/developers . It is not Activision, not a personal account
+integration and not the entire in-game Store.
+
+1. Visit https://itemshop.gg/account#api . Sign in with Discord and create
+   a key called "War Room" for this website.
+2. In the War Room repository open **Settings → Secrets and variables → Actions
+   → New repository secret** at:
+   https://github.com/zy65h95wjn-netizen/mw4-war-room/settings/secrets/actions
+   Name the secret **ITEMSHOP_API_KEY**, paste your key and click Add secret.
+   Never paste the key into a chat, issue, source file or browser console.
+3. Open repository **Actions → Refresh MW4 public Store data → Run workflow**
+   (branch main) for the first sync. It also runs automatically at 03:37,
+   09:37, 15:37 and 21:37 UTC every day (best effort).
+4. After success, refresh the app; the Store changes from a dated EXAMPLE
+   to a checked public-source listing.
+
+### Data and security boundaries
+
+- GitHub Actions sends the private API key in an Authorization header to
+  https://itemshop.gg/api/v1/shop/call-of-duty. The iPhone/browser never
+  contacts that authenticated endpoint or receives the key.
+- scripts/refresh_store.py only accepts the "Modern Warfare 4" section,
+  excludes BO7-only bundles, validates fields, and publishes a restricted
+  display projection to data/store.json on the separate public store-feed
+  branch. Protected main and curated weapon/patch data are untouched.
+- The website reads sanitized public JSON from that branch and checks schema,
+  allowed links, timestamps and source attribution. It keeps a last-good
+  browser copy for offline use. A provider failure does not overwrite data.
+- If the key is missing, the workflow clearly says "not configured" and
+  does not contact the provider. The app shows a dated documentation
+  example with a prominent NOT LIVE label; this is never shown as current.
+- Unknown prices and "Platform store" are not free. No invented USD or
+  COD Point conversions are made.
+- A visible "Data from itemshop.gg" link is required on every Store
+  display; external images may be loaded from the provider's artwork CDN.
+- This is the public web-store selection, not personalized inventory.
+  Availability and price may differ on Xbox PC and in the actual game.
+
+### Rollback
+
+All UI changes use a passing pull request. The pre-Store milestone is
+archived on branch archive/20261027-before-store. The separate
+store-feed branch contains no secrets. Revoking the key or disabling the
+workflow stops automatic updates without breaking other War Room sections.

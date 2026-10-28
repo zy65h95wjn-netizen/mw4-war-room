@@ -1,8 +1,8 @@
 /* War Room v0.3.1: loadout navigation fix; network-first verified-site cache with offline fallback.
    Editorial validation is performed in the app, before saving the last-good JSON.
 */
-const CACHE='mw4-warroom-v034-20261027';
-const CORE=['./','./index.html','./logic.js','./app.js','./data/intel.json','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
+const CACHE='mw4-warroom-v040-20261027';
+const CORE=['./','./index.html','./logic.js','./store.js','./app.js','./data/intel.json','./data/store.json','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
  await cache.addAll(CORE);

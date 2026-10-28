@@ -1,10 +1,10 @@
-/* MW4 War Room UI v0.3.4: plain-language headings and helpful descriptions throughout. */
+/* MW4 War Room UI v0.4: public MW4 Store preview, Store section, and credential-free client. */
 'use strict';
 const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeURL=s=>typeof s==='string'&&s.startsWith('https://')?s:'#';
-const tabs=[['brief','⌂','Overview'],['weapons','⌖','Weapons'],['updates','≡','Updates'],['events','◉','Events'],['pass','▤','Pass']];
-const state={page:'brief',source:'cod',category:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false};
+const tabs=[['brief','⌂','Overview'],['weapons','⌖','Weapons'],['updates','≡','Updates'],['events','◉','Events'],['pass','▤','Pass'],['store','▣','Store']];
+const state={page:'brief',source:'cod',category:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false,store:{data:null,origin:'loading'}};
 const prefKey='mw4-warroom-prefs-v02';
 try{const p=JSON.parse(localStorage.getItem(prefKey)||'{}');if(typeof p.ironOnly==='boolean')state.ironOnly=p.ironOnly;if(p.source==='cod'||p.source==='wz')state.source=p.source}catch(_e){}
 const settingsSave=()=>{try{localStorage.setItem(prefKey,JSON.stringify({ironOnly:state.ironOnly,source:state.source}))}catch(_e){}};
@@ -39,6 +39,63 @@ function leaderCard(board,entry){
  <span class="leader-card__bottom"><span>${escapeHTML(pretty(board.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
  </button>`;
 }
+
+const storeCacheKey='mw4-warroom-store-v1';
+const storePublicFeed='https://raw.githubusercontent.com/zy65h95wjn-netizen/mw4-war-room/store-feed/data/store.json';
+function storeProviderLink(feed){
+ const url=WarRoomStore.safeLink(feed?.attribution?.url,new Set(['itemshop.gg']))||WarRoomStore.STORE_URL;
+ return `<a class="source-link" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">Data from itemshop.gg <span aria-hidden="true">↗</span></a>`;
+}
+function storeNotice(feed){
+ if(!feed)return 'Checking public Store information…';
+ if(feed.status==='sample')return 'Example from October 27 · live Store updates not connected yet.';
+ const when=new Date(feed.checkedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+ if(feed.stale)return 'Provider reports outdated Store data · checked '+when+'.';
+ if(!WarRoomStore.isFresh(feed))return 'Last checked '+when+' · may be outdated.';
+ return 'Public web-store listing checked '+when+'.';
+}
+function storeArt(item){
+ const image=WarRoomStore.safeLink(item.image,new Set(['cdn.source.gs','itemshop.gg','mw4.source.gs']));
+ return image?`<img loading="lazy" decoding="async" src="${escapeHTML(image)}" alt="${escapeHTML(item.name)} bundle artwork">`:'<div class="store-art-fallback" aria-hidden="true">MW4</div>';
+}
+function storeCard(item,{compact=false,sample=false}={}){
+ const price=WarRoomStore.displayPrice(item.price);
+ const link=WarRoomStore.safeLink(item.officialUrl,new Set(['callofduty.com','www.callofduty.com']))||WarRoomStore.STORE_URL;
+ const c=item.contents||[];
+ const label=item.upcoming?'UPCOMING':sample?'EXAMPLE · NOT LIVE':item.badge||'MW4 WEB STORE';
+ return `<article class="store-card ${compact?'store-card--compact':''}">
+  <div class="store-card__art">${storeArt(item)}</div>
+  <div class="store-card__info">
+   <div class="store-card__label">${escapeHTML(label)}</div>
+   <h3>${escapeHTML(item.name)}</h3>
+   <div class="store-card__type">${escapeHTML(item.type||'Bundle')}</div>
+   <div class="store-card__price">${escapeHTML(price)}</div>
+   ${!compact&&c.length?`<details class="store-contents"><summary>What's included (${c.length}${sample?' shown':''})</summary><ul>${c.map(v=>`<li>${escapeHTML(v.name)} <span>${escapeHTML(v.type)}</span></li>`).join('')}</ul></details>`:''}
+   <a class="store-card__link" target="_blank" rel="noopener noreferrer" href="${escapeHTML(link)}">${item.officialUrl?'Official bundle details':'View source listing'} <span aria-hidden="true">↗</span></a>
+  </div>
+ </article>`;
+}
+function storePreview(){
+ const feed=state.store.data,example=feed?.status==='sample',item=feed?.items?.[0];
+ return `${section('New in Store',tag(feed?.status==='synced'&&!feed.stale?'PUBLIC STORE':'NOT LIVE','muted'))}
+ <div class="store-preview">
+  <div class="store-preview__header"><span>${escapeHTML(storeNotice(feed))}</span>${storeProviderLink(feed)}</div>
+  ${item?storeCard(item,{compact:true,sample:example}):`<p class="subtext" style="padding:15px 0">${feed?'No MW4 bundles appear in this source snapshot.':'Loading Store details…'}</p>`}
+  <div class="store-preview__footer"><span>Public web listings only · in-game offers may differ.</span><button type="button" class="cta secondary" data-page="store">Browse Store</button></div>
+ </div>`;
+}
+function storePage(){
+ const feed=state.store.data,items=feed?.items||[],sample=feed?.status==='sample';
+ return `${headline('Store','MW4 bundles, blueprints and cosmetics from the public web store.','STORE & BUNDLES')}
+ <section class="panel flat">
+  <div class="spread" style="flex-wrap:wrap;gap:8px"><strong>${sample?'Dated Example':feed?.status==='synced'?'Public MW4 Listings':'Store Connection'}</strong>${tag(sample?'NOT LIVE':feed?.stale?'SOURCE STALE':feed?.status==='synced'?'SYNCED':'NOT CONNECTED',sample||feed?.stale?'amber':'muted')}</div>
+  <p class="subtext" style="margin:9px 0">${escapeHTML(storeNotice(feed))}</p>
+  <div class="spread" style="flex-wrap:wrap">${storeProviderLink(feed)}<a class="source-link" href="https://www.callofduty.com/en/store" target="_blank" rel="noopener noreferrer">Official Call of Duty Store ↗</a></div>
+ </section>
+ ${items.length?`<div class="store-list">${items.map(item=>storeCard(item,{sample})).join('')}</div>`:`<div class="panel flat"><h2>${feed?'No MW4 bundles listed':'Store data not available yet'}</h2><p class="subtext" style="margin-top:8px">${feed?'The source has no MW4 web-store listings in the latest available snapshot.':'The public Store feed has not been connected yet. No personal account sign-in is needed.'}</p></div>`}
+ <div class="detail">This is not your personal in-game Store. Offers and prices can differ by platform or account. A missing price does not mean an item is free; verify the official store before purchasing.</div>`;
+}
+
 function briefing(){
  const p=state.feed.patches[0],b=state.feed.battlePass;
  const metaA=state.feed.meta.find(s=>s.id==='cod'),metaB=state.feed.meta.find(s=>s.id==='wz');
@@ -82,7 +139,8 @@ function briefing(){
      <span class="intel-signal__bottom"><span>${escapeHTML(pretty(b.start))} · reported</span><span class="intel-signal__action" aria-hidden="true">↗</span></span>
    </button>
  </div>
- <div class="brief-provenance"><span>Source-reviewed info · not live rankings</span>${anchor('officialIndex','Official patch notes')}</div>`;
+ <div class="brief-provenance"><span>Source-reviewed info · not live rankings</span>${anchor('officialIndex','Official patch notes')}</div>
+ ${storePreview()}`;
 }
 function weaponHub(){
  const catalog=WarRoomLogic.weaponCatalog(state.feed);
@@ -134,7 +192,7 @@ function passPage(){const b=state.feed.battlePass,today=new Date(),start=dateVal
  <div class="detail">Season 1 and Battle Pass details may change. Dates credited to the roadmap report are not independently confirmed as an official start hour.</div>`}
 function battlePassPage(){return `${headline('Battle Pass','Season 1 rewards and BlackCell details from published sources.','SEASON DETAILS')}${passPage()}`}
 function sourcesSheet(){const list=state.feed.sources.map(s=>`<div class="source-card"><div class="spread">${anchor(s.id,s.name)}${tag(s.class,s.class==='Official'?'green':'muted')}</div></div>`).join('');return `<p class="subtext" style="margin-bottom:12px">${escapeHTML(state.feed.sourcePolicy)}</p><div class="spread" style="margin-bottom:14px">${freshness()}${tag('v'+state.feed.release)}</div><p class="fine" style="margin-bottom:12px">Each section has its own review deadline; dates mean editorial review, not live external syncing.</p><div class="stack" style="margin-bottom:14px">${['meta','builds','patches','events','battlePass'].map(k=>`<div class="spread"><span class="fine">${escapeHTML(k)}</span>${freshness(k)}</div>`).join('')}</div><p class="detail" style="margin-bottom:15px">The site has no login or connection to Activision or Xbox. Previous v0.1 personal entries remain untouched in their old browser storage, but are not read by this version.</p><div class="source-grid">${list}</div><p class="fine" style="margin-top:13px">Publishing an updated snapshot requires a new site data update. Opening a linked publisher page is the way to check its latest independently.</p>`}
-function render(){nav();if(!state.feed)return;$('appMain').innerHTML=({brief:briefing,weapons:weaponHub,updates:updatesPage,events:eventPage,pass:battlePassPage}[state.page]||briefing)()}
+function render(){nav();if(!state.feed)return;$('appMain').innerHTML=({brief:briefing,weapons:weaponHub,updates:updatesPage,events:eventPage,pass:battlePassPage,store:storePage}[state.page]||briefing)()}
 async function copyBuild(id){const b=state.feed.builds.find(b=>b.id===id);if(!b)return;const s=source(b.source);const txt=[`MW4 MULTIPLAYER — ${b.weapon}`,b.style,...b.parts.map(([slot,part])=>`${slot}: ${part}`),...(b.apex?[`Apex: ${b.apex}`]:[]),...(b.extras?Object.entries(b.extras).map(([slot,v])=>`${slot}: ${v}`):[]),`Source: ${s.name}`,s.url,`Reviewed: ${b.updated}`].join('\n');try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(txt)}else{const ta=document.createElement('textarea');ta.value=txt;document.body.append(ta);ta.select();if(!document.execCommand('copy'))throw Error('No clipboard');ta.remove()}showToast('Build copied to clipboard')}catch(_e){showToast('Copy unavailable — long-press the attachments instead')}}
 function bindEvents(){document.addEventListener('click',event=>{
  const button=event.target.closest('button');if(!button)return;
@@ -165,6 +223,34 @@ function usableIntel(info){
  }
  const ids=new Set(info.sources.map(s=>s.id));return info.builds.every(b=>ids.has(b.source)&&Array.isArray(b.parts)&&b.parts.length>0)&&info.patches.every(p=>ids.has(p.source))&&info.events.every(e=>ids.has(e.source))&&info.meta.every(m=>ids.has(m.source));
 }
+async function loadStore(){
+ let data=null,origin='unavailable';
+ try{
+  // This is public filtered JSON on our own GitHub branch, not the provider API.
+  // No API key or personalized player information ever reaches the browser.
+  const url=storePublicFeed+'?cache='+Math.floor(Date.now()/600000);
+  const response=await fetch(url,{cache:'no-store'});
+  if(response.ok){
+   const remote=await response.json();
+   if(WarRoomStore.validStore(remote)&&remote.status==='synced'){data=remote;origin='public-feed';
+    try{localStorage.setItem(storeCacheKey,JSON.stringify(remote))}catch(_e){}
+   }
+  }
+ }catch(_e){}
+ if(!data)try{
+  const saved=JSON.parse(localStorage.getItem(storeCacheKey)||'null');
+  if(WarRoomStore.validStore(saved)&&saved.status==='synced'){data=saved;origin='saved-copy'}
+ }catch(_e){}
+ if(!data)try{
+  const response=await fetch('./data/store.json',{cache:'no-store'});
+  if(response.ok){
+   const local=await response.json();
+   if(WarRoomStore.validStore(local)){data=local;origin='dated-example'}
+  }
+ }catch(_e){}
+ state.store={data,origin};
+ if(state.feed)render();
+}
 async function boot(){bindEvents();try{
  const response=await fetch('./data/intel.json',{cache:'no-store'});
  if(!response.ok)throw Error('Game information unavailable: HTTP '+response.status);
@@ -173,9 +259,9 @@ async function boot(){bindEvents();try{
  WarRoomLogic.weaponCatalog(info);
  state.feed=info;state.offlineCopy=navigator.onLine===false||response.headers.get('X-WarRoom-Saved')==='true';
  try{localStorage.setItem(intelCacheKey,JSON.stringify(info))}catch(_e){}
- render();
+ render();loadStore();
  }catch(error){console.warn('War Room game information unavailable',error);
- try{const saved=JSON.parse(localStorage.getItem(intelCacheKey)||'null');if(usableIntel(saved)){WarRoomLogic.weaponCatalog(saved);state.feed=saved;state.offlineCopy=true;render();return}}catch(_e){}
+ try{const saved=JSON.parse(localStorage.getItem(intelCacheKey)||'null');if(usableIntel(saved)){WarRoomLogic.weaponCatalog(saved);state.feed=saved;state.offlineCopy=true;render();loadStore();return}}catch(_e){}
  $('appMain').innerHTML=`<div class="panel"><div class="eyebrow">GAME INFO UNAVAILABLE</div><h1 style="margin:8px 0">Couldn't load game info</h1><p class="subtext">The latest information couldn't be verified, and no saved copy is available. Open War Room online to save a copy for offline use.</p><button class="cta" id="retryBoot" type="button" onclick="location.reload()">Retry loading</button></div>`}}
 boot();
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
