@@ -235,7 +235,7 @@ function mobileBriefing(){
  '</div><div class="mobile-weapons">'+
  (picks.length?picks.map(mobileWeaponRow).join(''):'<p class="mobile-empty">No ranked weapons in this category in the reviewed sources.</p>')+
  '</div><div class="mobile-microcopy">'+freshness('meta')+
- '<span>Publisher ranks are separate, not one combined leaderboard.</span></div></section>'+
+ '<span>Publisher ranks are separate, not one combined leaderboard. Artwork is illustrative.</span></div></section>'+
  '<section class="mobile-group" aria-labelledby="mobile-updates-heading">'+
  '<div class="mobile-group__title"><h2 id="mobile-updates-heading">Latest Updates</h2>'+
  '<button type="button" data-page="updates">View all <span aria-hidden="true">→</span></button></div>'+
