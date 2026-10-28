@@ -152,7 +152,15 @@ function briefingDesktop(){
 }
 
 /* iPhone-first esports Overview. Display order is not an invented combined ranking. */
-function mobileWeaponArt(){
+const originalWeaponArt=Object.freeze({
+ 'HAN 86':'han-86',
+ 'Axion':'axion',
+ 'VEL 46':'vel-46',
+ 'ISO Nightshade':'iso-nightshade'
+});
+function mobileWeaponArt(weapon){
+ const slug=originalWeaponArt[weapon];
+ if(slug)return '<img class="mobile-weapon__illustration" src="./art/featured/'+slug+'.webp" width="260" height="106" loading="lazy" decoding="async" alt="Original illustrative artwork, not an official '+escapeHTML(weapon)+' game render">';
  return '<svg viewBox="0 0 150 55" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="#d6e0e9" stroke-width="1.4" d="M8 22h14v-3h21v-7h18v-4h32v5h29v5h12v5h7v8h-16v4h-14l-5 11H84l-7-11H62l-5 12H45l-4-17H25l-3 8H12l2-12H8z"/><path stroke="#102230" stroke-width="2.4" fill="none" d="M25 23h97m-74-4h31M58 17v15m34-14v14M43 28h29M96 28h30"/><path fill="#e0a659" d="M74 29h5l4 13h-5z"/></svg>';
 }
 function mobilePicks(){
@@ -174,7 +182,7 @@ function mobileWeaponRow({board,entry}){
  const rank=String(entry.rank).padStart(2,'0');
  return '<button type="button" class="mobile-weapon mobile-weapon--'+escapeHTML(board.id)+'" data-source="'+escapeHTML(board.id)+'" data-page="weapons" data-weapon="'+escapeHTML(entry.weapon)+'" data-reveal="loadout" aria-label="View '+escapeHTML(entry.weapon)+' loadout: '+escapeHTML(board.name)+', rank '+entry.rank+' '+escapeHTML(rankType)+'">'+
  '<span class="mobile-weapon__rank" aria-hidden="true">'+escapeHTML(rank)+'</span>'+
- '<span class="mobile-weapon__art">'+mobileWeaponArt()+'</span>'+
+ '<span class="mobile-weapon__art">'+mobileWeaponArt(entry.weapon)+'</span>'+
  '<span class="mobile-weapon__label"><strong class="mobile-weapon__name">'+escapeHTML(entry.weapon)+'</strong>'+
  '<span class="mobile-weapon__source">'+escapeHTML(board.name)+' · #'+entry.rank+' '+escapeHTML(rankType)+'</span></span>'+
  '<span class="mobile-weapon__arrow" aria-hidden="true">›</span></button>';
@@ -227,7 +235,7 @@ function mobileBriefing(){
  '</div><div class="mobile-weapons">'+
  (picks.length?picks.map(mobileWeaponRow).join(''):'<p class="mobile-empty">No ranked weapons in this category in the reviewed sources.</p>')+
  '</div><div class="mobile-microcopy">'+freshness('meta')+
- '<span>Publisher ranks are separate, not one combined leaderboard.</span></div></section>'+
+ '<span>Publisher ranks are separate, not one combined leaderboard. Artwork is illustrative.</span></div></section>'+
  '<section class="mobile-group" aria-labelledby="mobile-updates-heading">'+
  '<div class="mobile-group__title"><h2 id="mobile-updates-heading">Latest Updates</h2>'+
  '<button type="button" data-page="updates">View all <span aria-hidden="true">→</span></button></div>'+

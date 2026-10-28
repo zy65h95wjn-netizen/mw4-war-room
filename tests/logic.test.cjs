@@ -347,3 +347,23 @@ test('mobile category filters and weapon tap preserve legitimate ranking provena
  assert.equal(vm.runInContext('state.page',h.context),'weapons');
  assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
 });
+
+test('original artwork trial maps only the four approved weapons and preserves fallback', () => {
+ const h=loadoutHarness();
+ const cases=[['HAN 86','han-86'],['Axion','axion'],['VEL 46','vel-46'],['ISO Nightshade','iso-nightshade']];
+ for(const [weapon,slug] of cases){
+  const art=vm.runInContext('mobileWeaponArt('+JSON.stringify(weapon)+')',h.context);
+  assert.match(art,new RegExp('art/featured/'+slug+'\\.webp'));
+  assert.match(art,/Original illustrative artwork, not an official/);
+  const file=fs.readFileSync(path.join(__dirname,'../art/featured/'+slug+'.webp'));
+  assert.equal(file.toString('ascii',0,4),'RIFF');
+  assert.equal(file.toString('ascii',8,12),'WEBP');
+  assert.ok(file.length<30000,'keep four images light for mobile');
+ }
+ const fallback=vm.runInContext('mobileWeaponArt("KG-7 Vulcan")',h.context);
+ assert.match(fallback,/<svg viewBox/);
+ assert.doesNotMatch(fallback,/art\/featured\//);
+ const html=h.elements.appMain.innerHTML;
+ assert.match(html,/mobile-weapon__illustration/);
+ assert.doesNotMatch(html,/1\.42 K\/D/);
+});
