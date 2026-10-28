@@ -1,12 +1,25 @@
-# Four original weapon illustrations — REVIEW ONLY
+# War Room original illustrative weapon artwork
 
-These four lightweight WebP assets were generated as original, noncommercial UI illustrations for the iPhone War Room trial. They are **not** official Call of Duty assets or exact in-game weapon models and are not evidence of attachments, loadout availability, or stats.
+This directory contains **original conceptual illustrations**, not official Modern Warfare 4 renders, exact weapon geometry, or evidence of attachments/stats.
 
-- `han-86.webp` — conceptual HAN 86 illustration
-- `axion.webp` — conceptual Axion illustration
-- `vel-46.webp` — conceptual VEL 46 illustration
-- `iso-nightshade.webp` — conceptual ISO Nightshade illustration
+## Validated artwork — v0.4.3
+- HAN 86 — `han-86.webp`
+- Axion — `axion.webp`
+- VEL 46 — `vel-46.webp`
+- ISO Nightshade — `iso-nightshade.webp`
 
-Each is 220 × 89 pixels, around 2–3 KB, and is selected by a fixed four-item mapping in `app.js`. Other guns retain the generic SVG fallback. The illustrations are labeled in image alt text and in the mobile source note. No official image harvesting, game data extraction, Activision account access, or change to the public Store is involved.
+Those four assets were tested on an iPhone and approved.
 
-**QA gate:** Do not merge this branch on CI alone. Visually review the actual iPhone rendering and user approval first; the existing working main release is the rollback point.
+## Proposed expansion — review branch only
+- KG-7 Vulcan — `kg-7-vulcan.webp`
+- Hyeon Burst — `hyeon-burst.webp`
+- M4 — `m4.webp`
+- Kastov 762 — `kastov-762.webp`
+- X-58 Nyx — `x-58-nyx.webp`
+- PPSh-41 — `ppsh-41.webp`
+
+The six additional pieces are cropped and adapted from original AI-generated concept art, with visual variations appropriate to each weapon class. They deliberately do not claim to reproduce the exact in-game firearm models. The classic PPSh concept uses additional custom illustration edits.
+
+Assets are lightweight local WebP files, loaded using a strictly enumerated mapping in `app.js`. Non-catalog weapons still fall back to a generic SVG, with no third-party images or API calls. They never affect rankings, store, loadouts, or player progression.
+
+**Review gate:** keep this branch unmerged until the user approves the actual iPhone rendering. The validated v0.4.3 main branch is the rollback point.
