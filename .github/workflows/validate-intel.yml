@@ -22,9 +22,10 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check logic.js
+          node --check store.js
           node --check app.js
       - name: Test weapon-data joins and time-dependent event windows
-        run: node --test tests/logic.test.cjs
+        run: node --test tests/logic.test.cjs tests/store.test.cjs
       - name: Require evidence receipts for intel changes
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         env:
