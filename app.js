@@ -139,7 +139,8 @@ function briefing(){
      <span class="intel-signal__bottom"><span>${escapeHTML(pretty(b.start))} · reported</span><span class="intel-signal__action" aria-hidden="true">↗</span></span>
    </button>
  </div>
- <div class="brief-provenance"><span>Source-reviewed info · not live rankings</span>${anchor('officialIndex','Official patch notes')}</div>`;
+ <div class="brief-provenance"><span>Source-reviewed info · not live rankings</span>${anchor('officialIndex','Official patch notes')}</div>
+ ${storePreview()}`;
 }
 function weaponHub(){
  const catalog=WarRoomLogic.weaponCatalog(state.feed);
@@ -191,7 +192,7 @@ function passPage(){const b=state.feed.battlePass,today=new Date(),start=dateVal
  <div class="detail">Season 1 and Battle Pass details may change. Dates credited to the roadmap report are not independently confirmed as an official start hour.</div>`}
 function battlePassPage(){return `${headline('Battle Pass','Season 1 rewards and BlackCell details from published sources.','SEASON DETAILS')}${passPage()}`}
 function sourcesSheet(){const list=state.feed.sources.map(s=>`<div class="source-card"><div class="spread">${anchor(s.id,s.name)}${tag(s.class,s.class==='Official'?'green':'muted')}</div></div>`).join('');return `<p class="subtext" style="margin-bottom:12px">${escapeHTML(state.feed.sourcePolicy)}</p><div class="spread" style="margin-bottom:14px">${freshness()}${tag('v'+state.feed.release)}</div><p class="fine" style="margin-bottom:12px">Each section has its own review deadline; dates mean editorial review, not live external syncing.</p><div class="stack" style="margin-bottom:14px">${['meta','builds','patches','events','battlePass'].map(k=>`<div class="spread"><span class="fine">${escapeHTML(k)}</span>${freshness(k)}</div>`).join('')}</div><p class="detail" style="margin-bottom:15px">The site has no login or connection to Activision or Xbox. Previous v0.1 personal entries remain untouched in their old browser storage, but are not read by this version.</p><div class="source-grid">${list}</div><p class="fine" style="margin-top:13px">Publishing an updated snapshot requires a new site data update. Opening a linked publisher page is the way to check its latest independently.</p>`}
-function render(){nav();if(!state.feed)return;$('appMain').innerHTML=({brief:briefing,weapons:weaponHub,updates:updatesPage,events:eventPage,pass:battlePassPage}[state.page]||briefing)()}
+function render(){nav();if(!state.feed)return;$('appMain').innerHTML=({brief:briefing,weapons:weaponHub,updates:updatesPage,events:eventPage,pass:battlePassPage,store:storePage}[state.page]||briefing)()}
 async function copyBuild(id){const b=state.feed.builds.find(b=>b.id===id);if(!b)return;const s=source(b.source);const txt=[`MW4 MULTIPLAYER — ${b.weapon}`,b.style,...b.parts.map(([slot,part])=>`${slot}: ${part}`),...(b.apex?[`Apex: ${b.apex}`]:[]),...(b.extras?Object.entries(b.extras).map(([slot,v])=>`${slot}: ${v}`):[]),`Source: ${s.name}`,s.url,`Reviewed: ${b.updated}`].join('\n');try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(txt)}else{const ta=document.createElement('textarea');ta.value=txt;document.body.append(ta);ta.select();if(!document.execCommand('copy'))throw Error('No clipboard');ta.remove()}showToast('Build copied to clipboard')}catch(_e){showToast('Copy unavailable — long-press the attachments instead')}}
 function bindEvents(){document.addEventListener('click',event=>{
  const button=event.target.closest('button');if(!button)return;
@@ -222,6 +223,34 @@ function usableIntel(info){
  }
  const ids=new Set(info.sources.map(s=>s.id));return info.builds.every(b=>ids.has(b.source)&&Array.isArray(b.parts)&&b.parts.length>0)&&info.patches.every(p=>ids.has(p.source))&&info.events.every(e=>ids.has(e.source))&&info.meta.every(m=>ids.has(m.source));
 }
+async function loadStore(){
+ let data=null,origin='unavailable';
+ try{
+  // This is public filtered JSON on our own GitHub branch, not the provider API.
+  // No API key or personalized player information ever reaches the browser.
+  const url=storePublicFeed+'?cache='+Math.floor(Date.now()/600000);
+  const response=await fetch(url,{cache:'no-store'});
+  if(response.ok){
+   const remote=await response.json();
+   if(WarRoomStore.validStore(remote)&&remote.status==='synced'){data=remote;origin='public-feed';
+    try{localStorage.setItem(storeCacheKey,JSON.stringify(remote))}catch(_e){}
+   }
+  }
+ }catch(_e){}
+ if(!data)try{
+  const saved=JSON.parse(localStorage.getItem(storeCacheKey)||'null');
+  if(WarRoomStore.validStore(saved)&&saved.status==='synced'){data=saved;origin='saved-copy'}
+ }catch(_e){}
+ if(!data)try{
+  const response=await fetch('./data/store.json',{cache:'no-store'});
+  if(response.ok){
+   const local=await response.json();
+   if(WarRoomStore.validStore(local)){data=local;origin='dated-example'}
+  }
+ }catch(_e){}
+ state.store={data,origin};
+ if(state.feed)render();
+}
 async function boot(){bindEvents();try{
  const response=await fetch('./data/intel.json',{cache:'no-store'});
  if(!response.ok)throw Error('Game information unavailable: HTTP '+response.status);
@@ -230,9 +259,9 @@ async function boot(){bindEvents();try{
  WarRoomLogic.weaponCatalog(info);
  state.feed=info;state.offlineCopy=navigator.onLine===false||response.headers.get('X-WarRoom-Saved')==='true';
  try{localStorage.setItem(intelCacheKey,JSON.stringify(info))}catch(_e){}
- render();
+ render();loadStore();
  }catch(error){console.warn('War Room game information unavailable',error);
- try{const saved=JSON.parse(localStorage.getItem(intelCacheKey)||'null');if(usableIntel(saved)){WarRoomLogic.weaponCatalog(saved);state.feed=saved;state.offlineCopy=true;render();return}}catch(_e){}
+ try{const saved=JSON.parse(localStorage.getItem(intelCacheKey)||'null');if(usableIntel(saved)){WarRoomLogic.weaponCatalog(saved);state.feed=saved;state.offlineCopy=true;render();loadStore();return}}catch(_e){}
  $('appMain').innerHTML=`<div class="panel"><div class="eyebrow">GAME INFO UNAVAILABLE</div><h1 style="margin:8px 0">Couldn't load game info</h1><p class="subtext">The latest information couldn't be verified, and no saved copy is available. Open War Room online to save a copy for offline use.</p><button class="cta" id="retryBoot" type="button" onclick="location.reload()">Retry loading</button></div>`}}
 boot();
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
