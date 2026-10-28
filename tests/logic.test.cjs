@@ -72,7 +72,7 @@ function loadoutHarness() {
   const context = vm.createContext({
     console, document, window: { scrollTo() {} },
     navigator: { onLine: true }, localStorage: { getItem() { return null; }, setItem() {} },
-    WarRoomLogic: require('../logic.js'), WarRoomStore: require('../store.js'), URL, setTimeout, clearTimeout
+    WarRoomLogic: require('../logic.js'), WarRoomStore: require('../store.js'), WarRoomArsenal: require('../arsenal.js'), URL, setTimeout, clearTimeout
   });
   vm.runInContext(app.slice(0, bootIndex), context, { filename: 'app.js' });
   context.testIntel = data;
@@ -401,4 +401,51 @@ test('cinematic artwork files have unique identities and retain mobile-size boun
   return crypto.createHash('sha256').update(data).digest('hex');
  });
  assert.equal(new Set(hashes).size,10,'all ten weapons should have distinct illustrations');
+});
+
+
+test('full arsenal view includes all 33 official launch entries without fabricating ranks or builds',()=>{
+ const h=loadoutHarness();
+ const original=h.elements.appMain.innerHTML;
+ assert.match(original,/Top Weapons/);
+ h.click({page:'weapons'});
+ const ranked=h.elements.appMain.innerHTML;
+ assert.match(ranked,/Rankings & Loadouts/);
+ h.click({arsenalMode:'all'});
+ assert.equal(vm.runInContext('state.arsenalMode',h.context),'all');
+ let view=h.elements.appMain.innerHTML;
+ assert.match(view,/33 weapons listed in the official MW4 launch guide/);
+ assert.match(view,/All 33 Weapons/);
+ assert.match(view,/OFFICIAL REFERENCE/);
+ assert.match(view,/original, unofficial, and illustrative/);
+ const cards=[...view.matchAll(/class="arsenal-item"/g)];
+ assert.equal(cards.length,33);
+ assert.doesNotMatch(view,/1\.42 K\/D/);
+ assert.doesNotMatch(view,/unlocked at level \d+/i);
+ assert.match(view,/FSS Carbon Edge 1095/);
+ assert.match(view,/PM-40 Anvil/);
+ h.click({arsenalCategory:'Pistol'});
+ view=h.elements.appMain.innerHTML;
+ assert.equal((view.match(/class="arsenal-item"/g)||[]).length,4);
+ assert.match(view,/Mojave \.357/);
+ assert.doesNotMatch(view,/class="arsenal-item"[^>]*data-weapon="HAN 86"/);
+ h.click({arsenalCategory:'All'});
+ h.click({arsenalMode:'ranked'});
+ assert.equal(vm.runInContext('state.arsenalMode',h.context),'ranked');
+ assert.match(h.elements.appMain.innerHTML,/Rankings & Loadouts/);
+ assert.doesNotMatch(h.elements.appMain.innerHTML,/class="arsenal-item"/);
+});
+
+test('full arsenal preserves sourced weapon handoff and official-only reference links',()=>{
+ const h=loadoutHarness();
+ h.click({page:'weapons'});
+ h.click({arsenalMode:'all'});
+ let page=h.elements.appMain.innerHTML;
+ assert.match(page,/data-arsenal-mode="ranked" data-weapon="HAN 86"/);
+ assert.match(page,/official MW4 launch guide/);
+ assert.match(page,/callofduty\.com\/blog\/2026\/10/);
+ h.click({arsenalMode:'ranked',page:'weapons',weapon:'HAN 86',reveal:'loadout'});
+ assert.equal(vm.runInContext('state.arsenalMode',h.context),'ranked');
+ assert.equal(vm.runInContext('state.weapon',h.context),'HAN 86');
+ assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
 });
