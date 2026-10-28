@@ -2,16 +2,16 @@
   "schema": 1,
   "provider": "itemshop.gg",
   "game": "call-of-duty",
-  "status": "sample",
-  "shopDate": "2026-10-27",
-  "updatedAt": "2026-10-27T05:05:02Z",
-  "checkedAt": null,
-  "stale": true,
+  "status": "synced",
+  "shopDate": "2026-10-28",
+  "updatedAt": "2026-10-27T17:05:01Z",
+  "checkedAt": "2026-10-28T00:52:42Z",
+  "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
     "url": "https://itemshop.gg/call-of-duty"
   },
-  "note": "Documentation example only, dated October 27, 2026. Not a live store feed. Connect the provider API key to enable automatic snapshots.",
+  "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
     {
       "id": "cod:bundle:6773",
@@ -38,6 +38,46 @@
         {
           "name": "Relentless",
           "type": "Operator Skin"
+        },
+        {
+          "name": "Forged Resolve",
+          "type": "Weapon"
+        },
+        {
+          "name": "Still Standing",
+          "type": "Weapon"
+        },
+        {
+          "name": "Worth Fighting For",
+          "type": "Weapon"
+        },
+        {
+          "name": "Steel Talon",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Earned, Not Given",
+          "type": "Emblem"
+        },
+        {
+          "name": "Nice Try",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Blood, Sweat, & Sand",
+          "type": "Loading Screen"
+        },
+        {
+          "name": "Forged in Valor",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Double XP Token",
+          "type": "Consumable"
+        },
+        {
+          "name": "Double Weapon XP Token",
+          "type": "Consumable"
         }
       ]
     }
