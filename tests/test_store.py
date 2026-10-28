@@ -108,6 +108,12 @@ class StoreProjectionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.project(p)
 
+    def test_root_domain_attribution_supported_per_api_docs(self):
+        p = payload()
+        p["meta"]["attribution"]["url"] = "https://itemshop.gg"
+        data = self.project(p)
+        self.assertEqual(data["attribution"]["url"], "https://itemshop.gg")
+
     def test_unattributed_response_rejected(self):
         p = payload()
         p["meta"]["attribution"]["url"] = "https://unrelated.example/"
