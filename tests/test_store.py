@@ -86,6 +86,14 @@ class StoreProjectionTests(unittest.TestCase):
         data = self.project(payload(mw4=[]))
         self.assertEqual(data["items"], [])
 
+    def test_absent_mw4_section_preserves_previous_known_listing(self):
+        p = payload()
+        p["data"]["sections"] = [
+            {"title": "Spotlight", "upcoming": False, "items": [item("bo7:9", "BO7 Only")]}
+        ]
+        with self.assertRaisesRegex(ValueError, "section absent or renamed"):
+            self.project(p)
+
     def test_duplicate_keys_are_ignored(self):
         data = self.project(payload(mw4=[item(), item()]))
         self.assertEqual(len(data["items"]), 1)

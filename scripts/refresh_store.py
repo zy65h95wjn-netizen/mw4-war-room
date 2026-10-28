@@ -91,12 +91,14 @@ def transform(payload: dict, *, checked_at: str) -> dict:
 
     items = []
     seen = set()
+    recognized_mw4_section = False
     for section in data["sections"]:
         if not isinstance(section, dict):
             continue
         # This is intentionally strict: BO7/WZ-only listings must not leak into MW4.
         if safe_text(section.get("title"), 90).casefold() != "modern warfare 4":
             continue
+        recognized_mw4_section = True
         rows = section.get("items")
         if not isinstance(rows, list):
             raise ValueError("Invalid Modern Warfare 4 shop items")
@@ -150,6 +152,8 @@ def transform(payload: dict, *, checked_at: str) -> dict:
                 break
         if len(items) >= MAX_ITEMS:
             break
+    if not recognized_mw4_section:
+        raise ValueError("MW4 section absent or renamed; preserving last good Store snapshot")
     # This is a small display projection, not an API key, full provider response,
     # archive of every COD item, or claim about personalized in-game inventory.
     return {
