@@ -40,7 +40,7 @@ def safe_url(value: object, hosts: set[str]) -> str | None:
     except ValueError:
         return None
     if (p.scheme != "https" or p.hostname not in hosts or p.username
-            or p.password or p.fragment or not p.path.startswith("/")):
+            or p.password or p.fragment or (p.path and not p.path.startswith("/"))):
         return None
     return value
 
