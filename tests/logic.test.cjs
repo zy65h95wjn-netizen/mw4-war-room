@@ -305,3 +305,45 @@ test('Store changes do not replace the five established War Room destinations', 
   assert.match(page,/grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
   assert.match(page,/src="store.js" defer/);
 });
+
+
+test('iPhone Overview starts with real source-separated weapons and no duplicate shortcut strip',()=>{
+ const h=loadoutHarness();
+ const body=h.elements.appMain.innerHTML;
+ const mobile=body.slice(body.indexOf('<div class="mobile-overview">'),body.indexOf('<div class="desktop-overview">'));
+ assert.match(mobile,/Top Weapons/);
+ assert.match(mobile,/Latest Updates/);
+ assert.match(mobile,/Featured Store/);
+ assert.ok(mobile.indexOf('Top Weapons')<mobile.indexOf('Latest Updates'));
+ assert.ok(mobile.indexOf('Latest Updates')<mobile.indexOf('Featured Store'));
+ assert.doesNotMatch(mobile,/class="brief-mast"/);
+ assert.doesNotMatch(mobile,/class="mobile-shortcuts"/);
+ assert.doesNotMatch(mobile,/1\.42|1\.31|1\.28|1\.25|K\/D/);
+ const rows=[...mobile.matchAll(/class="mobile-weapon mobile-weapon--(cod|wz)"[^>]*data-source="(cod|wz)"[^>]*data-page="weapons"[^>]*data-weapon="([^"]+)"/g)].map(x=>[x[1],x[2],x[3]]);
+ assert.deepEqual(rows,[['cod','cod','HAN 86'],['wz','wz','Axion'],['cod','cod','VEL 46'],['wz','wz','ISO Nightshade']]);
+ assert.match(mobile,/CODMunity · #1 Overall/);
+ assert.match(mobile,/WZStats · #1 AR/);
+ assert.match(mobile,/Launch fixes: XP and class editing/);
+ assert.match(mobile,/Season 1/);
+ assert.match(mobile,/Data from itemshop\.gg/);
+});
+
+test('mobile category filters and weapon tap preserve legitimate ranking provenance',()=>{
+ const h=loadoutHarness();
+ h.click({featuredCategory:'SMG'});
+ let mobile=h.elements.appMain.innerHTML.split('<div class="desktop-overview">')[0];
+ assert.equal((mobile.match(/class="mobile-weapon mobile-weapon--/g)||[]).length,2);
+ assert.match(mobile,/VEL 46/);
+ assert.match(mobile,/ISO Nightshade/);
+ assert.doesNotMatch(mobile,/class="mobile-weapon[^"]*"[^>]*data-weapon="HAN 86"/);
+ assert.match(mobile,/data-featured-category="SMG" aria-pressed="true"/);
+ h.click({featuredCategory:'Sniper'});
+ mobile=h.elements.appMain.innerHTML.split('<div class="desktop-overview">')[0];
+ assert.equal((mobile.match(/class="mobile-weapon mobile-weapon--/g)||[]).length,1);
+ assert.match(mobile,/KG-7 Vulcan/);
+ h.click({source:'wz',page:'weapons',weapon:'Axion',reveal:'loadout'});
+ assert.equal(vm.runInContext('state.source',h.context),'wz');
+ assert.equal(vm.runInContext('state.weapon',h.context),'Axion');
+ assert.equal(vm.runInContext('state.page',h.context),'weapons');
+ assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
+});
