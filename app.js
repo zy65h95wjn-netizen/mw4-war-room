@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeURL=s=>typeof s==='string'&&s.startsWith('https://')?s:'#';
 const tabs=[['brief','⌂','Overview'],['weapons','⌖','Weapons'],['updates','≡','Updates'],['events','◉','Events'],['pass','▤','Pass'],['store','▣','Store']];
-const state={page:'brief',source:'cod',category:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false,store:{data:null,origin:'loading'}};
+const state={page:'brief',source:'cod',category:'All',featuredCategory:'All',weapon:'HAN 86',buildId:'han-iron',ironOnly:true,search:'',feed:null,offlineCopy:false,store:{data:null,origin:'loading'}};
 const prefKey='mw4-warroom-prefs-v02';
 try{const p=JSON.parse(localStorage.getItem(prefKey)||'{}');if(typeof p.ironOnly==='boolean')state.ironOnly=p.ironOnly;if(p.source==='cod'||p.source==='wz')state.source=p.source}catch(_e){}
 const settingsSave=()=>{try{localStorage.setItem(prefKey,JSON.stringify({ironOnly:state.ironOnly,source:state.source}))}catch(_e){}};
@@ -23,7 +23,15 @@ function headline(title,sub,label='GAME INFO'){return `<div class="heading"><div
 function section(title,right=''){return `<div class="section-line"><h2>${escapeHTML(title)}</h2>${right}</div>`}
 function btnTo(page,label,style='secondary'){return `<button class="cta ${style}" data-page="${page}" type="button">${escapeHTML(label)}</button>`}
 function sourcePanelFooter(ids){return `<div class="small-rule"></div><div class="spread" style="flex-wrap:wrap">${ids.map(id=>anchor(id,source(id).name)).join('')}</div>`}
-function nav(){const wrap=$('bottomNav');wrap.innerHTML=tabs.map(([p,ic,l])=>`<button type="button" data-page="${p}" aria-label="${l}" ${state.page===p?'aria-current="page"':''} class="${state.page===p?'active':''}"><span class="symbol" aria-hidden="true">${ic}</span>${l}</button>`).join('')}
+const navIcons={
+ brief:'<svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>',
+ weapons:'<svg viewBox="0 0 24 24"><path d="M3 11h18M12 3v18M5.4 5.4l13.2 13.2M18.6 5.4 5.4 18.6"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.4"/></svg>',
+ updates:'<svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 10h8M8 14h8M8 18h6M16 3v4h3"/></svg>',
+ events:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/><path d="m12 13 1.1 2.2 2.4.4-1.8 1.7.5 2.3-2.2-1.1-2.2 1.1.5-2.3-1.8-1.7 2.4-.4z"/></svg>',
+ pass:'<svg viewBox="0 0 24 24"><path d="m12 2 8 4v6c0 5-4 8-8 10-4-2-8-5-8-10V6z"/><path d="m12 7 1.5 3.2 3.5.5-2.5 2.4.6 3.5-3.1-1.7-3.1 1.7.6-3.5L7 10.7l3.5-.5z"/></svg>',
+ store:'<svg viewBox="0 0 24 24"><path d="M5 9h14l-1 12H6zM9 10V7a3 3 0 0 1 6 0v3M4 9h16"/></svg>'
+};
+function nav(){const wrap=$('bottomNav');wrap.innerHTML=tabs.map(([p,ic,l])=>`<button type="button" data-page="${p}" aria-label="${l}" ${state.page===p?'aria-current="page"':''} class="${state.page===p?'active':''}"><span class="symbol" aria-hidden="true">${navIcons[p]||ic}</span>${l}</button>`).join('')}
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>el.classList.remove('show'),2400)}
 function go(page){state.page=(page==='builds'||page==='meta')?'weapons':page;window.scrollTo(0,0);render()}
 function featured(){return state.feed.builds.find(b=>b.id==='han-iron')}
@@ -96,7 +104,7 @@ function storePage(){
  <div class="detail">This is not your personal in-game Store. Offers and prices can differ by platform or account. A missing price does not mean an item is free; verify the official store before purchasing.</div>`;
 }
 
-function briefing(){
+function briefingDesktop(){
  const p=state.feed.patches[0],b=state.feed.battlePass;
  const metaA=state.feed.meta.find(s=>s.id==='cod'),metaB=state.feed.meta.find(s=>s.id==='wz');
  const leaders=category=>[metaA,metaB].map(board=>({board,entry:board.entries.filter(e=>e.category===category).sort((a,b)=>a.rank-b.rank)[0]||null}));
@@ -142,6 +150,95 @@ function briefing(){
  <div class="brief-provenance"><span>Source-reviewed info · not live rankings</span>${anchor('officialIndex','Official patch notes')}</div>
  ${storePreview()}`;
 }
+
+/* iPhone-first esports Overview. Display order is not an invented combined ranking. */
+function mobileWeaponArt(){
+ return '<svg viewBox="0 0 150 55" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="#d6e0e9" stroke-width="1.4" d="M8 22h14v-3h21v-7h18v-4h32v5h29v5h12v5h7v8h-16v4h-14l-5 11H84l-7-11H62l-5 12H45l-4-17H25l-3 8H12l2-12H8z"/><path stroke="#102230" stroke-width="2.4" fill="none" d="M25 23h97m-74-4h31M58 17v15m34-14v14M43 28h29M96 28h30"/><path fill="#e0a659" d="M74 29h5l4 13h-5z"/></svg>';
+}
+function mobilePicks(){
+ const boards=state.feed.meta.filter(board=>board.id==='cod'||board.id==='wz');
+ const categories=state.featuredCategory==='All'?['AR','SMG']:[state.featuredCategory];
+ const picks=[];
+ const seen=new Set();
+ for(const category of categories){
+  for(const board of boards){
+   const entry=board.entries.filter(x=>x.category===category).sort((a,b)=>a.rank-b.rank)[0];
+   if(entry&&!seen.has(entry.weapon)){picks.push({board,entry});seen.add(entry.weapon)}
+  }
+ }
+ return picks;
+}
+function mobileWeaponRow({board,entry}){
+ const overall=board.rankingType==='Overall editorial top five';
+ const rankType=overall?'Overall':entry.category;
+ const rank=String(entry.rank).padStart(2,'0');
+ return '<button type="button" class="mobile-weapon mobile-weapon--'+escapeHTML(board.id)+'" data-source="'+escapeHTML(board.id)+'" data-page="weapons" data-weapon="'+escapeHTML(entry.weapon)+'" data-reveal="loadout" aria-label="View '+escapeHTML(entry.weapon)+' loadout: '+escapeHTML(board.name)+', rank '+entry.rank+' '+escapeHTML(rankType)+'">'+
+ '<span class="mobile-weapon__rank" aria-hidden="true">'+escapeHTML(rank)+'</span>'+
+ '<span class="mobile-weapon__art">'+mobileWeaponArt()+'</span>'+
+ '<span class="mobile-weapon__label"><strong class="mobile-weapon__name">'+escapeHTML(entry.weapon)+'</strong>'+
+ '<span class="mobile-weapon__source">'+escapeHTML(board.name)+' · #'+entry.rank+' '+escapeHTML(rankType)+'</span></span>'+
+ '<span class="mobile-weapon__arrow" aria-hidden="true">›</span></button>';
+}
+function mobileUpdateIcon(kind){
+ const icons={
+  patch:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M8 3h9l3 3v15H5V3h3m2 7h7m-7 4h7m-7 4h5M16 3v4h4"/></svg>',
+  event:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m9 3h2m-2 4h4"/></svg>',
+  pass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m12 2 8 4v6c0 5-4 8-8 10-4-2-8-5-8-10V6zM9 12l2 2 4-4"/></svg>'
+ };
+ return icons[kind]||icons.patch;
+}
+function mobileUpdateRow({page,kind,title,detail,date}){
+ return '<button class="mobile-update mobile-update--'+kind+'" type="button" data-page="'+page+'" aria-label="View '+escapeHTML(title)+' in '+(page==='pass'?'Battle Pass':page==='events'?'Events':'Updates')+'">'+
+ '<span class="mobile-update__art">'+mobileUpdateIcon(kind)+'</span>'+
+ '<span class="mobile-update__body"><strong>'+escapeHTML(title)+'</strong><span>'+escapeHTML(detail)+'</span></span>'+
+ '<span class="mobile-update__date">'+escapeHTML(date)+'</span>'+
+ '<span class="mobile-update__arrow" aria-hidden="true">›</span></button>';
+}
+function mobileStorePreview(){
+ const feed=state.store.data,item=feed?.items?.[0],sample=feed?.status==='sample';
+ return '<section class="mobile-group" aria-labelledby="mobile-store-heading">'+
+ '<div class="mobile-group__title"><h2 id="mobile-store-heading">Featured Store</h2>'+
+ '<button type="button" data-page="store">View all <span aria-hidden="true">→</span></button></div>'+
+ '<div class="mobile-store">'+
+ (item?storeCard(item,{compact:true,sample}):
+ '<div class="mobile-store__message">'+escapeHTML(feed?'No MW4 bundles appear in this source snapshot.':'Loading Store details…')+'</div>')+
+ '<div class="mobile-store__provenance">'+storeProviderLink(feed)+
+ '<span>'+escapeHTML(storeNotice(feed))+'</span></div></div></section>';
+}
+function mobileBriefing(){
+ const boards=state.feed.meta.filter(board=>board.id==='cod'||board.id==='wz');
+ const choices=['All',...['AR','SMG','Sniper'].filter(category=>boards.some(b=>b.entries.some(e=>e.category===category)))];
+ if(!choices.includes(state.featuredCategory))state.featuredCategory='All';
+ const picks=mobilePicks();
+ const p=state.feed.patches[0],b=state.feed.battlePass;
+ const today=new Date();today.setHours(0,0,0,0);
+ const next=state.feed.events.filter(e=>dateVal(e.starts)>=today).sort((a,c)=>a.starts.localeCompare(c.starts))[0];
+ const rows=[
+  {page:'updates',kind:'patch',title:p.title,detail:'Official patch notes · reviewed '+pretty(state.feed.reviewedSections.patches),date:pretty(p.date)},
+  {page:'events',kind:'event',title:next?next.title:'Event calendar',detail:next?'Listed '+pretty(next.starts)+' · '+(next.scheduleConfidence==='official'?'announced':'reported'):'Check announced events',date:next?pretty(next.starts):'—'},
+  {page:'pass',kind:'pass',title:b.label,detail:'Battle Pass · '+escapeHTML(b.startConfidence||'reported date'),date:pretty(b.start)}
+ ];
+ return dataNotice()+'<div class="mobile-briefing"><h1 class="mobile-sr-only">Overview</h1>'+
+ '<section class="mobile-group" aria-labelledby="mobile-weapons-heading">'+
+ '<div class="mobile-group__title"><h2 id="mobile-weapons-heading">Top Weapons</h2>'+
+ '<button type="button" data-page="weapons">View all <span aria-hidden="true">→</span></button></div>'+
+ '<div class="mobile-filter" role="group" aria-label="Featured weapon category">'+
+ choices.map(c=>'<button type="button" data-featured-category="'+escapeHTML(c)+'" aria-pressed="'+(c===state.featuredCategory)+'">'+escapeHTML(c)+'</button>').join('')+
+ '</div><div class="mobile-weapons">'+
+ (picks.length?picks.map(mobileWeaponRow).join(''):'<p class="mobile-empty">No ranked weapons in this category in the reviewed sources.</p>')+
+ '</div><div class="mobile-microcopy">'+freshness('meta')+
+ '<span>Publisher ranks are separate, not one combined leaderboard.</span></div></section>'+
+ '<section class="mobile-group" aria-labelledby="mobile-updates-heading">'+
+ '<div class="mobile-group__title"><h2 id="mobile-updates-heading">Latest Updates</h2>'+
+ '<button type="button" data-page="updates">View all <span aria-hidden="true">→</span></button></div>'+
+ '<div class="mobile-updates">'+rows.map(mobileUpdateRow).join('')+'</div>'+
+ '<div class="mobile-microcopy">Reviewed snapshot · verify current announcements in the source pages.</div></section>'+
+ mobileStorePreview()+'</div>';
+}
+function briefing(){
+ return '<div class="mobile-overview">'+mobileBriefing()+'</div><div class="desktop-overview">'+briefingDesktop()+'</div>';
+}
+
 function weaponHub(){
  const catalog=WarRoomLogic.weaponCatalog(state.feed);
  const board=state.feed.meta.find(m=>m.id===state.source)||state.feed.meta[0];
@@ -198,6 +295,7 @@ function bindEvents(){document.addEventListener('click',event=>{
  const button=event.target.closest('button');if(!button)return;
  if(button.id==='sourcesBtn'){ $('sheetContent').innerHTML=sourcesSheet();$('overlay').hidden=false;$('closeSheet').focus();return }
  if(button.id==='closeSheet'){$('overlay').hidden=true;$('sourcesBtn').focus();return}
+ if(button.dataset.featuredCategory){state.featuredCategory=button.dataset.featuredCategory;render();return}
  if(button.dataset.source){state.source=button.dataset.source;settingsSave()}
  if(button.dataset.category){state.category=button.dataset.category;render();return}
  // Events and Battle Pass have their own navigation destinations.
