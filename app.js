@@ -39,6 +39,63 @@ function leaderCard(board,entry){
  <span class="leader-card__bottom"><span>${escapeHTML(pretty(board.updated))}</span><span class="leader-card__action">VIEW LOADOUT <span aria-hidden="true">↗</span></span></span>
  </button>`;
 }
+
+const storeCacheKey='mw4-warroom-store-v1';
+const storePublicFeed='https://raw.githubusercontent.com/zy65h95wjn-netizen/mw4-war-room/store-feed/data/store.json';
+function storeProviderLink(feed){
+ const url=WarRoomStore.safeLink(feed?.attribution?.url,new Set(['itemshop.gg']))||WarRoomStore.STORE_URL;
+ return `<a class="source-link" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">Data from itemshop.gg <span aria-hidden="true">↗</span></a>`;
+}
+function storeNotice(feed){
+ if(!feed)return 'Checking public Store information…';
+ if(feed.status==='sample')return 'Example from October 27 · live Store updates not connected yet.';
+ const when=new Date(feed.checkedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+ if(feed.stale)return 'Provider reports outdated Store data · checked '+when+'.';
+ if(!WarRoomStore.isFresh(feed))return 'Last checked '+when+' · may be outdated.';
+ return 'Public web-store listing checked '+when+'.';
+}
+function storeArt(item){
+ const image=WarRoomStore.safeLink(item.image,new Set(['cdn.source.gs','itemshop.gg','mw4.source.gs']));
+ return image?`<img loading="lazy" decoding="async" src="${escapeHTML(image)}" alt="${escapeHTML(item.name)} bundle artwork">`:'<div class="store-art-fallback" aria-hidden="true">MW4</div>';
+}
+function storeCard(item,{compact=false,sample=false}={}){
+ const price=WarRoomStore.displayPrice(item.price);
+ const link=WarRoomStore.safeLink(item.officialUrl,new Set(['callofduty.com','www.callofduty.com']))||WarRoomStore.STORE_URL;
+ const c=item.contents||[];
+ const label=item.upcoming?'UPCOMING':sample?'EXAMPLE · NOT LIVE':item.badge||'MW4 WEB STORE';
+ return `<article class="store-card ${compact?'store-card--compact':''}">
+  <div class="store-card__art">${storeArt(item)}</div>
+  <div class="store-card__info">
+   <div class="store-card__label">${escapeHTML(label)}</div>
+   <h3>${escapeHTML(item.name)}</h3>
+   <div class="store-card__type">${escapeHTML(item.type||'Bundle')}</div>
+   <div class="store-card__price">${escapeHTML(price)}</div>
+   ${!compact&&c.length?`<details class="store-contents"><summary>What's included (${c.length}${sample?' shown':''})</summary><ul>${c.map(v=>`<li>${escapeHTML(v.name)} <span>${escapeHTML(v.type)}</span></li>`).join('')}</ul></details>`:''}
+   <a class="store-card__link" target="_blank" rel="noopener noreferrer" href="${escapeHTML(link)}">${item.officialUrl?'Official bundle details':'View source listing'} <span aria-hidden="true">↗</span></a>
+  </div>
+ </article>`;
+}
+function storePreview(){
+ const feed=state.store.data,example=feed?.status==='sample',item=feed?.items?.[0];
+ return `${section('New in Store',tag(feed?.status==='synced'&&!feed.stale?'PUBLIC STORE':'NOT LIVE','muted'))}
+ <div class="store-preview">
+  <div class="store-preview__header"><span>${escapeHTML(storeNotice(feed))}</span>${storeProviderLink(feed)}</div>
+  ${item?storeCard(item,{compact:true,sample:example}):`<p class="subtext" style="padding:15px 0">${feed?'No MW4 bundles appear in this source snapshot.':'Loading Store details…'}</p>`}
+  <div class="store-preview__footer"><span>Public web listings only · in-game offers may differ.</span><button type="button" class="cta secondary" data-page="store">Browse Store</button></div>
+ </div>`;
+}
+function storePage(){
+ const feed=state.store.data,items=feed?.items||[],sample=feed?.status==='sample';
+ return `${headline('Store','MW4 bundles, blueprints and cosmetics from the public web store.','STORE & BUNDLES')}
+ <section class="panel flat">
+  <div class="spread" style="flex-wrap:wrap;gap:8px"><strong>${sample?'Dated Example':feed?.status==='synced'?'Public MW4 Listings':'Store Connection'}</strong>${tag(sample?'NOT LIVE':feed?.stale?'SOURCE STALE':feed?.status==='synced'?'SYNCED':'NOT CONNECTED',sample||feed?.stale?'amber':'muted')}</div>
+  <p class="subtext" style="margin:9px 0">${escapeHTML(storeNotice(feed))}</p>
+  <div class="spread" style="flex-wrap:wrap">${storeProviderLink(feed)}<a class="source-link" href="https://www.callofduty.com/en/store" target="_blank" rel="noopener noreferrer">Official Call of Duty Store ↗</a></div>
+ </section>
+ ${items.length?`<div class="store-list">${items.map(item=>storeCard(item,{sample})).join('')}</div>`:`<div class="panel flat"><h2>${feed?'No MW4 bundles listed':'Store data not available yet'}</h2><p class="subtext" style="margin-top:8px">${feed?'The source has no MW4 web-store listings in the latest available snapshot.':'The public Store feed has not been connected yet. No personal account sign-in is needed.'}</p></div>`}
+ <div class="detail">This is not your personal in-game Store. Offers and prices can differ by platform or account. A missing price does not mean an item is free; verify the official store before purchasing.</div>`;
+}
+
 function briefing(){
  const p=state.feed.patches[0],b=state.feed.battlePass;
  const metaA=state.feed.meta.find(s=>s.id==='cod'),metaB=state.feed.meta.find(s=>s.id==='wz');
