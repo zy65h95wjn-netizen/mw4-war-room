@@ -88,7 +88,7 @@ test('premium visual shell remains responsive and preserves navigation semantics
  assert.match(markup,/@media\(prefers-reduced-motion:reduce\)/);
  assert.match(markup,/id="sourcesBtn"/);
  const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
- assert.match(sw,/mw4-warroom-v044-original-arsenal-review/);
+ assert.match(sw,/mw4-warroom-v045-complete-arsenal-review/);
  assert.match(sw,/\.\/data\/intel\.json/);
  assert.match(sw,/\.\/data\/store\.json/);
 });
