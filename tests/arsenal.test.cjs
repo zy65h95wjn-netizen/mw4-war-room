@@ -57,9 +57,9 @@ test('arsenal loads with separate stylesheet and no changes to Store credentials
  const index=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
  const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
  const css=fs.readFileSync(path.join(__dirname,'../arsenal.css'),'utf8');
- assert.match(index,/src="arsenal\.js" defer/);
- assert.match(index,/href="arsenal\.css"/);
- assert.ok(index.indexOf('src="arsenal.js"')<index.indexOf('src="app.js"'));
+ assert.match(index,/src="arsenal\.js\?v=armory-20261028-1" defer/);
+ assert.match(index,/href="arsenal\.css\?v=armory-20261028-1"/);
+ assert.ok(index.indexOf('src="arsenal.js?v=')<index.indexOf('src="app.js?v='));
  assert.match(sw,/\.\/arsenal\.js/);
  assert.match(sw,/\.\/arsenal\.css/);
  assert.match(sw,/\.\/art\/featured\/full-arsenal-atlas\.webp/);
