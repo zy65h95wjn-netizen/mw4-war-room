@@ -74,37 +74,14 @@ test('client avoids a false live store when source is an example',()=>{
 });
 
 
-test('premium visual shell remains responsive and preserves navigation semantics',()=>{
+test('armory shell preserves navigation accessibility responsive and reduced-motion rules',()=>{
  const markup=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
- const header=markup.indexOf('</header>');
- const nav=markup.indexOf('<nav class="nav" aria-label="Main navigation">');
- const main=markup.indexOf('<main id="appMain"');
- assert.ok(header!==-1&&header<nav&&nav<main,'navigation follows header and precedes main content');
+ const css=fs.readFileSync(path.join(__dirname,'../armory.css'),'utf8');
+ const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
+ assert.ok(markup.indexOf('</header>')<markup.indexOf('<nav class="nav"'));
+ assert.ok(markup.indexOf('<nav class="nav"')<markup.indexOf('<main id="appMain"'));
  assert.equal((markup.match(/id="bottomNav"/g)||[]).length,1);
- assert.match(markup,/v0\.4\.1 · EMBER \/ GUNMETAL/);
- assert.match(markup,/\.store-list:has\(> \.store-card:only-child\)/);
- assert.match(markup,/@media\(min-width:900px\)/);
- assert.match(markup,/@media\(max-width:399px\)/);
- assert.match(markup,/@media\(prefers-reduced-motion:reduce\)/);
- assert.match(markup,/id="sourcesBtn"/);
- const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
- assert.match(sw,/mw4-warroom-v045-complete-arsenal-review/);
- assert.match(sw,/\.\/data\/intel\.json/);
- assert.match(sw,/\.\/data\/store\.json/);
-});
-
-
-test('iPhone esports styles retain source status, real Store links and six-tab navigation',()=>{
- const markup=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
- const css=fs.readFileSync(path.join(__dirname,'../esports-mobile.css'),'utf8');
- const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
- assert.match(markup,/href="esports-mobile\.css"/);
- assert.match(css,/\.mobile-overview/);
- assert.match(css,/\.desktop-overview/);
- assert.match(css,/\.mobile-store \.store-card--compact/);
- assert.match(css,/\.mobile-filter button\[aria-pressed="true"\]/);
- assert.match(css,/@media \(max-width:359px\)/);
- assert.match(css,/\.mobile-sr-only/);
- assert.match(sw,/\.\/esports-mobile\.css/);
- assert.match(markup,/id="bottomNav"/);
+ for(const term of ['prefers-reduced-motion:reduce','max-width:359px','min-width:760px','safe-area-inset-bottom','repeat(6,minmax(0,1fr))','focus-visible'])assert.ok(css.includes(term),term);
+ assert.match(markup,/href="armory.css"/);assert.match(markup,/src="armory-ui.js" defer/);
+ for(const file of ['armory.css','armory-ui.js','art/armory-room.png','data/intel.json','data/store.json'])assert.ok(sw.includes('./'+file),file);
 });

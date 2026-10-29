@@ -182,6 +182,8 @@ class SteamNewsTests(unittest.TestCase):
   stamp=int(datetime(2026,10,27,20,43,tzinfo=timezone.utc).timestamp())
   with TemporaryDirectory() as temp:
    saved_path=Path(temp)/"news.json"
+   intel_path=Path(temp)/"intel.json"
+   intel_path.write_text(json.dumps({"reviewedSections":REV}),encoding="utf-8")
    sample=feed([item("1234567","MW4 Patch Notes",ts=stamp)])
    with patch.object(w,"fetch",return_value=sample):
     with patch.object(sys,"argv",["steam_news_leads.py","--probe","--output",str(saved_path)]):
@@ -191,7 +193,7 @@ class SteamNewsTests(unittest.TestCase):
    self.assertEqual(saved[0]["publishedAt"],"2026-10-27 20:43 UTC")
    observed=[]
    with patch.object(w,"sync",side_effect=lambda items,body:observed.extend(items)):
-    with patch.object(sys,"argv",["steam_news_leads.py","--apply","--input",str(saved_path)]):
+    with patch.object(sys,"argv",["steam_news_leads.py","--apply","--input",str(saved_path),"--intel",str(intel_path)]):
      w.main()
    self.assertEqual(observed[0]["timestamp"],stamp)
    self.assertEqual(observed[0]["date"],"2026-10-27")

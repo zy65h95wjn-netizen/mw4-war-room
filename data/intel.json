@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "release": "0.3.0",
-  "reviewed": "2026-10-27",
+  "reviewed": "2026-10-28",
   "coverage": "Modern Warfare 4 multiplayer only",
   "sourcePolicy": "Multiplayer-only curated information with dated source references. Scheduled reviews detect stale data, not publisher changes. No third-party scraping, automatic publishing, or personal Activision account access.",
   "sources": [
@@ -70,6 +70,12 @@
       "name": "MW4.GG: roadmap dates",
       "url": "https://mw4.gg/news/mw4-roadmap/",
       "class": "Community"
+    },
+    {
+      "id": "wzAxion",
+      "name": "WZStats: Axion multiplayer build",
+      "url": "https://ssr.wzstats.gg/best-loadouts/axion-mw4",
+      "class": "Community"
     }
   ],
   "meta": [
@@ -77,12 +83,12 @@
       "id": "cod",
       "source": "cod",
       "name": "CODMunity",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "rankingType": "Overall editorial top five",
       "note": "Rank order reflects a single source’s overall multiplayer selections, not a universal or category-specific ranking.",
       "entries": [
         {
-          "weapon": "HAN 86",
+          "weapon": "Axion",
           "category": "AR",
           "rank": 1,
           "tier": "S"
@@ -100,14 +106,14 @@
           "tier": "S"
         },
         {
-          "weapon": "Hyeon Burst",
-          "category": "AR",
+          "weapon": "ISO Nightshade",
+          "category": "SMG",
           "rank": 4,
           "tier": "S"
         },
         {
-          "weapon": "ISO Nightshade",
-          "category": "SMG",
+          "weapon": "M4",
+          "category": "AR",
           "rank": 5,
           "tier": "S"
         }
@@ -117,7 +123,7 @@
       "id": "wz",
       "source": "wz",
       "name": "WZStats",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "rankingType": "Rank within weapon category",
       "note": "AR #1 and SMG #1 are separate rankings: don’t treat this list as overall positions.",
       "entries": [
@@ -185,7 +191,7 @@
       "category": "AR",
       "style": "Iron sights · balanced",
       "source": "esports",
-      "updated": "2026-10-21",
+      "updated": "2026-10-28",
       "optic": false,
       "editorPick": true,
       "description": "A published five-slot recoil/handling build that intentionally uses the HAN’s iron sights. No account or unlock assumptions.",
@@ -225,7 +231,7 @@
       "category": "AR",
       "style": "Versatile · source meta",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": true,
       "description": "Five-slot source build. Includes a red-dot sight; switch off the iron-sight preference to view this alternative.",
       "parts": [
@@ -256,8 +262,8 @@
       "weapon": "Axion",
       "category": "AR",
       "style": "Versatile · iron sights",
-      "source": "wz",
-      "updated": "2026-10-26",
+      "source": "wzAxion",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "Published WZStats multiplayer five-slot build. Its ranking differs from CODMunity’s, so compare the source.",
       "parts": [
@@ -289,7 +295,7 @@
       "category": "SMG",
       "style": "Versatile · iron sights",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "Five-slot multiplayer build focused on control and ready-up speed.",
       "parts": [
@@ -321,7 +327,7 @@
       "category": "SMG",
       "style": "Mobility · iron sights",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "Published alternative for faster objective play.",
       "parts": [
@@ -353,7 +359,7 @@
       "category": "SMG",
       "style": "Mobility · iron sights",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "Published mobile SMG build with extended drum magazine.",
       "parts": [
@@ -385,7 +391,7 @@
       "category": "AR",
       "style": "Versatile · iron sights",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "Published five-slot burst-rifle setup.",
       "parts": [
@@ -417,7 +423,7 @@
       "category": "AR",
       "style": "Precision · iron sights",
       "source": "vGC",
-      "updated": "2026-10-26",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "VGC’s five-slot setup keeps the stock in place rather than using an optic.",
       "parts": [
@@ -449,7 +455,7 @@
       "category": "SMG",
       "style": "Versatile · iron sights",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": false,
       "description": "Published aggressive SMG setup with no scope.",
       "parts": [
@@ -481,9 +487,9 @@
       "category": "Sniper",
       "style": "Sniper · magnified optic",
       "source": "builds",
-      "updated": "2026-10-27",
+      "updated": "2026-10-28",
       "optic": true,
-      "description": "Four ordinary slots plus Apex, as listed by the source. Included for sniper players; iron-sight preference hides it by default.",
+      "description": "Three ordinary attachments plus a separate Apex attachment, as listed by the source. Iron-sight preference hides this scoped build.",
       "parts": [
         [
           "Muzzle",
@@ -502,6 +508,17 @@
     }
   ],
   "patches": [
+    {
+      "date": "2026-10-28",
+      "title": "First weapon tuning: rifles and SMGs",
+      "scope": "Multiplayer + global",
+      "source": "officialPatch",
+      "bullet": [
+        "First broad weapon-tuning pass adjusts hit-location damage and SMG performance.",
+        "HAN 86: maximum damage range increased; neck and upper-torso multipliers reduced from 1.1 to 1.0.",
+        "M4 and Kastov 762 received maximum damage-range increases. See the official tables for every adjustment."
+      ]
+    },
     {
       "date": "2026-10-25",
       "title": "Launch fixes: XP and class editing",
@@ -525,12 +542,12 @@
     },
     {
       "date": "2026-10-23",
-      "title": "Launch-day patch and tuning watch",
+      "title": "Launch-day stability and progression fixes",
       "scope": "Multiplayer",
       "source": "officialPatch",
       "bullet": [
-        "Fixed multiplayer issues affecting Portable Radar and certain killstreak interactions.",
-        "Infinity Ward said further weapon tuning was under consideration; this is not a confirmed weapon nerf."
+        "Addressed crashes and stability issues across modes.",
+        "Fixed weapon Prestige display issues that could make Military Camos and Apex Attachments look locked again."
       ]
     }
   ],
@@ -559,10 +576,10 @@
       "starts": "2026-10-27",
       "ends": null,
       "endCertainty": null,
-      "source": "roadmap",
-      "summary": "Additional Multiplayer map reported on the official roadmap. Availability can vary during rollout.",
+      "source": "officialPatch",
+      "summary": "Shipment 24/7 was listed in the official October 27 playlist update. Check the current in-game playlist for availability.",
       "rewards": [],
-      "scheduleConfidence": "reported"
+      "scheduleConfidence": "official"
     },
     {
       "id": "possession",
@@ -571,10 +588,10 @@
       "starts": "2026-10-29",
       "ends": null,
       "endCertainty": null,
-      "source": "officialMaps",
+      "source": "roadmap",
       "summary": "Eliminate an enemy to possess their position and take over their loadout.",
       "rewards": [],
-      "scheduleConfidence": "official"
+      "scheduleConfidence": "reported"
     },
     {
       "id": "infected",
@@ -583,10 +600,10 @@
       "starts": "2026-10-30",
       "ends": null,
       "endCertainty": null,
-      "source": "officialMaps",
+      "source": "roadmap",
       "summary": "Survivor-versus-infected multiplayer mode returns ahead of Season 1.",
       "rewards": [],
-      "scheduleConfidence": "official"
+      "scheduleConfidence": "reported"
     }
   ],
   "battlePass": {
@@ -596,7 +613,7 @@
     "startConfidence": "Roadmap date reported by third-party outlets; exact launch hour not confirmed in official posts",
     "roadmapSource": "roadmap",
     "verifiedSource": "officialBP",
-    "officialSummary": "Activision confirms the Season 1 Battle Pass and a one-season BlackCell entitlement; individual reward tiers were not published when this briefing was reviewed.",
+    "officialSummary": "Activision lists a one-season BlackCell entitlement with the Vault Edition. Preorders receive Season 1; purchases or upgrades after launch receive the first new season after the transaction. Individual reward tiers are not detailed in the cited offer.",
     "rewardCategories": [
       "New base weapons",
       "Weapon blueprints",
@@ -614,11 +631,11 @@
     "tiersKnown": false
   },
   "reviewedSections": {
-    "meta": "2026-10-27",
-    "builds": "2026-10-27",
-    "patches": "2026-10-27",
-    "events": "2026-10-27",
-    "battlePass": "2026-10-27"
+    "meta": "2026-10-28",
+    "builds": "2026-10-28",
+    "patches": "2026-10-28",
+    "events": "2026-10-28",
+    "battlePass": "2026-10-28"
   },
   "reviewLimitsDays": {
     "meta": 3,
