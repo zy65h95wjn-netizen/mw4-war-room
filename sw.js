@@ -1,8 +1,8 @@
 /* War Room v0.4.4 artwork review: loadout navigation fix; network-first verified-site cache with offline fallback.
    Editorial validation is performed in the app, before saving the last-good JSON.
 */
-const CACHE='mw4-warroom-v045-complete-arsenal-review';
-const CORE=['./','./index.html','./logic.js','./store.js','./app.js','./arsenal.js','./esports-mobile.css','./arsenal.css','./art/featured/full-arsenal-atlas.webp','./art/featured/han-86.webp','./art/featured/axion.webp','./art/featured/vel-46.webp','./art/featured/iso-nightshade.webp','./art/featured/kg-7-vulcan.webp','./art/featured/hyeon-burst.webp','./art/featured/m4.webp','./art/featured/kastov-762.webp','./art/featured/x-58-nyx.webp','./art/featured/ppsh-41.webp','./data/intel.json','./data/store.json','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
+const CACHE='mw4-warroom-armory-2026-10-28';
+const CORE=['./armory.css','./armory-ui.js','./art/armory-room.png','./','./index.html','./logic.js','./store.js','./app.js','./arsenal.js','./esports-mobile.css','./arsenal.css','./art/featured/full-arsenal-atlas.webp','./art/featured/han-86.webp','./art/featured/axion.webp','./art/featured/vel-46.webp','./art/featured/iso-nightshade.webp','./art/featured/kg-7-vulcan.webp','./art/featured/hyeon-burst.webp','./art/featured/m4.webp','./art/featured/kastov-762.webp','./art/featured/x-58-nyx.webp','./art/featured/ppsh-41.webp','./data/intel.json','./data/store.json','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
  await cache.addAll(CORE);
@@ -17,7 +17,7 @@ self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
  const url=new URL(event.request.url);
  if(url.origin!==self.location.origin)return;
- const critical=event.request.mode==='navigate'||/\/(?:intel\.json|app\.js|index\.html)$/.test(url.pathname);
+ const critical=event.request.mode==='navigate'||/\/(?:intel\.json|app\.js|armory-ui\.js|armory\.css|logic\.js|store\.js|arsenal\.js|arsenal\.css|index\.html)$/.test(url.pathname);
  if(critical){
   event.respondWith((async()=>{
    try{

@@ -1,5 +1,80 @@
 {
   "schema": 1,
   "policy": "Append-only source-review receipts required for changes to War Room curated intel; metadata does not constitute independent fact verification.",
-  "reviews": []
+  "reviews": [
+    {
+      "id": "armory-approved-2026-10-28-meta",
+      "section": "meta",
+      "checkedAt": "2026-10-28",
+      "reviewType": "community-reported",
+      "method": "human-source-review",
+      "sourceIds": [
+        "cod",
+        "wz"
+      ],
+      "evidenceNote": "Agent inspected the cited sources; owner reviewed the audit summary and explicitly approved the changes and publication in chat. This is owner signoff on the agent-assisted review, not a claim that the owner independently opened every source. CODMunity top five updated to Axion, VEL 46, KG-7 Vulcan, ISO Nightshade, M4. Existing WZStats category ranks verified; PPSh-41 corrected to A."
+    },
+    {
+      "id": "armory-approved-2026-10-28-builds",
+      "section": "builds",
+      "checkedAt": "2026-10-28",
+      "reviewType": "community-reported",
+      "method": "human-source-review",
+      "sourceIds": [
+        "builds",
+        "esports",
+        "vGC",
+        "wzAxion"
+      ],
+      "evidenceNote": "Agent inspected the cited sources; owner reviewed the audit summary and explicitly approved the changes and publication in chat. This is owner signoff on the agent-assisted review, not a claim that the owner independently opened every source. All ten attachment sets checked against their named sources. Corrected KG-7 prose from four to three ordinary attachments plus Apex. Axion links directly to its MP build. Updated dates represent this review, not original publication."
+    },
+    {
+      "id": "armory-approved-2026-10-28-patches",
+      "section": "patches",
+      "checkedAt": "2026-10-28",
+      "reviewType": "official-confirmed",
+      "method": "human-source-review",
+      "sourceIds": [
+        "officialPatch"
+      ],
+      "evidenceNote": "Agent inspected the cited sources; owner reviewed the audit summary and explicitly approved the changes and publication in chat. This is owner signoff on the agent-assisted review, not a claim that the owner independently opened every source. Added October 28 official tuning summary. Replaced broad October 23 wording with confirmed stability and Prestige UI fixes. October 24 and 25 summaries verified."
+    },
+    {
+      "id": "armory-approved-2026-10-28-events",
+      "section": "events",
+      "checkedAt": "2026-10-28",
+      "reviewType": "community-reported",
+      "method": "human-source-review",
+      "sourceIds": [
+        "officialMaps",
+        "officialPatch",
+        "roadmap",
+        "boot"
+      ],
+      "evidenceNote": "Agent inspected the cited sources; owner reviewed the audit summary and explicitly approved the changes and publication in chat. This is owner signoff on the agent-assisted review, not a claim that the owner independently opened every source. Halloween dates attributed to MW4.GG, not the official modes article which lacks dates. Shipment now cites official playlist notes. Boot Camp rewards/end verified against Insider Gaming."
+    },
+    {
+      "id": "armory-approved-2026-10-28-battlepass",
+      "section": "battlePass",
+      "checkedAt": "2026-10-28",
+      "reviewType": "community-reported",
+      "method": "human-source-review",
+      "sourceIds": [
+        "officialBP",
+        "roadmap"
+      ],
+      "evidenceNote": "Agent inspected the cited sources; owner reviewed the audit summary and explicitly approved the changes and publication in chat. This is owner signoff on the agent-assisted review, not a claim that the owner independently opened every source. November 6 remains reported, with no verified launch hour. BlackCell amounts/categories confirmed; clarified post-launch Vault Edition entitlement timing."
+    },
+    {
+      "id": "armory-approved-2026-10-28-sources",
+      "section": "sources",
+      "checkedAt": "2026-10-28",
+      "reviewType": "community-reported",
+      "method": "human-source-review",
+      "sourceIds": [
+        "wzAxion"
+      ],
+      "evidenceNote": "Agent inspected the cited sources; owner reviewed the audit summary and explicitly approved the changes and publication in chat. This is owner signoff on the agent-assisted review, not a claim that the owner independently opened every source. Added direct WZStats Axion source."
+    }
+  ]
 }

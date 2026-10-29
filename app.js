@@ -344,19 +344,26 @@ function passPage(){const b=state.feed.battlePass,today=new Date(),start=dateVal
  <div class="detail">Season 1 and Battle Pass details may change. Dates credited to the roadmap report are not independently confirmed as an official start hour.</div>`}
 function battlePassPage(){return `${headline('Battle Pass','Season 1 rewards and BlackCell details from published sources.','SEASON DETAILS')}${passPage()}`}
 function sourcesSheet(){const list=state.feed.sources.map(s=>`<div class="source-card"><div class="spread">${anchor(s.id,s.name)}${tag(s.class,s.class==='Official'?'green':'muted')}</div></div>`).join('');return `<p class="subtext" style="margin-bottom:12px">${escapeHTML(state.feed.sourcePolicy)}</p><div class="spread" style="margin-bottom:14px">${freshness()}${tag('v'+state.feed.release)}</div><p class="fine" style="margin-bottom:12px">Each section has its own review deadline; dates mean editorial review, not live external syncing.</p><div class="stack" style="margin-bottom:14px">${['meta','builds','patches','events','battlePass'].map(k=>`<div class="spread"><span class="fine">${escapeHTML(k)}</span>${freshness(k)}</div>`).join('')}</div><p class="detail" style="margin-bottom:15px">The site has no login or connection to Activision or Xbox. Previous v0.1 personal entries remain untouched in their old browser storage, but are not read by this version.</p><div class="source-grid">${list}</div><p class="fine" style="margin-top:13px">Publishing an updated snapshot requires a new site data update. Opening a linked publisher page is the way to check its latest independently.</p>`}
-function render(){nav();if(!state.feed)return;$('appMain').innerHTML=({brief:briefing,weapons:weaponHub,updates:updatesPage,events:eventPage,pass:battlePassPage,store:storePage}[state.page]||briefing)()}
+function render(){nav();if(!state.feed)return;$('appMain').dataset.page=state.page;$('appMain').innerHTML=({brief:armoryBriefing,weapons:armoryWeapons,updates:armoryUpdates,events:armoryEvents,pass:armoryPass,store:armoryStore}[state.page]||armoryBriefing)()}
 async function copyBuild(id){const b=state.feed.builds.find(b=>b.id===id);if(!b)return;const s=source(b.source);const txt=[`MW4 MULTIPLAYER — ${b.weapon}`,b.style,...b.parts.map(([slot,part])=>`${slot}: ${part}`),...(b.apex?[`Apex: ${b.apex}`]:[]),...(b.extras?Object.entries(b.extras).map(([slot,v])=>`${slot}: ${v}`):[]),`Source: ${s.name}`,s.url,`Reviewed: ${b.updated}`].join('\n');try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(txt)}else{const ta=document.createElement('textarea');ta.value=txt;document.body.append(ta);ta.select();if(!document.execCommand('copy'))throw Error('No clipboard');ta.remove()}showToast('Build copied to clipboard')}catch(_e){showToast('Copy unavailable — long-press the attachments instead')}}
-function bindEvents(){document.addEventListener('click',event=>{
+function closeSources(){$('overlay').hidden=true;document.body.classList.remove('loadout-open');$('sourcesBtn').focus()}
+function bindEvents(){
+ $('loadoutDialog').addEventListener('cancel',event=>{event.preventDefault();closeLoadout()});
+ $('loadoutDialog').addEventListener('click',event=>{if(event.target===$('loadoutDialog')){const r=event.target.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeLoadout()}});
+ document.addEventListener('click',event=>{
  const button=event.target.closest('button');if(!button)return;
- if(button.id==='sourcesBtn'){ $('sheetContent').innerHTML=sourcesSheet();$('overlay').hidden=false;$('closeSheet').focus();return }
- if(button.id==='closeSheet'){$('overlay').hidden=true;$('sourcesBtn').focus();return}
+ if(button.id==='closeLoadout'){closeLoadout();return}
+ if(button.dataset.weapon||button.dataset.page==='builds'){openLoadout(button);return}
+ if(button.dataset.build&&$('loadoutDialog').open){state.buildId=button.dataset.build;refreshLoadout();$('loadoutContent').querySelector('[data-build=\"'+state.buildId+'\"]')?.focus();return}
+ if(button.id==='sourcesBtn'){ $('sheetContent').innerHTML=sourcesSheet();$('overlay').hidden=false;document.body.classList.add('loadout-open');$('closeSheet').focus();return }
+ if(button.id==='closeSheet'){closeSources();return}
  if(button.dataset.featuredCategory){state.featuredCategory=button.dataset.featuredCategory;render();return}
  if(button.dataset.arsenalMode){state.arsenalMode=button.dataset.arsenalMode;if(!button.dataset.weapon){render();return}}
  if(button.dataset.arsenalCategory){state.arsenalCategory=button.dataset.arsenalCategory;render();return}
  if(button.dataset.source){state.source=button.dataset.source;settingsSave()}
  if(button.dataset.category){state.category=button.dataset.category;render();return}
  // Events and Battle Pass have their own navigation destinations.
- if(button.dataset.weapon){state.weapon=button.dataset.weapon;state.buildId='';state.search='';state.category='All'}
+ if(button.dataset.weapon){state.arsenalMode='ranked';state.weapon=button.dataset.weapon;state.buildId='';state.search='';state.category='All'}
  if(button.dataset.build){state.buildId=button.dataset.build}
  if(button.dataset.copy){copyBuild(button.dataset.copy);return}
  const reveal=button.dataset.reveal==='loadout'||Boolean(button.dataset.weapon)||button.dataset.page==='builds';
@@ -364,9 +371,17 @@ function bindEvents(){document.addEventListener('click',event=>{
  render();
  if(reveal)$('weaponLoadout')?.scrollIntoView({block:'start'});
  });
- $('overlay').addEventListener('click',event=>{if(event.target===$('overlay'))$('overlay').hidden=true});
- document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('overlay').hidden)$('overlay').hidden=true});
- document.addEventListener('change',event=>{if(event.target.id==='ironSwitch'){state.ironOnly=event.target.checked;state.buildId='';state.search='';settingsSave();render()}});
+ $('overlay').addEventListener('click',event=>{if(event.target===$('overlay'))closeSources()});
+ document.addEventListener('keydown',event=>{
+ if($('overlay').hidden)return;
+ if(event.key==='Escape'){event.preventDefault();closeSources();return}
+ if(event.key==='Tab'){
+  const items=[...$('overlay').querySelectorAll('button,a[href]')],first=items[0],last=items[items.length-1];
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+ }
+ });
+ document.addEventListener('change',event=>{if(event.target.id==='ironSwitch'){state.ironOnly=event.target.checked;state.buildId='';settingsSave();if($('loadoutDialog').open){refreshLoadout();$('ironSwitch')?.focus()}else render()}});
  document.addEventListener('input',event=>{if(event.target.id==='buildSearch'){const cursor=event.target.selectionStart;state.search=event.target.value;render();const field=$('buildSearch');field?.focus();try{field?.setSelectionRange(cursor,cursor)}catch(_e){}}
  if(event.target.id==='arsenalSearch'){const cursor=event.target.selectionStart;state.arsenalSearch=event.target.value;render();const field=$('arsenalSearch');field?.focus();try{field?.setSelectionRange(cursor,cursor)}catch(_e){}}});
 }
@@ -420,4 +435,4 @@ async function boot(){bindEvents();try{
  try{const saved=JSON.parse(localStorage.getItem(intelCacheKey)||'null');if(usableIntel(saved)){WarRoomLogic.weaponCatalog(saved);state.feed=saved;state.offlineCopy=true;render();loadStore();return}}catch(_e){}
  $('appMain').innerHTML=`<div class="panel"><div class="eyebrow">GAME INFO UNAVAILABLE</div><h1 style="margin:8px 0">Couldn't load game info</h1><p class="subtext">The latest information couldn't be verified, and no saved copy is available. Open War Room online to save a copy for offline use.</p><button class="cta" id="retryBoot" type="button" onclick="location.reload()">Retry loading</button></div>`}}
 boot();
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+if('serviceWorker'in navigator&&!['localhost','127.0.0.1'].includes(location.hostname))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

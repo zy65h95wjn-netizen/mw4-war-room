@@ -73,7 +73,7 @@ class IntelValidationTests(unittest.TestCase):
         self.assert_invalid('unknown source')
 
     def test_reject_duplicate_meta_weapon(self):
-        self.data['meta'][0]['entries'][1]['weapon'] = 'HAN 86'
+        self.data['meta'][0]['entries'][1]['weapon'] = self.data['meta'][0]['entries'][0]['weapon']
         self.assert_invalid('repeated weapon')
 
     def test_reject_duplicate_category_rank(self):

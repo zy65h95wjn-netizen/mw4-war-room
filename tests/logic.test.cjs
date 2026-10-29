@@ -13,7 +13,7 @@ test('each weapon has one canonical record and merged source-specific rankings',
   assert.equal(han.category, 'AR');
   assert.ok(han.builds.some(b => b.id === 'han-iron'));
   assert.ok(han.rankings.length > 0);
-  assert.ok(han.rankings.some(r => r.board === 'cod'));
+  assert.ok(weapons.find(w => w.weapon === data.meta[0].entries[0].weapon).rankings.some(r => r.board === 'cod'));
   assert.ok(han.rankings.some(r => r.board === 'wz'));
   assert.equal(weapons.find(w => w.weapon === 'Axion').builds.some(b => !b.optic), true);
 });
@@ -51,12 +51,16 @@ function loadoutHarness() {
   const handlers = new Map();
   let reveals = 0;
   const elements = {
-    appMain: { innerHTML: '' },
+    appMain: { innerHTML: '', dataset: {} },
+    loadoutDialog: {open:false,addEventListener(){},showModal(){this.open=true},close(){this.open=false}},
+    loadoutContent: {innerHTML:'',querySelector(){return {focus(){}}}},
+    closeLoadout: {focus(){}},
     bottomNav: { innerHTML: '' },
     overlay: { hidden: true, addEventListener() {} },
     toast: { textContent: '', classList: { add() {}, remove() {} } }
   };
   const document = {
+    body:{classList:{add(){},remove(){}}},
     getElementById(id) {
       if (id === 'weaponLoadout') {
         return elements.appMain.innerHTML.includes('id="weaponLoadout"')
@@ -66,7 +70,7 @@ function loadoutHarness() {
     },
     addEventListener(type, fn) { handlers.set(type, fn); }
   };
-  const app = fs.readFileSync(path.join(__dirname, '../app.js'), 'utf8');
+  const app = fs.readFileSync(path.join(__dirname, '../app.js'), 'utf8').replace(/\r\n/g, '\n');
   const bootIndex = app.lastIndexOf('\nboot();\n');
   assert.ok(bootIndex > 0, 'boot invocation marker must exist');
   const context = vm.createContext({
@@ -75,277 +79,152 @@ function loadoutHarness() {
     WarRoomLogic: require('../logic.js'), WarRoomStore: require('../store.js'), WarRoomArsenal: require('../arsenal.js'), URL, setTimeout, clearTimeout
   });
   vm.runInContext(app.slice(0, bootIndex), context, { filename: 'app.js' });
+  vm.runInContext(fs.readFileSync(path.join(__dirname,'../armory-ui.js'),'utf8'), context, {filename:'armory-ui.js'});
   context.testIntel = data;
   vm.runInContext('state.feed=testIntel; bindEvents(); render();', context);
   function click(dataset) {
     const button = { id: '', dataset };
     handlers.get('click')({ target: { closest(selector) { assert.equal(selector, 'button'); return button; } } });
   }
-  return { elements, context, click, reveals: () => reveals, handlers };
+  return { elements, context, click, reveals: () => reveals, handlers, html:()=>elements.appMain.innerHTML+(elements.loadoutDialog.open?elements.loadoutContent.innerHTML:'') };
 }
 
-test('meta leader opens the HAN 86 loadout and reveals the profile', () => {
-  const h = loadoutHarness();
-  assert.ok(h.elements.appMain.innerHTML.includes('data-page="weapons" data-weapon="HAN 86" data-reveal="loadout"'));
-  h.click({ page: 'weapons', weapon: 'HAN 86', reveal: 'loadout' });
-  assert.equal(vm.runInContext('state.page', h.context), 'weapons');
-  assert.equal(vm.runInContext('state.weapon', h.context), 'HAN 86');
-  assert.match(h.elements.appMain.innerHTML, /id="weaponLoadout"/);
-  assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
-  assert.equal(h.reveals(), 1);
+test('overview keeps source-specific leaders, actual patch and season dates, artwork and attribution',()=>{
+ const h=loadoutHarness(),html=h.html();
+ for(const term of ['Axion','VEL 46','ISO Nightshade','CODMunity · Overall','WZStats · SMG',data.patches[0].title,data.battlePass.label,'Data from itemshop.gg','Reviewed Oct 28','illustrative art']) assert.ok(html.includes(term),term);
+ assert.equal((html.match(/class="weapon-tile /g)||[]).length,vm.runInContext('mobilePicks().length',h.context));
+ assert.doesNotMatch(html,/K\/D|ITEMSHOP_API_KEY|isg_/);
 });
 
-test('choosing another weapon actually reveals that weapon’s attachments', () => {
-  const h = loadoutHarness();
-  h.click({ page: 'weapons' });
-  h.click({ weapon: 'Axion' });
-  assert.equal(vm.runInContext('state.weapon', h.context), 'Axion');
-  assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
-  assert.equal(h.reveals(), 1);
-});
-
-test('legacy Builds route no longer silently loops back to briefing', () => {
-  const h = loadoutHarness();
-  h.click({ page: 'builds' });
-  assert.equal(vm.runInContext('state.page', h.context), 'weapons');
-  assert.match(h.elements.appMain.innerHTML, /Recommended attachments/);
-  assert.equal(h.reveals(), 1);
-});
-
-test('iron-sight switch and alternate loadout selection remain functional', () => {
-  const h = loadoutHarness();
-  h.click({ page: 'weapons', weapon: 'HAN 86' });
-  h.handlers.get('change')({ target: { id: 'ironSwitch', checked: false } });
-  assert.ok(h.elements.appMain.innerHTML.includes('data-build="han-meta"'));
-  h.click({ build: 'han-meta' });
-  assert.equal(vm.runInContext('state.buildId', h.context), 'han-meta');
-  assert.match(h.elements.appMain.innerHTML, /Attachment slots/);
-});
-
-test('the overview replaces marketing and duplicate spotlight with practical updates', () => {
-  const h = loadoutHarness();
-  const body = h.elements.appMain.innerHTML;
-  assert.match(body, /class="brief-mast"/);
-  assert.match(body, /Overview/);
-  assert.match(body, /LAST REVIEW/);
-  assert.match(body, /Top Weapons/);
-  assert.match(body, /Latest Updates/);
-  assert.match(body, /PATCH NOTES/);
-  assert.match(body, /EVENTS/);
-  assert.match(body, /BATTLE PASS/);
-  assert.match(body, /not live rankings/);
-  assert.doesNotMatch(body, /Know the meta|Own the lobby|Loadout spotlight|NO ACCOUNT SYNC|VIEW ATTACHMENTS/i);
-  const style = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
-  assert.match(style, /\.brief-mast\{/);
-  assert.match(style, /\.leader-card\{/);
-  assert.match(style, /\.intel-grid\{/);
-  assert.match(style, /@media\(max-width:399px\)/);
-});
-
-test('the WZStats meta leader opens Axion and its sourced no-optic build', () => {
-  const h = loadoutHarness();
-  const before = h.elements.appMain.innerHTML;
-  assert.match(before, /data-source="wz" data-page="weapons" data-weapon="Axion" data-reveal="loadout"/);
-  h.click({ source: 'wz', page: 'weapons', weapon: 'Axion', reveal: 'loadout' });
-  assert.equal(vm.runInContext('state.page', h.context), 'weapons');
-  assert.equal(vm.runInContext('state.source', h.context), 'wz');
-  assert.equal(vm.runInContext('state.weapon', h.context), 'Axion');
-  assert.match(h.elements.appMain.innerHTML, /Recommended attachments/);
-  assert.match(h.elements.appMain.innerHTML, /id="weaponLoadout"/);
-  assert.equal(h.reveals(), 1);
-});
-
-test('patch, event and Battle Pass intelligence cards all open their destinations', () => {
-  const h = loadoutHarness();
-  for (const [page, term] of [['updates','Patch Notes'], ['events','Events'], ['pass','Battle Pass']]) {
-    h.click({ page });
-    assert.equal(vm.runInContext('state.page', h.context), page);
-    assert.ok(h.elements.appMain.innerHTML.includes(term), page + ' content did not open');
-    h.click({ page: 'brief' });
-  }
-});
-
-test('briefing dates and weapon rankings still come from the existing sourced snapshot', () => {
-  const h = loadoutHarness();
-  const body = h.elements.appMain.innerHTML;
-  assert.ok(body.includes('CODMunity'));
-  assert.ok(body.includes('WZStats'));
-  assert.ok(body.includes('HAN 86'));
-  assert.ok(body.includes('Axion'));
-  assert.ok(body.includes('Oct 27'));
-  assert.ok(body.includes('Official patch notes'));
-});
-
-
-test('brief meta leaders render two source-specific ARs then two source-specific SMGs', () => {
-  const h = loadoutHarness();
-  const body = h.elements.appMain.innerHTML;
-  const cards = [...body.matchAll(/<button[^>]*class="leader-card[^"]*"[^>]*data-source="(cod|wz)"[^>]*data-page="weapons"[^>]*data-weapon="([^"]+)"[^>]*data-reveal="loadout"[^>]*data-weapon-group="(AR|SMG)"/g)]
-    .map(x => [x[1],x[2],x[3]]);
-  assert.deepEqual(cards, [
-    ['cod','HAN 86','AR'],
-    ['wz','Axion','AR'],
-    ['cod','VEL 46','SMG'],
-    ['wz','ISO Nightshade','SMG']
-  ]);
-  assert.ok(body.indexOf('ASSAULT RIFLES') < body.indexOf('SUBMACHINE GUNS'));
-  assert.equal((body.match(/class="brief-leaders"/g) || []).length, 2);
-  assert.match(body, /#2 Overall/);
-  assert.match(body, /#1 SMG/);
-  assert.match(body, /Sources rank weapons differently/);
-});
-
-test('both SMG meta cards open the correct sourced weapon loadouts', () => {
-  const h = loadoutHarness();
-  for (const [source,weapon] of [['cod','VEL 46'],['wz','ISO Nightshade']]) {
-    h.click({page:'weapons',source,weapon,reveal:'loadout',weaponGroup:'SMG'});
-    assert.equal(vm.runInContext('state.page',h.context),'weapons');
-    assert.equal(vm.runInContext('state.weapon',h.context),weapon);
-    assert.equal(vm.runInContext('state.source',h.context),source);
-    assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
-    assert.match(h.elements.appMain.innerHTML,/Attachment slots/);
-  }
-  assert.equal(h.reveals(),2);
-});
-
-test('leader picks are derived from publisher rankings and not from a hardcoded weapon list', () => {
-  const h = loadoutHarness();
-  const alternative = structuredClone(data);
-  const board = alternative.meta.find(x => x.id === 'cod');
-  const vel = board.entries.find(x=>x.weapon==='VEL 46');
-  const iso = board.entries.find(x=>x.weapon==='ISO Nightshade');
-  const before = vel.rank;
-  vel.rank = iso.rank;
-  iso.rank = before;
-  h.context.testIntel = alternative;
-  vm.runInContext('state.feed=testIntel;state.page="brief";render()',h.context);
-  const matches = [...h.elements.appMain.innerHTML.matchAll(/data-source="cod" data-page="weapons" data-weapon="([^"]+)" data-reveal="loadout" data-weapon-group="SMG"/g)];
-  assert.equal(matches.length,1);
-  assert.equal(matches[0][1],'ISO Nightshade');
-});
-
-test('two-row meta leaders retain readable responsive layout rules', () => {
-  const style = fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
-  assert.match(style,/\.brief-leader-category\{/);
-  assert.match(style,/\.brief-leader-group\+\.brief-leader-group\{/);
-  assert.match(style,/\.brief-leaders\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(style,/\.leader-card__weapon\{overflow-wrap:break-word/);
-  assert.match(style,/@media\(max-width:399px\)/);
-});
-
-test('plain-language navigation and rankings keep source-specific positions', () => {
-  const h=loadoutHarness();
-  const overview=h.elements.appMain.innerHTML;
-  assert.match(h.elements.bottomNav.innerHTML,/>Overview<\/button>/);
-  assert.match(overview,/#1 Overall/);
-  assert.match(overview,/#2 Overall/);
-  assert.match(overview,/#1 Assault Rifle/);
-  assert.match(overview,/#1 SMG/);
-  assert.match(overview,/2 RANKING SOURCES/);
-  assert.match(overview,/MW4 MULTIPLAYER/);
-  assert.match(overview,/Weapons, builds, updates, and events/);
-});
-
-test('weapons, patches, events and pass pages all use clear gaming copy', () => {
-  const h=loadoutHarness();
-  for(const [page,expected] of [
-    ['weapons','Weapons &amp; Loadouts'],
-    ['updates','GAME UPDATES'],
-    ['events','EVENTS &amp; REWARDS'],
-    ['pass','SEASON DETAILS']
-  ]) {
-    h.click({page});
-    const html=h.elements.appMain.innerHTML;
-    assert.ok(html.includes(expected),page+' lacks expected heading '+expected);
-    assert.doesNotMatch(html,/THE INTELLIGENCE ARMORY|THE CHANGE LOG|OPERATIONS DESK|SEASON INTELLIGENCE/);
-  }
-  h.click({page:'brief'});
-  assert.doesNotMatch(h.elements.appMain.innerHTML,/FIELD BRIEF|FIELD INTEL|Latest intelligence|Meta leaders|OPERATIONS/);
-});
-
-test('Overview shows Store preview and visible provider attribution without calling an API key', () => {
-  const h=loadoutHarness();
-  const overview=h.elements.appMain.innerHTML;
-  assert.match(overview,/New in Store/);
-  assert.match(overview,/Data from itemshop.gg/);
-  assert.match(overview,/data-page="store"/);
-  assert.match(overview,/Loading Store details/);
-  assert.match(h.elements.bottomNav.innerHTML,/>Store<\/button>/);
-  assert.doesNotMatch(overview,/ITEMSHOP_API_KEY|isg_/);
-});
-
-test('Store navigation shows a clearly labeled example without implying live inventory', () => {
-  const h=loadoutHarness();
-  h.context.sampleStore=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/store.json'),'utf8'));
-  vm.runInContext('state.store={data:sampleStore,origin:"dated-example"};render()',h.context);
-  const overview=h.elements.appMain.innerHTML;
-  assert.match(overview,/EXAMPLE · NOT LIVE/);
-  assert.match(overview,/C\.O\.D\.E\./);
-  assert.match(overview,/Platform store/);
-  h.click({page:'store'});
-  assert.equal(vm.runInContext('state.page',h.context),'store');
-  const view=h.elements.appMain.innerHTML;
-  assert.match(view,/Official bundle details/);
-  assert.match(view,/What's included/);
-  assert.match(view,/Data from itemshop.gg/);
-  assert.match(view,/No personal account sign-in|not your personal in-game Store/i);
-});
-
-test('Store changes do not replace the five established War Room destinations', () => {
-  const h=loadoutHarness();
-  const tabs=h.elements.bottomNav.innerHTML;
-  for (const key of ['Overview','Weapons','Updates','Events','Pass','Store']) {
-    assert.ok(tabs.includes(key),key);
-  }
-  for (const page of ['weapons','updates','events','pass','brief','store']) {
-    h.click({page});
-    assert.equal(vm.runInContext('state.page',h.context),page);
-  }
-  const page=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
-  assert.match(page,/grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
-  assert.match(page,/src="store.js" defer/);
-});
-
-
-test('iPhone Overview starts with real source-separated weapons and no duplicate shortcut strip',()=>{
- const h=loadoutHarness();
- const body=h.elements.appMain.innerHTML;
- const mobile=body.slice(body.indexOf('<div class="mobile-overview">'),body.indexOf('<div class="desktop-overview">'));
- assert.match(mobile,/Top Weapons/);
- assert.match(mobile,/Latest Updates/);
- assert.match(mobile,/Featured Store/);
- assert.ok(mobile.indexOf('Top Weapons')<mobile.indexOf('Latest Updates'));
- assert.ok(mobile.indexOf('Latest Updates')<mobile.indexOf('Featured Store'));
- assert.doesNotMatch(mobile,/class="brief-mast"/);
- assert.doesNotMatch(mobile,/class="mobile-shortcuts"/);
- assert.doesNotMatch(mobile,/1\.42|1\.31|1\.28|1\.25|K\/D/);
- const rows=[...mobile.matchAll(/class="mobile-weapon mobile-weapon--(cod|wz)"[^>]*data-source="(cod|wz)"[^>]*data-page="weapons"[^>]*data-weapon="([^"]+)"/g)].map(x=>[x[1],x[2],x[3]]);
- assert.deepEqual(rows,[['cod','cod','HAN 86'],['wz','wz','Axion'],['cod','cod','VEL 46'],['wz','wz','ISO Nightshade']]);
- assert.match(mobile,/CODMunity · #1 Overall/);
- assert.match(mobile,/WZStats · #1 AR/);
- assert.match(mobile,/Launch fixes: XP and class editing/);
- assert.match(mobile,/Season 1/);
- assert.match(mobile,/Data from itemshop\.gg/);
-});
-
-test('mobile category filters and weapon tap preserve legitimate ranking provenance',()=>{
- const h=loadoutHarness();
- h.click({featuredCategory:'SMG'});
- let mobile=h.elements.appMain.innerHTML.split('<div class="desktop-overview">')[0];
- assert.equal((mobile.match(/class="mobile-weapon mobile-weapon--/g)||[]).length,2);
- assert.match(mobile,/VEL 46/);
- assert.match(mobile,/ISO Nightshade/);
- assert.doesNotMatch(mobile,/class="mobile-weapon[^"]*"[^>]*data-weapon="HAN 86"/);
- assert.match(mobile,/data-featured-category="SMG" aria-pressed="true"/);
+test('featured filters and leader choices are driven by publishers rather than hardcoded ranks',()=>{
+ const h=loadoutHarness();h.click({featuredCategory:'SMG'});
+ assert.equal((h.html().match(/class="weapon-tile /g)||[]).length,2);
  h.click({featuredCategory:'Sniper'});
- mobile=h.elements.appMain.innerHTML.split('<div class="desktop-overview">')[0];
- assert.equal((mobile.match(/class="mobile-weapon mobile-weapon--/g)||[]).length,1);
- assert.match(mobile,/KG-7 Vulcan/);
- h.click({source:'wz',page:'weapons',weapon:'Axion',reveal:'loadout'});
- assert.equal(vm.runInContext('state.source',h.context),'wz');
- assert.equal(vm.runInContext('state.weapon',h.context),'Axion');
- assert.equal(vm.runInContext('state.page',h.context),'weapons');
- assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
+ assert.equal((h.html().match(/class="weapon-tile /g)||[]).length,1);
+ assert.match(h.html(),/KG-7 Vulcan/);
+ const alternative=structuredClone(data),entries=alternative.meta.find(b=>b.id==='cod').entries;
+ const vel=entries.find(e=>e.weapon==='VEL 46'),iso=entries.find(e=>e.weapon==='ISO Nightshade');
+ [vel.rank,iso.rank]=[iso.rank,vel.rank];h.context.alternative=alternative;
+ vm.runInContext('state.feed=alternative;state.featuredCategory="SMG";render()',h.context);
+ const picks=vm.runInContext('mobilePicks()',h.context);
+ assert.equal(picks.find(p=>p.board.id==='cod').entry.weapon,'ISO Nightshade');
+});
+
+test('all ten curated weapons open their own workbench and preserve publisher selection',()=>{
+ const h=loadoutHarness();
+ for(const w of weaponCatalog(data)){
+  h.click({source:'wz',page:'weapons',weapon:w.weapon,reveal:'loadout'});
+  assert.equal(vm.runInContext('state.weapon',h.context),w.weapon);
+  assert.equal(vm.runInContext('state.source',h.context),'wz');
+  const html=h.html();
+  assert.match(html,/id="weaponLoadout"/);
+  assert.ok(html.includes('<h2>'+w.weapon+'</h2>'));
+  for(const r of w.rankings)assert.ok(html.includes('#'+r.rank+' <small>'+r.tier));
+ }
+ assert.equal(h.elements.loadoutDialog.open,true);
+});
+
+test('weapon popup preserves the browsing page and gallery mode without an inline workbench',()=>{
+ const h=loadoutHarness();h.click({page:'weapons'});h.click({arsenalMode:'all'});
+ h.click({page:'brief'});h.click({page:'weapons'});
+ assert.equal(vm.runInContext('state.arsenalMode',h.context),'all');
+ h.click({page:'brief'});h.click({page:'weapons',weapon:'HAN 86',reveal:'loadout'});
+ assert.equal(vm.runInContext('state.page',h.context),'brief');
+ assert.equal(h.elements.loadoutDialog.open,true);
+ assert.doesNotMatch(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
+ assert.match(h.html(),/FSS IS300/);
+ assert.equal(h.elements.loadoutDialog.open,true);
+});
+
+test('legacy Builds route opens the workbench and alternate builds retain exact attachment values',()=>{
+ const h=loadoutHarness();h.click({page:'builds'});
+ assert.equal(vm.runInContext('state.page',h.context),'brief');assert.equal(h.elements.loadoutDialog.open,true);
+ h.handlers.get('change')({target:{id:'ironSwitch',checked:false}});
+ assert.match(h.html(),/data-build="han-meta"/);
+ h.click({build:'han-meta'});
+ const expected=data.builds.find(b=>b.id==='han-meta');
+ for(const [slot,name] of expected.parts)assert.ok(h.html().includes(name),slot+': '+name);
+ h.handlers.get('change')({target:{id:'ironSwitch',checked:true}});
+ assert.doesNotMatch(h.html(),/data-build="han-meta"/);
+ assert.match(h.html(),/FSS IS300/);
+});
+
+test('weapons without a published build never fabricate an attachment set',()=>{
+ const h=loadoutHarness();h.click({page:'weapons',weapon:'Kastov 762'});
+ assert.match(h.html(),/No published build in this snapshot/);
+ assert.doesNotMatch(h.html(),/class="attachment"|data-copy=/);
+});
+
+test('all 33 catalogue entries and nine category filters preserve official links and illustrative art',()=>{
+ const h=loadoutHarness();h.click({page:'weapons'});h.click({arsenalMode:'all'});
+ const all=require('../arsenal.js').weapons;
+ assert.equal((h.html().match(/class="weapon-tile"/g)||[]).length,33);
+ assert.match(h.html(),/not official game imagery/);
+ const anchors=[...h.html().matchAll(/<a class="weapon-tile"[^>]*href="([^"]+)"/g)];
+ assert.equal(anchors.length,23);for(const a of anchors)assert.equal(a[1],require('../arsenal.js').source);
+ for(const category of require('../arsenal.js').categories){
+  h.click({arsenalCategory:category});const html=h.html();
+  assert.equal((html.match(/class="weapon-tile"/g)||[]).length,all.filter(w=>w.category===category).length,category);
+  for(const w of all.filter(w=>w.category===category))assert.ok(html.includes(w.weapon),w.weapon);
+ }
+ h.click({arsenalCategory:'All'});h.click({arsenalMode:'ranked',page:'weapons',weapon:'Axion',reveal:'loadout'});
+ assert.match(h.html(),/id="weaponLoadout"/);
+ assert.match(h.html(),/<h2>Axion<\/h2>/);
+});
+
+test('both searches match case-insensitively and render explicit empty results',()=>{
+ const h=loadoutHarness();h.click({page:'weapons'});h.click({arsenalMode:'all'});
+ vm.runInContext('state.arsenalSearch="mOjAvE";render()',h.context);
+ assert.equal((h.html().match(/class="weapon-tile"/g)||[]).length,1);
+ assert.match(h.html(),/Mojave \.357/);
+ vm.runInContext('state.arsenalSearch="not a weapon";render()',h.context);
+ assert.match(h.html(),/No weapons match/);
+ h.click({arsenalMode:'ranked'});
+ vm.runInContext('state.search="axion";render()',h.context);
+ assert.equal((h.html().match(/class="weapon-tile /g)||[]).length,1);
+ vm.runInContext('state.search="not a weapon";render()',h.context);
+ assert.match(h.html(),/No matching weapons/);assert.doesNotMatch(h.html(),/id="weaponLoadout"/);
+});
+
+test('patches events and pass preserve every source fact with clear date qualifiers',()=>{
+ const h=loadoutHarness();h.click({page:'updates'});
+ for(const p of data.patches){assert.ok(h.html().includes(p.title));for(const x of p.bullet)assert.ok(h.html().includes(x.replaceAll('&','&amp;')));}
+ h.click({page:'events'});
+ for(const e of data.events){assert.ok(h.html().includes(e.title));assert.ok(h.html().includes(e.summary));}
+ assert.match(h.html(),/availability unverified/);
+ h.click({page:'pass'});
+ assert.match(h.html(),/REPORTED START/);
+ for(const x of data.battlePass.rewardCategories)assert.ok(h.html().includes(x.replaceAll('&','&amp;')));
+ assert.ok(h.html().includes(String(data.battlePass.blackcell.tierSkips)));
+ assert.match(h.html(),/OPTIONAL PAID TIER/);
+});
+
+test('Store keeps sample labels provider attribution contents official links and unknown prices',()=>{
+ const h=loadoutHarness();h.context.sample=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/store.json'),'utf8'));
+ vm.runInContext('state.store={data:sample,origin:"dated-example"};render()',h.context);
+ assert.match(h.html(),/EXAMPLE · NOT LIVE/);
+ h.click({page:'store'});const html=h.html();
+ for(const term of ['NOT LIVE','Official bundle details',"What's included",'Data from itemshop.gg','not your personal in-game Store','Platform store'])assert.ok(html.includes(term),term);
+ assert.doesNotMatch(html,/ITEMSHOP_API_KEY|isg_/);
+});
+
+test('all six navigation destinations still render and mark the active tab',()=>{
+ const h=loadoutHarness();
+ for(const page of ['brief','weapons','updates','events','pass','store']){
+  h.click({page});assert.equal(vm.runInContext('state.page',h.context),page);
+  assert.equal((h.elements.bottomNav.innerHTML.match(/<button /g)||[]).length,6);
+  assert.ok(h.elements.bottomNav.innerHTML.includes('data-page="'+page+'"'));
+  assert.match(h.elements.bottomNav.innerHTML,/aria-current="page"/);
+  assert.match(h.html(),/<h1>/);
+ }
+});
+
+test('presentation escapes untrusted weapon text and preserves offline warning',()=>{
+ const h=loadoutHarness();
+ const html=vm.runInContext('weaponTile({weapon:"<img src=x onerror=alert(1)>",category:"<script>"})',h.context);
+ assert.doesNotMatch(html,/<img src=x|<script>/);assert.match(html,/&lt;img/);
+ vm.runInContext('state.offlineCopy=true;render()',h.context);
+ assert.match(h.html(),/Offline or previously saved briefing/);
 });
 
 test('all ten curated weapons map to original artwork and unknown weapons retain fallback', () => {
@@ -363,32 +242,10 @@ test('all ten curated weapons map to original artwork and unknown weapons retain
  const fallback=vm.runInContext('mobileWeaponArt("A future unidentified weapon")',h.context);
  assert.match(fallback,/<svg viewBox/);
  assert.doesNotMatch(fallback,/art\/featured\//);
- const html=h.elements.appMain.innerHTML;
+ const html=h.html();
  assert.match(html,/mobile-weapon__illustration/);
  assert.doesNotMatch(html,/1\.42 K\/D/);
 });
-
-test('mobile Weapons lists show art for real categorized weapons without changing ranking labels', () => {
- const h=loadoutHarness();
- h.click({page:'weapons'});
- const html=h.elements.appMain.innerHTML;
- assert.match(html,/class="weapon-art" aria-hidden="true"/);
- assert.match(html,/art\/featured\/han-86\.webp/);
- assert.match(html,/art\/featured\/hyeon-burst\.webp/);
- assert.match(html,/art\/featured\/kg-7-vulcan\.webp/);
- assert.match(html,/original and illustrative, not official game imagery/);
- assert.match(html,/Rank within weapon category/);
- h.click({source:'wz'});
- assert.match(h.elements.appMain.innerHTML,/art\/featured\/kastov-762\.webp/);
- assert.match(h.elements.appMain.innerHTML,/art\/featured\/x-58-nyx\.webp/);
- assert.match(h.elements.appMain.innerHTML,/art\/featured\/ppsh-41\.webp/);
- h.click({category:'SMG'});
- const smg=h.elements.appMain.innerHTML;
- assert.match(smg,/ISO Nightshade/);
- assert.match(smg,/PPSh-41/);
- assert.doesNotMatch(smg,/data-weapon="Kastov 762"/);
-});
-
 
 test('cinematic artwork files have unique identities and retain mobile-size bounds',()=>{
  const crypto=require('node:crypto');
@@ -403,49 +260,23 @@ test('cinematic artwork files have unique identities and retain mobile-size boun
  assert.equal(new Set(hashes).size,10,'all ten weapons should have distinct illustrations');
 });
 
-
-test('full arsenal view includes all 33 official launch entries without fabricating ranks or builds',()=>{
- const h=loadoutHarness();
- const original=h.elements.appMain.innerHTML;
- assert.match(original,/Top Weapons/);
- h.click({page:'weapons'});
- const ranked=h.elements.appMain.innerHTML;
- assert.match(ranked,/Rankings & Loadouts/);
- h.click({arsenalMode:'all'});
- assert.equal(vm.runInContext('state.arsenalMode',h.context),'all');
- let view=h.elements.appMain.innerHTML;
- assert.match(view,/33 weapons listed in the official MW4 launch guide/);
- assert.match(view,/All 33 Weapons/);
- assert.match(view,/OFFICIAL REFERENCE/);
- assert.match(view,/original, unofficial, and illustrative/);
- const cards=[...view.matchAll(/class="arsenal-item"/g)];
- assert.equal(cards.length,33);
- assert.doesNotMatch(view,/1\.42 K\/D/);
- assert.doesNotMatch(view,/unlocked at level \d+/i);
- assert.match(view,/FSS Carbon Edge 1095/);
- assert.match(view,/PM-40 Anvil/);
- h.click({arsenalCategory:'Pistol'});
- view=h.elements.appMain.innerHTML;
- assert.equal((view.match(/class="arsenal-item"/g)||[]).length,4);
- assert.match(view,/Mojave \.357/);
- assert.doesNotMatch(view,/class="arsenal-item"[^>]*data-weapon="HAN 86"/);
- h.click({arsenalCategory:'All'});
- h.click({arsenalMode:'ranked'});
- assert.equal(vm.runInContext('state.arsenalMode',h.context),'ranked');
- assert.match(h.elements.appMain.innerHTML,/Rankings & Loadouts/);
- assert.doesNotMatch(h.elements.appMain.innerHTML,/class="arsenal-item"/);
+test('closing the loadout restores browsing without leaving inline content',()=>{
+ const h=loadoutHarness();h.click({page:'weapons'});
+ const before=h.elements.appMain.innerHTML;h.click({weapon:'HAN 86'});
+ assert.equal(h.elements.loadoutDialog.open,true);
+ assert.equal(h.elements.appMain.innerHTML,before);
+ vm.runInContext('closeLoadout()',h.context);
+ assert.equal(h.elements.loadoutDialog.open,false);
+ assert.equal(h.elements.appMain.innerHTML,before);
 });
 
-test('full arsenal preserves sourced weapon handoff and official-only reference links',()=>{
+test('iron-sight changes in the popup preserve the weapon search and background',()=>{
  const h=loadoutHarness();
- h.click({page:'weapons'});
- h.click({arsenalMode:'all'});
- let page=h.elements.appMain.innerHTML;
- assert.match(page,/data-arsenal-mode="ranked" data-weapon="HAN 86"/);
- assert.match(page,/official MW4 launch guide/);
- assert.match(page,/callofduty\.com\/blog\/2026\/10/);
- h.click({arsenalMode:'ranked',page:'weapons',weapon:'HAN 86',reveal:'loadout'});
- assert.equal(vm.runInContext('state.arsenalMode',h.context),'ranked');
- assert.equal(vm.runInContext('state.weapon',h.context),'HAN 86');
- assert.match(h.elements.appMain.innerHTML,/id="weaponLoadout"/);
+ vm.runInContext("state.page='weapons';state.search='HAN';render()",h.context);
+ const background=h.elements.appMain.innerHTML;
+ h.click({weapon:'HAN 86'});
+ h.handlers.get('change')({target:{id:'ironSwitch',checked:false}});
+ assert.equal(vm.runInContext('state.search',h.context),'HAN');
+ assert.equal(h.elements.appMain.innerHTML,background);
+ assert.match(h.elements.loadoutContent.innerHTML,/han-meta/);
 });
