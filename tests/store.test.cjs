@@ -82,6 +82,6 @@ test('armory shell preserves navigation accessibility responsive and reduced-mot
  assert.ok(markup.indexOf('<nav class="nav"')<markup.indexOf('<main id="appMain"'));
  assert.equal((markup.match(/id="bottomNav"/g)||[]).length,1);
  for(const term of ['prefers-reduced-motion:reduce','max-width:359px','min-width:760px','safe-area-inset-bottom','repeat(6,minmax(0,1fr))','focus-visible'])assert.ok(css.includes(term),term);
- assert.match(markup,/href="armory.css"/);assert.match(markup,/src="armory-ui.js" defer/);
+ assert.match(markup,/href="armory.css\?v=armory-20261028-1"/);assert.match(markup,/src="armory-ui.js\?v=armory-20261028-1" defer/);
  for(const file of ['armory.css','armory-ui.js','art/armory-room.png','data/intel.json','data/store.json'])assert.ok(sw.includes('./'+file),file);
 });
