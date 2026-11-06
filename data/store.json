@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-06",
-  "updatedAt": "2026-11-06T06:05:01Z",
-  "checkedAt": "2026-11-06T11:24:44Z",
+  "updatedAt": "2026-11-06T18:05:01Z",
+  "checkedAt": "2026-11-06T21:00:31Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -13,6 +13,62 @@
   },
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
+    {
+      "id": "cod:bundle:7777",
+      "name": "The Valkyrie",
+      "type": "Mastercraft · 9 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7777-preview-a55437.webp",
+      "badge": "New",
+      "price": {
+        "amount": 3000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7777",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Wings of Reckoning",
+          "type": "Weapon · Mastercraft"
+        },
+        {
+          "name": "Skyfall",
+          "type": "Weapon"
+        },
+        {
+          "name": "Hildr",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Taken by Fate",
+          "type": "Finishing Move"
+        },
+        {
+          "name": "Fires of War",
+          "type": "Calling Card"
+        },
+        {
+          "name": "War Crest",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Burning Oath",
+          "type": "Emblem"
+        },
+        {
+          "name": "Mark of the Chosen",
+          "type": "Reticle"
+        },
+        {
+          "name": "Thunderclap",
+          "type": "Equipment Skin"
+        }
+      ]
+    },
     {
       "id": "cod:bundle:7802",
       "name": "Deltabeast",
@@ -60,7 +116,7 @@
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7801-preview-554fe5.webp",
       "badge": "New",
       "price": {
-        "amount": 1800,
+        "amount": 2400,
         "label": null,
         "currency": "COD Points"
       },
