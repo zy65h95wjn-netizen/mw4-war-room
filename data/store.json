@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-06",
-  "updatedAt": "2026-11-05T18:05:02Z",
-  "checkedAt": "2026-11-06T01:45:17Z",
+  "updatedAt": "2026-11-06T06:05:01Z",
+  "checkedAt": "2026-11-06T11:24:44Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -13,6 +13,398 @@
   },
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
+    {
+      "id": "cod:bundle:7802",
+      "name": "Deltabeast",
+      "type": "5 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7802-preview-ea1fc6.webp",
+      "badge": "New",
+      "price": {
+        "amount": 1800,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7802",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Mire Hunter",
+          "type": "Weapon"
+        },
+        {
+          "name": "Coilfang",
+          "type": "Weapon"
+        },
+        {
+          "name": "Coiled",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Barbed Fang",
+          "type": "Emblem"
+        },
+        {
+          "name": "Wound Up",
+          "type": "Loading Screen"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7801",
+      "name": "Steadfast",
+      "type": "Reactive · 6 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7801-preview-554fe5.webp",
+      "badge": "New",
+      "price": {
+        "amount": 1800,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7801",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Glaive",
+          "type": "Weapon"
+        },
+        {
+          "name": "Infernum",
+          "type": "Weapon"
+        },
+        {
+          "name": "Rockslide",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Firing Force",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Cross Section",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Hoot",
+          "type": "Weapon Charm"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7795",
+      "name": "Glitched State",
+      "type": "Mastercraft · 9 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7795-preview-8557c1.webp",
+      "badge": "New",
+      "price": {
+        "amount": 3000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7795",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Digital Drifter",
+          "type": "Weapon · Mastercraft"
+        },
+        {
+          "name": "Unplugger",
+          "type": "Weapon"
+        },
+        {
+          "name": "Debugged",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Hop Off",
+          "type": "Finishing Move"
+        },
+        {
+          "name": "Tech Tyrant",
+          "type": "Calling Card"
+        },
+        {
+          "name": "High Score",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "System Breach",
+          "type": "Loading Screen"
+        },
+        {
+          "name": "Glitchwear",
+          "type": "Emblem"
+        },
+        {
+          "name": "Pixel U",
+          "type": "Reticle"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7792",
+      "name": "CDL LAUNCH PACK 2027",
+      "type": "12 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7792-preview-9bccf0.webp",
+      "badge": "New",
+      "price": {
+        "amount": 2400,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7792",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "CDL - Home - Male",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "CDL - Home - Female",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "CDL - Away - Male",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "CDL - Away - Female",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Blooming Skulls",
+          "type": "Weapon Camo"
+        },
+        {
+          "name": "Pineapple Grenade",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Death Skull",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "The Final Grind",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Ice Cold",
+          "type": "Emblem"
+        },
+        {
+          "name": "Choked",
+          "type": "Spray"
+        },
+        {
+          "name": "Pumped Up",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Fist Bump",
+          "type": "Emblem"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7783",
+      "name": "The Captain",
+      "type": "9 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7783-preview-ea36ad.webp",
+      "badge": "New",
+      "price": {
+        "amount": 2400,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7783",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Priced Out",
+          "type": "Weapon"
+        },
+        {
+          "name": "Priceless",
+          "type": "Weapon"
+        },
+        {
+          "name": "Blackout",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Final Smoke",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Seen Action",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Still Hot",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "The Captain",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "If Ya Got 'Em",
+          "type": "Loading Screen"
+        },
+        {
+          "name": "141",
+          "type": "Reticle"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7775",
+      "name": "Jadefire",
+      "type": "4 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7775-preview-bec9d9.webp",
+      "badge": "New",
+      "price": {
+        "amount": 1000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7775",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Verdigris",
+          "type": "Weapon"
+        },
+        {
+          "name": "Regal Snake",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Copper Dragon",
+          "type": "Emblem"
+        },
+        {
+          "name": "Tail Biter",
+          "type": "Reticle"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7774",
+      "name": "Northern Elite",
+      "type": "5 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7774-preview-3e31df.webp",
+      "badge": "New",
+      "price": {
+        "amount": 1400,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7774",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Northern Protector",
+          "type": "Weapon"
+        },
+        {
+          "name": "JTF2",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Knife Way",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Maple Patrol",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Proud North",
+          "type": "Emblem"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7769",
+      "name": "Into the Fight",
+      "type": "8 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7769-preview-5daea0.webp",
+      "badge": "New",
+      "price": {
+        "amount": 1800,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7769",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-06T05:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Siegefire",
+          "type": "Weapon"
+        },
+        {
+          "name": "Counter Stand",
+          "type": "Weapon"
+        },
+        {
+          "name": "Marked",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Skilled Hunter",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Chained Up",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Out Rocked",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Op Ready",
+          "type": "Emblem"
+        },
+        {
+          "name": "Frey",
+          "type": "Reticle"
+        }
+      ]
+    },
     {
       "id": "cod:bundle:6773",
       "name": "Call of Duty® Endowment (C.O.D.E.) Valor Pack",
