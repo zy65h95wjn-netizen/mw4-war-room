@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-07",
-  "updatedAt": "2026-11-07T06:05:01Z",
-  "checkedAt": "2026-11-07T10:37:35Z",
+  "updatedAt": "2026-11-07T18:05:01Z",
+  "checkedAt": "2026-11-07T19:34:16Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -14,11 +14,71 @@
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
     {
+      "id": "cod:bundle:7766",
+      "name": "Bone Chiller II",
+      "type": "Mastercraft · 10 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7766-preview-88d2cd.webp",
+      "badge": "New",
+      "price": {
+        "amount": 3000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7766",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-07T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Regalis",
+          "type": "Weapon · Mastercraft"
+        },
+        {
+          "name": "Aurum",
+          "type": "Weapon"
+        },
+        {
+          "name": "Auric",
+          "type": "Weapon"
+        },
+        {
+          "name": "Golden Wraith",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "You're Done",
+          "type": "Finishing Move"
+        },
+        {
+          "name": "Visage",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Cryptic",
+          "type": "Reticle"
+        },
+        {
+          "name": "Gone Loud",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Dipped",
+          "type": "Emblem"
+        },
+        {
+          "name": "Fortune's Fate",
+          "type": "Loading Screen"
+        }
+      ]
+    },
+    {
       "id": "cod:bundle:7777",
       "name": "The Valkyrie",
       "type": "Mastercraft · 9 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7777-preview-a55437.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 3000,
         "label": null,
@@ -280,7 +340,7 @@
     {
       "id": "cod:bundle:7783",
       "name": "The Captain",
-      "type": "9 items",
+      "type": "Tracer Pack · 9 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7783-preview-ea36ad.webp",
       "badge": null,
       "price": {
