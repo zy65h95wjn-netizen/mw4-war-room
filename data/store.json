@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-07",
-  "updatedAt": "2026-11-06T18:05:01Z",
-  "checkedAt": "2026-11-07T01:06:07Z",
+  "updatedAt": "2026-11-07T06:05:01Z",
+  "checkedAt": "2026-11-07T10:37:35Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -74,7 +74,7 @@
       "name": "Deltabeast",
       "type": "5 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7802-preview-ea1fc6.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 1800,
         "label": null,
@@ -114,7 +114,7 @@
       "name": "Steadfast",
       "type": "Reactive · 6 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7801-preview-554fe5.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 2400,
         "label": null,
@@ -158,7 +158,7 @@
       "name": "Glitched State",
       "type": "Mastercraft · 9 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7795-preview-8557c1.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 3000,
         "label": null,
@@ -214,7 +214,7 @@
       "name": "CDL LAUNCH PACK 2027",
       "type": "12 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7792-preview-9bccf0.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 2400,
         "label": null,
@@ -282,7 +282,7 @@
       "name": "The Captain",
       "type": "9 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7783-preview-ea36ad.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 2400,
         "label": null,
@@ -338,7 +338,7 @@
       "name": "Jadefire",
       "type": "4 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7775-preview-bec9d9.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 1000,
         "label": null,
@@ -374,7 +374,7 @@
       "name": "Northern Elite",
       "type": "5 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7774-preview-3e31df.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 1400,
         "label": null,
@@ -414,7 +414,7 @@
       "name": "Into the Fight",
       "type": "8 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7769-preview-5daea0.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 1800,
         "label": null,
