@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-10",
-  "updatedAt": "2026-11-10T06:05:02Z",
-  "checkedAt": "2026-11-10T11:38:46Z",
+  "updatedAt": "2026-11-10T18:05:02Z",
+  "checkedAt": "2026-11-10T21:23:50Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -13,6 +13,54 @@
   },
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
+    {
+      "id": "cod:bundle:7790",
+      "name": "Hollow Hunter",
+      "type": "Ultra Skin · 7 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7790-preview-9b993d.webp",
+      "badge": "New",
+      "price": {
+        "amount": 2800,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7790",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-10T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Vanish",
+          "type": "Weapon"
+        },
+        {
+          "name": "Low Profile",
+          "type": "Weapon"
+        },
+        {
+          "name": "Hunter's Veil",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Bushy",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Out of Sight",
+          "type": "Reticle"
+        },
+        {
+          "name": "Conceal and Eliminate",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Ghillie Ops",
+          "type": "Emblem"
+        }
+      ]
+    },
     {
       "id": "cod:bundle:7766",
       "name": "Bone Chiller II",
