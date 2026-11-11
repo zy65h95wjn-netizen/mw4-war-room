@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-11",
-  "updatedAt": "2026-11-11T06:05:01Z",
-  "checkedAt": "2026-11-11T11:23:21Z",
+  "updatedAt": "2026-11-11T18:05:01Z",
+  "checkedAt": "2026-11-11T22:12:18Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -14,11 +14,59 @@
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
     {
+      "id": "cod:bundle:7785",
+      "name": "No Man's Land",
+      "type": "7 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7785-preview-f20f09.webp",
+      "badge": "New",
+      "price": {
+        "amount": 2400,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7785",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-11T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Wayward",
+          "type": "Weapon"
+        },
+        {
+          "name": "Nightglass",
+          "type": "Weapon"
+        },
+        {
+          "name": "Catalyst",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Death's Approach",
+          "type": "Loading Screen"
+        },
+        {
+          "name": "Caustic Way",
+          "type": "Emblem"
+        },
+        {
+          "name": "Storm Watch",
+          "type": "Calling Card"
+        },
+        {
+          "name": "No Path",
+          "type": "Weapon Sticker"
+        }
+      ]
+    },
+    {
       "id": "cod:bundle:7790",
       "name": "Hollow Hunter",
       "type": "Ultra Skin · 7 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7790-preview-9b993d.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 2800,
         "label": null,
