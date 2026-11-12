@@ -5,7 +5,7 @@
   "status": "synced",
   "shopDate": "2026-11-12",
   "updatedAt": "2026-11-12T06:05:03Z",
-  "checkedAt": "2026-11-12T11:44:16Z",
+  "checkedAt": "2026-11-12T21:54:32Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -18,7 +18,7 @@
       "name": "No Man's Land",
       "type": "7 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7785-preview-f20f09.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 2400,
         "label": null,
