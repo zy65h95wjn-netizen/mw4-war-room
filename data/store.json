@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-13",
-  "updatedAt": "2026-11-13T06:05:02Z",
-  "checkedAt": "2026-11-13T11:27:13Z",
+  "updatedAt": "2026-11-13T18:05:02Z",
+  "checkedAt": "2026-11-13T21:31:56Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -13,6 +13,46 @@
   },
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
+    {
+      "id": "cod:bundle:7869",
+      "name": "Emerald Reaper",
+      "type": "Reactive · 5 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7869-preview-4eef4c.webp",
+      "badge": "New",
+      "price": {
+        "amount": null,
+        "label": "Platform store",
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7869",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-13T17:30:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Malachite",
+          "type": "Weapon"
+        },
+        {
+          "name": "Ozone",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Greens Eat You",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Finders Keepers",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Gem Heart",
+          "type": "Weapon Charm"
+        }
+      ]
+    },
     {
       "id": "cod:bundle:7785",
       "name": "No Man's Land",
