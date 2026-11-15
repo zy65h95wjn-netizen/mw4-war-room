@@ -5,7 +5,7 @@
   "status": "synced",
   "shopDate": "2026-11-14",
   "updatedAt": "2026-11-13T18:05:02Z",
-  "checkedAt": "2026-11-14T20:03:06Z",
+  "checkedAt": "2026-11-15T01:15:11Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -18,7 +18,7 @@
       "name": "Emerald Reaper",
       "type": "Reactive · 5 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7869-preview-4eef4c.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": null,
         "label": "Platform store",
