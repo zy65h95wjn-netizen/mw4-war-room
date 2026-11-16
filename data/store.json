@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-16",
-  "updatedAt": "2026-11-16T06:05:01Z",
-  "checkedAt": "2026-11-16T11:57:48Z",
+  "updatedAt": "2026-11-16T18:05:02Z",
+  "checkedAt": "2026-11-16T23:49:06Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -18,7 +18,7 @@
       "name": "Crimson Ritual",
       "type": "Mastercraft · 8 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7767-preview-f7f2e1.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 3000,
         "label": null,
