@@ -3,9 +3,9 @@
   "provider": "itemshop.gg",
   "game": "call-of-duty",
   "status": "synced",
-  "shopDate": "2026-11-15",
-  "updatedAt": "2026-11-13T18:05:02Z",
-  "checkedAt": "2026-11-16T01:20:41Z",
+  "shopDate": "2026-11-16",
+  "updatedAt": "2026-11-16T06:05:01Z",
+  "checkedAt": "2026-11-16T11:57:48Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -13,6 +13,118 @@
   },
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
+    {
+      "id": "cod:bundle:7767",
+      "name": "Crimson Ritual",
+      "type": "Mastercraft · 8 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7767-preview-f7f2e1.webp",
+      "badge": "New",
+      "price": {
+        "amount": 3000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7767",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-15T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Absolution",
+          "type": "Weapon · Mastercraft"
+        },
+        {
+          "name": "Black Rite",
+          "type": "Weapon"
+        },
+        {
+          "name": "Shrouded",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Blink Strike",
+          "type": "Finishing Move"
+        },
+        {
+          "name": "Forbidden Way",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Bleed Out",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Recondite",
+          "type": "Loading Screen"
+        },
+        {
+          "name": "Blood Pore",
+          "type": "Emblem"
+        }
+      ]
+    },
+    {
+      "id": "cod:bundle:7789",
+      "name": "Gaksuli",
+      "type": "Ultra Skin · 10 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7789-preview-f4c6a8.webp",
+      "badge": null,
+      "price": {
+        "amount": 3000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7789",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-14T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Saja Fire",
+          "type": "Weapon"
+        },
+        {
+          "name": "Soulmark",
+          "type": "Weapon"
+        },
+        {
+          "name": "Oedari",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Chonggak",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Oenun",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Cham",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Masquerade",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Seared Wing",
+          "type": "Reticle"
+        },
+        {
+          "name": "Squad Anarchy",
+          "type": "Emblem"
+        },
+        {
+          "name": "Face It",
+          "type": "Calling Card"
+        }
+      ]
+    },
     {
       "id": "cod:bundle:7869",
       "name": "Emerald Reaper",
