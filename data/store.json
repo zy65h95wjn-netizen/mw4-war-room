@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-17",
-  "updatedAt": "2026-11-17T06:05:02Z",
-  "checkedAt": "2026-11-17T12:21:58Z",
+  "updatedAt": "2026-11-17T18:05:02Z",
+  "checkedAt": "2026-11-17T23:05:41Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -13,6 +13,62 @@
   },
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
+    {
+      "id": "cod:bundle:7440",
+      "name": "Las Almas Eternal",
+      "type": "Mastercraft · 9 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7440-preview-4080f9.webp",
+      "badge": "New",
+      "price": {
+        "amount": 3000,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7440",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-17T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Mordida Final",
+          "type": "Weapon · Mastercraft"
+        },
+        {
+          "name": "Vibora Negra",
+          "type": "Weapon"
+        },
+        {
+          "name": "Santa Muerte",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Get Shocked",
+          "type": "Finishing Move"
+        },
+        {
+          "name": "Exhume",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Reina de la Muerte",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Las Almas Eternal",
+          "type": "Weapon Charm"
+        },
+        {
+          "name": "Si Nombre",
+          "type": "Emblem"
+        },
+        {
+          "name": "Presagio Funesto",
+          "type": "Reticle"
+        }
+      ]
+    },
     {
       "id": "cod:bundle:7767",
       "name": "Crimson Ritual",
