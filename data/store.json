@@ -4,8 +4,8 @@
   "game": "call-of-duty",
   "status": "synced",
   "shopDate": "2026-11-18",
-  "updatedAt": "2026-11-18T06:05:02Z",
-  "checkedAt": "2026-11-18T12:08:23Z",
+  "updatedAt": "2026-11-18T18:05:01Z",
+  "checkedAt": "2026-11-18T22:40:33Z",
   "stale": false,
   "attribution": {
     "text": "Data from itemshop.gg",
@@ -14,11 +14,59 @@
   "note": "Public MW4 web-store listings only. In-game offers, platform prices, and personalized bundles can differ.",
   "items": [
     {
+      "id": "cod:bundle:7806",
+      "name": "Drone Out",
+      "type": "7 items",
+      "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7806-preview-cf9335.webp",
+      "badge": "New",
+      "price": {
+        "amount": 2400,
+        "label": null,
+        "currency": "COD Points"
+      },
+      "officialUrl": "https://www.callofduty.com/en/store/bundles/7806",
+      "upcoming": false,
+      "availability": {
+        "from": "2026-11-18T17:00:00Z",
+        "until": null
+      },
+      "contents": [
+        {
+          "name": "Flyby",
+          "type": "Operator Skin"
+        },
+        {
+          "name": "Drag Out",
+          "type": "Weapon"
+        },
+        {
+          "name": "Show Stopper",
+          "type": "Weapon"
+        },
+        {
+          "name": "Fire First",
+          "type": "Calling Card"
+        },
+        {
+          "name": "Bad Landing",
+          "type": "Weapon Sticker"
+        },
+        {
+          "name": "Terminus",
+          "type": "Loading Screen"
+        },
+        {
+          "name": "Electro-charged",
+          "type": "Emblem"
+        }
+      ]
+    },
+    {
       "id": "cod:bundle:7440",
       "name": "Las Almas Eternal",
       "type": "Mastercraft · 9 items",
       "image": "https://cdn.source.gs/modern-warfare-4/img/bundle-7440-preview-4080f9.webp",
-      "badge": "New",
+      "badge": null,
       "price": {
         "amount": 3000,
         "label": null,
